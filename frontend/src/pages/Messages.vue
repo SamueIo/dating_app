@@ -53,7 +53,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue';
-import MatchesList from '../components/Matches/MatchesList.vue';
+import MatchesList from '@/components/matches/MatchesList.vue'
 import Chat from '../components/chat/Chat.vue';
 import { useConversationStore } from '../store/conversationsAndLastMessage';
 import ConversationList from '../components/chat/ConversationList.vue';
