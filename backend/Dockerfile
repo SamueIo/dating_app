@@ -8,6 +8,13 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+#  Set Apache DocumentRoot to public/
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+
+#  Update Apache config to use new DocumentRoot
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/000-default.conf
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -23,9 +30,6 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Expose port
 EXPOSE 80
-
-# Run Laravel migrations (optional)
-# RUN php artisan migrate --force
 
 # Start Apache
 CMD ["apache2-foreground"]
