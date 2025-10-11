@@ -24,6 +24,11 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    preview: {
+      allowedHosts: ['datingapp-production-e7be.up.railway.app']
+      // alebo allowedHosts: 'all' pre povolenie všetkých hostov
+    },
   }
 })
+
 
