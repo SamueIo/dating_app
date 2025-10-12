@@ -52,8 +52,9 @@ return [
 
     'channels' => [
 
-        'stack' => [
-            'driver' => 'stack',
+        'errorLog' => [
+            'driver' => 'errorlog',
+            'level' => env('LOG_LEVEL', 'debug'),
             'channels' => explode(',', (string) env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
         ],
