@@ -73,24 +73,28 @@ const data= ref({
 const errorMessage = ref('')
 
 async function submit() {  
-  loading.value = true
-  errorMessage.value = ''
+  loading.value = true;
+  errorMessage.value = '';
+
   try {
     await axiosClient.get('/sanctum/csrf-cookie');
+
     const response = await axiosClient.post('/login', data.value);
-    router.push({ name:'Explore' });
+
+    router.push({ name: 'Explore' });
+
   } catch (error) {
-    loading.value = false
-    if(error.response){
-      loading.value = false
-      console.log(error.response);
-      errorMessage.value = error.response.data.message || 'Unknown error';
-      console.log(errorMessage.value);
+    loading.value = false;
+
+    if (error.response) {
+      console.log('Login error response:', error.response);
+      errorMessage.value = error.response.data.message || 'Neznáma chyba';
     } else {
-      errorMessage.value = 'Error on server side';
+      errorMessage.value = 'Chyba na strane servera';
     }
   }
 }
+
 
 
 // async function submit() {  
