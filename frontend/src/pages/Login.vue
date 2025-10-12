@@ -91,6 +91,7 @@ async function submit() {
        console.log(errorMessage)
 
       }else{
+        loading.value = false
         errorMessage.value = 'Error on server side'
       }
     })
