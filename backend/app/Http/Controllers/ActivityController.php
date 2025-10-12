@@ -32,11 +32,7 @@ public function updateUserActivity(Request $request)
 
         return response()->json(['status' => 'success']);
     } catch (\Throwable $e) {
-        Log::error('Chyba pri updateUserActivity: '.$e->getMessage(), [
-            'request' => $request->all(),
-            'stack' => $e->getTraceAsString(),
-            'user_id' => Auth::id(),
-        ]);
+
 
         return response()->json([
             'error' => true,
