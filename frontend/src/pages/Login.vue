@@ -77,10 +77,12 @@ async function submit() {
   errorMessage.value = '';
 
   try {
-    await axiosClient.get('/sanctum/csrf-cookie');
+    await axiosClient.get('/sanctum/csrf-cookie', { withCredentials: true });
 
-    const response = await axiosClient.post('/login', data.value);
-    const userResponse = await axiosClient.get('/api/user');
+    const response = await axiosClient.post('/login', data.value, { withCredentials: true });
+    console.log('Login response:', response);
+
+    const userResponse = await axiosClient.get('/api/user', { withCredentials: true });
     console.log('user data:', userResponse.data);
 
     router.push({ name: 'Explore' });
@@ -96,6 +98,7 @@ async function submit() {
     }
   }
 }
+
 
 
 
