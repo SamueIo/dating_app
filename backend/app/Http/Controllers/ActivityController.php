@@ -13,6 +13,8 @@ class ActivityController extends Controller
 {
     public function updateUserActivity(Request $request)
     {
+        \Log::error('TEST: errorlog funguje / api/activity reached', request()->all());
+
         $userId = Auth::id();
 
         $request->validate(['is_active' => 'required|boolean']);
@@ -29,6 +31,8 @@ class ActivityController extends Controller
     public function getUserActivities()
     {
         $userId = Auth::id();
+        \Log::error('TEST: errorlog funguje / api/activity reached', request()->all());
+
 
         // Získaj všetky konverzácie, kde si účastníkom
         $conversationIds = \DB::table('conversation_user')
@@ -64,6 +68,7 @@ class ActivityController extends Controller
                 'participants' => $activities,
             ];
         }
+
 
         return response()->json($result);
     }
