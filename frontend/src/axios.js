@@ -7,7 +7,8 @@ const axiosClient = axios.create({
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
 })
-
+const baseUrl = import.meta.env.VITE_API_BASE_URL
+console.log('baseUrl',baseUrl)
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
