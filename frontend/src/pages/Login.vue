@@ -80,8 +80,8 @@ async function submit() {
     await axiosClient.get('/sanctum/csrf-cookie');
 
     const response = await axiosClient.post('/login', data.value);
-    console.log('response', response);
-    
+    const userResponse = await axiosClient.get('/api/user');
+    console.log('user data:', userResponse.data);
 
     router.push({ name: 'Explore' });
 
