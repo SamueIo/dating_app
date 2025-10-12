@@ -75,26 +75,47 @@ const errorMessage = ref('')
 async function submit() {  
   loading.value = true
   errorMessage.value = ''
-  axiosClient.get( '/sanctum/csrf-cookie')
-  .then(response => {
-    return axiosClient.post('/login', data.value)
-    .then(response =>{
-      router.push({ name:'Explore'})
-      
-    })
-    .catch (error => {
-      if(error.response){
-        loading.value = false
-        console.log(error.response)
-        errorMessage.value= error.response.data.message || 'Uknown error'
-       console.log(errorMessage)
-
-      }else{
-        errorMessage.value = 'Error on server side'
-      }
-    })
-  })
+  try {
+    await axiosClient.get('/sanctum/csrf-cookie');
+    const response = await axiosClient.post('/login', data.value);
+    router.push({ name:'Explore' });
+  } catch (error) {
+    loading.value = false
+    if(error.response){
+      loading.value = false
+      console.log(error.response);
+      errorMessage.value = error.response.data.message || 'Unknown error';
+      console.log(errorMessage.value);
+    } else {
+      errorMessage.value = 'Error on server side';
+    }
+  }
 }
+
+
+// async function submit() {  
+//   loading.value = true
+//   errorMessage.value = ''
+//   axiosClient.get( '/sanctum/csrf-cookie')
+//   .then(response => {
+//     return axiosClient.post('/login', data.value)
+//     .then(response =>{
+//       router.push({ name:'Explore'})
+      
+//     })
+//     .catch (error => {
+//       if(error.response){
+//         loading.value = false
+//         console.log(error.response)
+//         errorMessage.value= error.response.data.message || 'Uknown error'
+//        console.log(errorMessage)
+
+//       }else{
+//         errorMessage.value = 'Error on server side'
+//       }
+//     })
+//   })
+// }
 
 </script>
 
