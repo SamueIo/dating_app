@@ -21,6 +21,11 @@ class PhotoController extends Controller
 
         $photos->map(function($photo) {
             $photo->url = asset('/storage/' . $photo->file_name);
+
+            if (str_starts_with($photo->url, 'http://')) {
+                $photo->url = str_replace('http://', 'https://', $photo->url);
+            }
+
             return $photo;
         });
         return response()->json($photos);
