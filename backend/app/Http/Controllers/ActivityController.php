@@ -11,27 +11,43 @@ use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
-    public function updateUserActivity(Request $request)
-    {
-        \Log::error('TEST: errorlog funguje / api/activity reached', request()->all());
-
+public function updateUserActivity(Request $request)
+{
+    try {
         $userId = Auth::id();
 
-        $request->validate(['is_active' => 'required|boolean']);
+        $request->validate([
+            'is_active' => 'required|boolean'
+        ]);
+
         $userActivity = UserActivity::updateOrCreate(
             ['user_id' => $userId],
-            ['last_active_at' => Carbon::now(),
-            'is_active' => $request->is_active
+            [
+                'last_active_at' => Carbon::now(),
+                'is_active' => $request->is_active,
             ]
         );
 
         broadcast(new UserActivityUpdated($userActivity));
+
         return response()->json(['status' => 'success']);
+    } catch (\Throwable $e) {
+        Log::error('Chyba pri updateUserActivity: '.$e->getMessage(), [
+            'request' => $request->all(),
+            'stack' => $e->getTraceAsString(),
+            'user_id' => Auth::id(),
+        ]);
+
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ], 500);
     }
+}
     public function getUserActivities()
     {
         $userId = Auth::id();
-        \Log::error('TEST: errorlog funguje / api/activity reached', request()->all());
 
 
         // Získaj všetky konverzácie, kde si účastníkom
