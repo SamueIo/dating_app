@@ -72,59 +72,30 @@ const data= ref({
 
 const errorMessage = ref('')
 
+
 async function submit() {  
-  loading.value = true;
-  errorMessage.value = '';
-
-  try {
-    await axiosClient.get('/sanctum/csrf-cookie', { withCredentials: true });
-
-    const response = await axiosClient.post('/login', data.value, { withCredentials: true });
-    console.log('Login response:', response);
-
-    const userResponse = await axiosClient.get('/api/user', { withCredentials: true });
-    console.log('user data:', userResponse.data);
-
-    router.push({ name: 'Explore' });
-
-  } catch (error) {
-    loading.value = false;
-
-    if (error.response) {
-      console.log('Login error response:', error.response);
-      errorMessage.value = error.response.data.message || 'Neznáma chyba';
-    } else {
-      errorMessage.value = 'Chyba na strane servera';
-    }
-  }
-}
-
-
-
-
-// async function submit() {  
-//   loading.value = true
-//   errorMessage.value = ''
-//   axiosClient.get( '/sanctum/csrf-cookie')
-//   .then(response => {
-//     return axiosClient.post('/login', data.value)
-//     .then(response =>{
-//       router.push({ name:'Explore'})
+  loading.value = true
+  errorMessage.value = ''
+  axiosClient.get( '/sanctum/csrf-cookie')
+  .then(response => {
+    return axiosClient.post('/login', data.value)
+    .then(response =>{
+      router.push({ name:'Explore'})
       
-//     })
-//     .catch (error => {
-//       if(error.response){
-//         loading.value = false
-//         console.log(error.response)
-//         errorMessage.value= error.response.data.message || 'Uknown error'
-//        console.log(errorMessage)
+    })
+    .catch (error => {
+      if(error.response){
+        loading.value = false
+        console.log(error.response)
+        errorMessage.value= error.response.data.message || 'Uknown error'
+       console.log(errorMessage)
 
-//       }else{
-//         errorMessage.value = 'Error on server side'
-//       }
-//     })
-//   })
-// }
+      }else{
+        errorMessage.value = 'Error on server side'
+      }
+    })
+  })
+}
 
 </script>
 
