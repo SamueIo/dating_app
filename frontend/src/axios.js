@@ -8,12 +8,16 @@ const axiosClient = axios.create({
     xsrfHeaderName: 'X-XSRF-TOKEN',
 })
 
+// function getCookie(name) {
+//     const value = `; ${document.cookie}`;
+//     const parts = value.split(`; ${name}=`);
+//     if (parts.length === 2) return parts.pop().split(';').shift(); 
+// }
 function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift(); 
+    const value = document.cookie;
+    const parts = value.split(name + '=');
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }
-
 axiosClient.interceptors.request.use(config => {
   const token = getCookie('XSRF-TOKEN');
   if (token) {
