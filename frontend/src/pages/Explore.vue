@@ -78,7 +78,6 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import axiosClient from '../axios' 
-import Filter from '../components/Filter/Filter.vue'
 import { useFilterStore } from '../store/filterStore'
 import { calculateAge } from '../utils/age'
 import UserModal from '../components/modals/UserModal.vue'

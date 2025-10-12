@@ -21,7 +21,7 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['http://localhost:5173',
-                          'https://datingapp-production-e7be.up.railway.app',],
+                          'https://datingapp-production-e7be.up.railway.app'],
 
     'allowed_origins_patterns' => [],
 
