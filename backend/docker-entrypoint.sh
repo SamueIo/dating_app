@@ -1,15 +1,20 @@
 #!/bin/bash
 set -e
 
-# Remove old symlink if it exists
-rm -rf public/storage
+# Symlink z /app/storage do ./storage (v pracovnom adresári)
+if [ ! -L storage ]; then
+  ln -s /app/storage storage
+fi
 
-# Create a new symlink to the volume mount point
-ln -s /app/storage/app/public public/storage
+# Symlink z public/storage do ../storage/app/public
+if [ -L public/storage ]; then
+  rm public/storage
+fi
+ln -s ../storage/app/public public/storage
 
-# Set permissions (recommended)
-chown -R www-data:www-data /app/storage
-chmod -R 755 /app/storage
+# Nastavenie vlastníka a práv na storage
+chown -R www-data:www-data storage
+chmod -R 775 storage
 
-# Start Apache in the foreground
-exec apache2-foreground
+# Spustenie pôvodného príkazu (napr. php-fpm alebo iný entrypoint)
+exec "$@"
