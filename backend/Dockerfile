@@ -8,10 +8,10 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-#  Set Apache DocumentRoot to public/
+# Set Apache DocumentRoot to public/
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 
-#  Update Apache config to use new DocumentRoot
+# Update Apache config to use new DocumentRoot
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
     /etc/apache2/sites-available/000-default.conf
 
@@ -27,12 +27,15 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose port
 EXPOSE 80
 
-# Start Apache
+# Use entrypoint script to run storage:link before Apache starts
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
