@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Apache config - povolenie prístupu k /var/www/html/public a follow symlinks
+# Apache config - povolenie prístupu k public a storage
 RUN echo "<Directory /var/www/html/public>\n\
     Options +FollowSymLinks\n\
     AllowOverride All\n\
@@ -20,25 +20,26 @@ RUN echo "<Directory /var/www/html/public>\n\
     Require all granted\n\
 </Directory>" > /etc/apache2/conf-available/public.conf && a2enconf public
 
-# Nastav DocumentRoot na public/
+# Nastav public ako DocumentRoot
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
+    /etc/apache2/sites-available/000-default.conf
 
-# Aktualizuj default site config na nový DocumentRoot
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
-
+# Set working directory
 WORKDIR /var/www/html
 
+# Copy project files
 COPY . .
 
-# Composer (stiahni a nainštaluj závislosti)
+# Composer install
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Nastav práva na storage a bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+ && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Kopíruj entrypoint script
+# Entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
