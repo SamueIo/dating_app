@@ -100,6 +100,8 @@ const error = ref(null)
 onMounted(() => {
     axiosClient.get('/api/profile')
     .then(response => {
+      console.log('data.value',data.value);
+      
       data.value = response.data
       loading.value = false
     })
