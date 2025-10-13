@@ -8,6 +8,13 @@ RUN apt-get update && apt-get install -y \
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
+# Create Apache config to allow FollowSymLinks and access to public directory
+RUN echo "<Directory /var/www/html/public>\n\
+    Options +FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>" > /etc/apache2/conf-available/public.conf && a2enconf public
+
 # Set Apache DocumentRoot to public/
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 

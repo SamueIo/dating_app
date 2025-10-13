@@ -1,20 +1,16 @@
 #!/bin/bash
 set -e
 
-# Symlink z /app/storage do ./storage (v pracovnom adresári)
-if [ ! -L storage ]; then
-  ln -s /app/storage storage
-fi
+# Remove existing symlinks if any
+rm -f storage
+rm -f public/storage
 
-# Symlink z public/storage do ../storage/app/public
-if [ -L public/storage ]; then
-  rm public/storage
-fi
+# Create symlinks
+ln -s /app/storage storage
 ln -s ../storage/app/public public/storage
 
-# Nastavenie vlastníka a práv na storage
-chown -R www-data:www-data storage
-chmod -R 775 storage
+# Set permissions
+chown -R www-data:www-data /app/storage
+chmod -R 775 /app/storage
 
-# Spustenie pôvodného príkazu (napr. php-fpm alebo iný entrypoint)
 exec "$@"
