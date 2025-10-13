@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# Odstráni existujúce symlinky, ak sú
-rm -f /var/www/html/storage
+# Odstráni existujúce symlinky alebo adresáre (ak existujú)
+rm -rf /var/www/html/storage
 rm -f /var/www/html/public/storage
 
 # Vytvor symlink 'storage' na /app/storage
