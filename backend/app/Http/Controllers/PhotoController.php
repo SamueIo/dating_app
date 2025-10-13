@@ -33,7 +33,6 @@ class PhotoController extends Controller
 
     public function store(Request $request)
 {
-    // \Log::info($request->all());
     $request->validate([
         'photos.*' => 'required|image|max:2048',
         'description' => 'nullable|string|max:255',

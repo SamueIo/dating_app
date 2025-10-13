@@ -9,7 +9,7 @@ ln -s /app/storage/app/public public/storage
 
 # Set permissions (recommended)
 chown -R www-data:www-data /app/storage
-chmod -R 775 /app/storage
+chmod -R 755 /app/storage
 
 # Start Apache in the foreground
 exec apache2-foreground
