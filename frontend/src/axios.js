@@ -7,8 +7,10 @@ const axiosClient = axios.create({
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
 })
-const baseUrlLog = import.meta.env.VITE_API_BASE_URL
-console.log("API base URL:", baseUrlLog);
+axiosClient.interceptors.request.use(config => {
+  console.log("[AXIOS] Request to:", config.baseURL + config.url);
+  return config;
+});
 
 function getCookie(name) {
     const value = document.cookie;
