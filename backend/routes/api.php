@@ -11,8 +11,17 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UserController;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// determine which env to use
+Route::get('/check', function () {
+    return response()->json([
+        'env' => env('APP_ENV'),
+        'url' => env('APP_URL'),
+    ]);
+});
 
 Route::middleware(['auth:sanctum'])
     ->group(function(){

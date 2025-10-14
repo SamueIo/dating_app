@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
 use App\Models\UserActivity;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,7 @@ class ActivityController extends Controller
 {
 public function updateUserActivity(Request $request)
 {
+    Log::info("Aktivita používateľa začína pre user_id: ");
     try {
         $userId = Auth::id();
 

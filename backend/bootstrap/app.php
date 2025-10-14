@@ -1,5 +1,8 @@
 <?php
 
+// to load local env 
+require __DIR__.'/env-loader.php';
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

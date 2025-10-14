@@ -53,12 +53,14 @@
           <!-- AVATAR -->
           <div class="relative w-14 h-14 flex-shrink-0">
             <img
-              v-if="showPhoto"
+              v-if="showPhoto && item.other_user.main_photo"
               :src="`/storage/${item.other_user.main_photo.file_name}`"
               alt="user photo"
               class="w-14 h-14 rounded-full object-cover"
               draggable="false"
             />
+            <div v-else class="w-14 h-14  rounded-full object-cover flex-shrink-0 bg-black/20"></div>
+
             <span
               v-if="item.last_message?.user_id !== loggedUserId && item.last_message?.seen !== 1"
               class="absolute top-[-3px] right-[-3px] block w-3 h-3 bg-red-500 rounded-full border-2 border-white"
@@ -83,11 +85,12 @@
       <!-- Štandardné zobrazenie -->
       <template v-else>
         <img
-          v-if="showPhoto"
+          v-if="showPhoto && item.other_user.main_photo"
           :src="`/storage/${item.other_user.main_photo.file_name}`"
           alt="user photo"
           class="w-14 h-14  rounded-full object-cover flex-shrink-0"
         />
+        <div v-else class="w-14 h-14  rounded-full object-cover flex-shrink-0 bg-black/20"></div>
         <h2 v-if="showName" class="text-lg font-semibold text-gray-900">
           {{ item.other_user?.name }}
         </h2>
