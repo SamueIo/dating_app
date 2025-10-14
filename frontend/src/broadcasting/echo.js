@@ -1,6 +1,8 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
+const urlEcho = import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth'
+console.log('urlEcho',urlEcho);
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
