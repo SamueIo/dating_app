@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axiosClient from '../axios' 
 import { useFilterStore } from '../store/filterStore'
 import { calculateAge } from '../utils/age'

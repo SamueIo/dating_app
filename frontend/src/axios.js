@@ -7,10 +7,7 @@ const axiosClient = axios.create({
     xsrfCookieName: 'XSRF-TOKEN',
     xsrfHeaderName: 'X-XSRF-TOKEN',
 })
-axiosClient.interceptors.request.use(config => {
-  console.log("[AXIOS] Request to:", config.baseURL + config.url);
-  return config;
-});
+
 
 function getCookie(name) {
     const value = document.cookie;

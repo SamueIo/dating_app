@@ -73,29 +73,58 @@ const data= ref({
 const errorMessage = ref('')
 
 
-async function submit() {  
-  loading.value = true
-  errorMessage.value = ''
-  axiosClient.get( '/sanctum/csrf-cookie')
-  .then(response => {
-    return axiosClient.post('/login', data.value)
-    .then(response =>{
-      router.push({ name:'Explore'})
+// async function submit() {  
+//   loading.value = true
+//   errorMessage.value = ''
+//   axiosClient.get( '/sanctum/csrf-cookie')
+//   .then(response => {
+//     return axiosClient.post('/login', data.value)
+//     .then(response =>{
+//       router.push({ name:'Explore'})
       
-    })
-    .catch (error => {
-      if(error.response){
-        loading.value = false
-        console.log(error.response)
-        errorMessage.value= error.response.data.message || 'Uknown error'
-       console.log(errorMessage)
+//     })
+//     .catch (error => {
+//       if(error.response){
+//         loading.value = false
+//         console.log(error.response)
+//         errorMessage.value= error.response.data.message || 'Uknown error'
+//        console.log(errorMessage)
 
-      }else{
-        loading.value = false
-        errorMessage.value = 'Error on server side'
-      }
-    })
-  })
+//       }else{
+//         loading.value = false
+//         errorMessage.value = 'Error on server side'
+//       }
+//     })
+//   })
+// }
+async function submit() {  
+  loading.value = true;
+  errorMessage.value = '';
+
+  const csrfUrl = axiosClient.defaults.baseURL + '/sanctum/csrf-cookie';
+  console.log('🔐 CSRF URL →', csrfUrl);
+
+  axiosClient.get('/sanctum/csrf-cookie')
+    .then(response => {
+      const loginUrl = axiosClient.defaults.baseURL + '/login';
+      console.log('🔐 LOGIN URL →', loginUrl);
+      console.log('🧾 Axios Base URL:', axiosClient.defaults.baseURL);
+
+
+      return axiosClient.post('/login', data.value)
+        .then(response => {
+          router.push({ name: 'Explore' });
+        })
+        .catch(error => {
+          loading.value = false;
+          if (error.response) {
+            console.log('❌ ERROR RESPONSE', error.response);
+            errorMessage.value = error.response.data.message || 'Unknown error';
+          } else {
+            errorMessage.value = 'Error on server side';
+          }
+        });
+    });
 }
 
 </script>
