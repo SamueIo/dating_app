@@ -10,7 +10,7 @@ window.Echo = new Echo({
     wsHost: import.meta.env.VITE_REVERB_HOST ?? window.location.hostname,
     wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
     wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'http') === 'https',
+    forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
     authEndpoint: import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth',
     enabledTransports: ['ws', 'wss'],
 
