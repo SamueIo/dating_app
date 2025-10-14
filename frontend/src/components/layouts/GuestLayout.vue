@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center justify-center w-screen h-screen  md:p-16"  
+    class="flex items-center justify-center w-screen h-screen p-1  md:p-16"  
   >
     <div
       class="flex flex-col items-center justify-center p-1 sm:p-4 md:p-10 lg:p-14

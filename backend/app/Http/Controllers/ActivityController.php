@@ -14,7 +14,6 @@ class ActivityController extends Controller
 {
 public function updateUserActivity(Request $request)
 {
-    Log::info("Aktivita používateľa začína pre user_id: ");
     try {
         $userId = Auth::id();
 
