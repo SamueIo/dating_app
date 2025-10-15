@@ -1,49 +1,21 @@
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-# System dependencies + PHP extensions
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
+RUN apt-get update && apt-get install -y git curl zip unzip libpng-dev libonig-dev libxml2-dev libzip-dev
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+RUN docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl
 
-# Apache config - povolenie prístupu k public a storage
-RUN echo "<Directory /var/www/html/public>\n\
-    Options +FollowSymLinks\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>\n\
-<Directory /var/www/html/public/storage>\n\
-    Options +FollowSymLinks\n\
-    AllowOverride None\n\
-    Require all granted\n\
-</Directory>" > /etc/apache2/conf-available/public.conf && a2enconf public
+WORKDIR /app
 
-# Nastav public ako DocumentRoot
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' \
-    /etc/apache2/sites-available/000-default.conf
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy project files
 COPY . .
 
-# Composer install
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
 RUN composer install --no-dev --optimize-autoloader
 
-# Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
- && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Entrypoint
-# COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+EXPOSE 3000
 
-EXPOSE 80
-
-# ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["apache2-foreground"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=3000"]

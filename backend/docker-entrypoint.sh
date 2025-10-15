@@ -1,34 +1,19 @@
 #!/bin/bash
 set -e
 
-echo "[entrypoint] Spúšťam entrypoint..."
-
-# ✅ Počkaj, kým existuje cieľový adresár symlinku
-echo "[entrypoint] Čakám na pripojenie storage volume..."
-until [ -d /var/www/html/storage/app/public ]; do
+echo "[entrypoint] Čakám na storage volume..."
+until [ -d /app/storage/app/public ]; do
     sleep 1
 done
-echo "[entrypoint] Volume pripojený."
 
-# ✅ Odstráni starý symlink (ak existuje)
-if [ -L /var/www/html/public/storage ]; then
-    echo "[entrypoint] Odstraňujem existujúci symlink public/storage"
-    rm /var/www/html/public/storage
-fi
+echo "[entrypoint] Vytváram symlink public/storage..."
+php artisan storage:link
 
-# ✅ Vytvorí nový symlink
-if [ ! -e /var/www/html/public/storage ]; then
-    echo "[entrypoint] Vytváram nový symlink public/storage → ../storage/app/public"
-    ln -s ../storage/app/public /var/www/html/public/storage
-fi
+echo "[entrypoint] Nastavujem práva na storage..."
+chown -R www-data:www-data /app/storage
+chmod -R 775 /app/storage
+find /app/storage -type f -exec chmod 664 {} \;
+find /app/storage -type d -exec chmod 775 {} \;
 
-# ✅ Nastaví práva na storage (volume)
-echo "[entrypoint] Nastavujem práva na storage/"
-chown -R www-data:www-data /var/www/html/storage
-chmod -R 775 /var/www/html/storage
-find /var/www/html/storage -type f -exec chmod 664 {} \;
-find /var/www/html/storage -type d -exec chmod 775 {} \;
-
-# ✅ Štartuj Apache (alebo iný príkaz z CMD)
-echo "[entrypoint] Štartujem Apache..."
+echo "[entrypoint] Spúšťam Laravel server..."
 exec "$@"
