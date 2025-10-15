@@ -30,17 +30,18 @@ return [
 
     'connections' => [
 
-       'reverb' => [
+        'reverb' => [
            'driver' => 'reverb',
            'key' => env('PUSHER_APP_KEY'),
            'secret' => env('PUSHER_APP_SECRET'),
            'app_id' => env('PUSHER_APP_ID'),
            'options' => [
-               'host' => '127.0.0.1',
-               'port' => 8080,
-               'scheme' => 'http',
+               'host' => env('REVERB_HOST', '127.0.0.1'),
+               'port' => env('REVERB_PORT', 6001),
+               'scheme' => env('REVERB_SCHEME', 'http'),
            ],
-       ],
+        ],
+
     ],
 
 ];
