@@ -3,6 +3,13 @@ set -e
 
 echo "[entrypoint] Spúšťam entrypoint..."
 
+# ✅ Počkaj, kým existuje cieľový adresár symlinku
+echo "[entrypoint] Čakám na pripojenie storage volume..."
+until [ -d /var/www/html/storage/app/public ]; do
+    sleep 1
+done
+echo "[entrypoint] Volume pripojený."
+
 # ✅ Odstráni starý symlink (ak existuje)
 if [ -L /var/www/html/public/storage ]; then
     echo "[entrypoint] Odstraňujem existujúci symlink public/storage"
@@ -22,6 +29,6 @@ chmod -R 775 /var/www/html/storage
 find /var/www/html/storage -type f -exec chmod 664 {} \;
 find /var/www/html/storage -type d -exec chmod 775 {} \;
 
-# ✅ Spusti Apache
+# ✅ Štartuj Apache (alebo iný príkaz z CMD)
 echo "[entrypoint] Štartujem Apache..."
 exec "$@"
