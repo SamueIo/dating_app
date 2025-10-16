@@ -29,7 +29,7 @@
 
           </div>
         </div>
-        <img :src="`${API_BASE_URL}/mainPhoto.url`" alt="Main User photo" class="w-full rounded-lg h-full object-cover">
+        <img :src="`mainPhoto.url`" alt="Main User photo" class="w-full rounded-lg h-full object-cover">
         <p v-if="mainPhoto.description" 
             class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
             {{ mainPhoto.description }}
@@ -68,7 +68,7 @@
         </div>
 
         </div>
-      <img :src="`${API_BASE_URL}/photo.url`" alt="User photo" class="w-full rounded-lg h-full object-cover">
+      <img :src="`photo.url`" alt="User photo" class="w-full rounded-lg h-full object-cover">
         <p v-if="photo.description" 
             class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
             {{ photo.description }}
@@ -128,7 +128,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axiosClient from '../../axios';
-import { API_BASE_URL } from '@/utils/constants';
 
 
 const photo = ref([]);

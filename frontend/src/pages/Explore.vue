@@ -83,6 +83,8 @@ import { calculateAge } from '../utils/age'
 import UserModal from '../components/modals/UserModal.vue'
 import Spinner from '../ui/Spinner.vue'
 import { useUserActivityStore } from '../store/userActivity'
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const userActivityStore = useUserActivityStore()
 const users = ref([])
