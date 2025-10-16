@@ -64,6 +64,8 @@ function logout() {
     eraseCookie('laravel-session');
     eraseCookie('XSRF-TOKEN');
     eraseCookie('p4bxAJGpYVpw3tMNQjztWihl2EjWp44Ge5cO0JOV');
+    eraseCookie('R5B1TE7ohz6kbieb0Qe1jM89wVU2GRm2hVjseLUg');
+    eraseCookie('dating-app-session');
     router.push({name:'Login'})
   })
   .catch(error => {
