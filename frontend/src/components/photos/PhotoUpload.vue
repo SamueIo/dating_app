@@ -147,9 +147,7 @@ const photos= ref([]);
 const fetchPhotos= async () => {
     try{
         const response = await axiosClient.get('/api/photos');
-        console.log('response',response);
-        console.log('response.photos',response.photos);
-        
+        console.log('response',response);        
         photos.value = response.data;
     }catch(err){
         console.error(err,'Error fetching photos')

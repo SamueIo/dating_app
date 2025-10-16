@@ -103,6 +103,9 @@ onMounted(() => {
       console.log('data.value',data.value);
       
       data.value = response.data
+      console.log('data',data);
+      console.log('data.value',data.value);
+      
       loading.value = false
     })
     .catch(err => {
