@@ -7,7 +7,7 @@
     <div v-else>
       <!-- MAIN PHOTO -->
       <div v-if="mainPhoto" class="relative">
-        <img :src="`/storage/${mainPhoto.file_name}`" class="w-full rounded-lg mb-2 shadow-md" />
+        <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full rounded-lg mb-2 shadow-md" />
         <p
           v-if="mainPhoto.description"
           class="absolute bottom-1 left-1 px-1 sm:px-2 py-0.5 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%]"
@@ -31,7 +31,7 @@
       <!-- SECOND PHOTO + INFO -->
       <div v-if="otherPhotos[0]" class="space-y-4">
         <div class="relative">
-          <img :src="`/storage/${otherPhotos[0].file_name}`" class="w-full rounded-md shadow-sm" />
+          <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" class="w-full rounded-md shadow-sm" />
           <p v-if="otherPhotos[0].description"
              class="absolute bottom-1 left-1 px-1 sm:px-2 py-0.5 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%]">
             {{ otherPhotos[0].description }}
@@ -48,7 +48,7 @@
       <!-- THIRD PHOTO + MORE INFO -->
       <div v-if="otherPhotos[1]" class="space-y-4">
         <div class="relative">
-          <img :src="`/storage/${otherPhotos[1].file_name}`" class="w-full rounded-md shadow-sm" />
+          <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" class="w-full rounded-md shadow-sm" />
           <p v-if="otherPhotos[1].description"
              class="absolute bottom-1 left-1 px-1 sm:px-2 py-0.5 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%]">
             {{ otherPhotos[1].description }}
@@ -68,7 +68,7 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
           <div v-for="(photo, index) in extraPhotos" :key="index" class="flex flex-col relative">
             <img
-              :src="`/storage/${photo.file_name}`"
+              :src="`${API_BASE_URL}/storage/${photo.file_name}`"
               class="rounded-md object-cover h-24 sm:h-32 w-full shadow-sm hover:scale-105 transition"
               alt="User photo"
             />
@@ -92,6 +92,9 @@
 
 import axiosClient from '../../axios';
 import { ref, computed, onMounted } from 'vue';
+import { API_BASE_URL } from '@/config.js';
+
+
 
 const data = ref(null)
 const loading = ref(true)
