@@ -7,7 +7,9 @@
     </div>
     <div v-else>
       <img
-      :src="userStore.user?.main_photo ? `/storage/${userStore.user.main_photo.file_name}` : 'https://picsum.photos/100/100'"
+      :src="userStore.user?.main_photo 
+        ? `${API_BASE_URL}/storage/${userStore.user.main_photo.file_name}` 
+        : 'https://picsum.photos/100/100'"
       class="w-14 h-14 ml-auto justify-end rounded-full object-cover cursor-pointer"
       alt="Profile photo"
       />
@@ -38,6 +40,8 @@ import ManualToggleStatus from '../../chat/ManualToggleStatus.vue';
 import axiosClient from '../../../axios';
 import { useUserActivityStore } from '../../../store/userActivity';
 import { RouterLink, useRouter } from 'vue-router';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const userStore = useUserStore();
 const userActivityStore = useUserActivityStore();

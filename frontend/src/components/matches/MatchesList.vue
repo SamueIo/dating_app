@@ -17,7 +17,7 @@
              class="flex items-center gap-2 bg-white/20 hover:bg-white/30 rounded-md p-2 transition-colors"
            >
              <img
-               :src="`/storage/${item.main_photo.file_name}`"
+               :src="`${API_BASE_URL}/storage/${item.main_photo.file_name}`"
                alt="main photo"
                class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover flex-shrink-0"
              />
@@ -43,6 +43,8 @@ import { defineEmits } from 'vue';
 
 import { useMatchesStore } from '../../store/matches';
 import axiosClient from '../../axios';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const emit = defineEmits(['startConversation'])
 const MatchesStore = useMatchesStore();

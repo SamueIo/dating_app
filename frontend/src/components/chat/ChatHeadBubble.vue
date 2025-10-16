@@ -4,7 +4,7 @@
   <div @click="onClick" 
     class="relative w-14 h-14 flex-shrink-0">
     <img
-      :src="`/storage/${conversation.other_user.main_photo.file_name}`"
+      :src="`${API_BASE_URL}/storage/${conversation.other_user.main_photo.file_name}`"
       alt="user photo"
       class="w-14 h-14 rounded-full object-cover"
       draggable="false"
@@ -32,7 +32,7 @@
 
 <script setup>
 import { useChatUIStore } from '@/store/chatUIStore';
-// import { useChatUIStore } from '../../store/chatUIStore';
+import { API_BASE_URL } from '@/utils/constants';
 
 const props = defineProps({
   conversation: Object,

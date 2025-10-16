@@ -3,7 +3,7 @@
     <div class="flex items-center mb-4 space-x-3 w-full">
       <img
         v-if="mainPhotoOfReceiver"
-        :src="`/storage/${mainPhotoOfReceiver}`"
+        :src="`${API_BASE_URL}/storage/${mainPhotoOfReceiver}`"
         alt="User photo"
         class="w-13 h-13 rounded-full object-cover border-2 border-purple-500 shadow"
       />
@@ -61,7 +61,7 @@
                 <template v-for="(attachment, index) in item.data.attachments" :key="index">
                   <img
                     v-if="attachment.type === 'image'"
-                    :src="`/storage/${attachment.url}`"
+                    :src="`${API_BASE_URL}/storage/${attachment.url}`"
                     alt="Image attachment"
                     class="rounded cursor-pointer hover:opacity-80 h-40 w-40 object-cover"
                     @click="openImageViewer(item.data.attachments, index)"
@@ -74,7 +74,7 @@
               <template v-for="(attachment, index) in item.data.attachments" :key="index">
                 <img
                   v-if="attachment.type === 'image'"
-                  :src="`/storage/${attachment.url}`"
+                  :src="`${API_BASE_URL}/storage/${attachment.url}`"
                   alt="Image attachment"
                   class="max-w-full rounded"
                   @click="openImageViewer(item.data.attachments, index)"
@@ -84,14 +84,14 @@
                   controls
                   class="max-w-full rounded"
                 >
-                  <source :src="`/storage/${attachment.url}`" :type="attachment.mime_type" />
+                  <source :src="`${API_BASE_URL}/storage/${attachment.url}`" :type="attachment.mime_type" />
                 </video>
                 <audio
                   v-else-if="attachment.type === 'audio'"
                   controls
                   class="w-full"
                 >
-                  <source :src="`/storage/${attachment.url}`" :type="attachment.mime_type" />
+                  <source :src="`${API_BASE_URL}/storage/${attachment.url}`" :type="attachment.mime_type" />
                 </audio>
                 <a
                   v-else
@@ -143,6 +143,8 @@ import { CheckIcon } from '@heroicons/vue/24/solid'
 import { useActiveConversationStore } from '../../store/useActiveConversationStore';
 import UserActivitiesList from '../userActivity/UserActivitiesList.vue';
 import { useSendMessage } from '../../composable/useSendMessage';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 
 const mainPhoto = ref(null)

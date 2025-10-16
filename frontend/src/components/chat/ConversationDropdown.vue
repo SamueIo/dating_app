@@ -15,7 +15,7 @@
         @click="$emit('select', item)"
       >
         <img
-          :src="`/storage/${item.other_user.main_photo.file_name}`"
+          :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
           alt="user photo"
           class="w-13 h-13 rounded-full object-cover"
         />
@@ -37,6 +37,8 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const props = defineProps({
   show: Boolean,

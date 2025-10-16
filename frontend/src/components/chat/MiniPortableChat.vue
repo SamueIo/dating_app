@@ -76,14 +76,14 @@
                 controls
                 class="max-w-full rounded"
               >
-                <source :src="`/storage/${attachment.url}`" :type="attachment.mime_type" />
+                <source :src="`${API_BASE_URL}/storage/${attachment.url}`" :type="attachment.mime_type" />
               </video>
               <audio
                 v-else-if="attachment.type === 'audio'"
                 controls
                 class="w-full"
               >
-                <source :src="`/storage/${attachment.url}`" :type="attachment.mime_type" />
+                <source :src="`${API_BASE_URL}/storage/${attachment.url}`" :type="attachment.mime_type" />
               </audio>
               <a
                 v-else
@@ -115,6 +115,8 @@ import axiosClient from '../../axios';
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { CheckIcon } from '@heroicons/vue/24/solid'
 import { useSendMessage } from '../../composable/useSendMessage';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 // Stores
 const MessagesStore = useMessagesStore();

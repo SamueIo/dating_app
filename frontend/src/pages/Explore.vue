@@ -22,7 +22,7 @@
         
           <img
             v-if="user.photos && user.photos.length"
-            :src="`/storage/${user.photos.find(photo => photo.is_main == 1)?.file_name}`"
+            :src="`${API_BASE_URL}/storage/${user.photos.find(photo => photo.is_main == 1)?.file_name}`"
             alt="User photo"
             class="rounded-lg object-cover h-55 w-full mb-3 shadow-sm"
           />

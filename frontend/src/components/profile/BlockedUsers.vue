@@ -29,7 +29,7 @@
         >
             <img
               v-if="user.main_photo"
-              :src="`/storage/${user.main_photo.file_name}`"
+              :src="`${API_BASE_URL}/storage/${user.main_photo.file_name}`"
               alt="User photo"
               class="rounded-lg object-cover h-55 w-full mb-3 shadow-sm"
             />
@@ -80,6 +80,8 @@ import axiosClient from '../../axios'
 import Spinner from '../../ui/Spinner.vue'
 import UserModal from '../modals/UserModal.vue'
 import { useConversationStore } from '../../store/conversationsAndLastMessage'
+import { API_BASE_URL } from '@/utils/constants';
+
 
 
 const conversationStore = useConversationStore()

@@ -24,7 +24,7 @@
         >
           <img
             v-if="user.main_photo?.file_name"
-            :src="`/storage/${user.main_photo.file_name}`"
+            :src="`${API_BASE_URL}/storage/${user.main_photo.file_name}`"
             alt="User photo"
             class="rounded-lg object-cover h-55 w-full mb-3 shadow-sm"
           />
@@ -72,6 +72,8 @@ import { onMounted, ref } from 'vue';
 import { useMatchesStore } from '../store/matches';
 import Spinner from '../ui/Spinner.vue';
 import UserModal from '../components/modals/UserModal.vue';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const MatchesStore = useMatchesStore();
 const selectedUserId = ref(null);

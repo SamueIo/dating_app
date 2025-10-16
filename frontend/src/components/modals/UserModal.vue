@@ -17,7 +17,7 @@
       <div v-else>
         <!-- MAIN PHOTO -->
         <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg border border-purple-500 mb-4">
-          <img :src="`/storage/${mainPhoto.file_name}`" class="w-full object-cover" />
+          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover" />
           <p
             v-if="mainPhoto.description"
             class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none"
@@ -42,7 +42,7 @@
         <!-- SECOND PHOTO + INFO -->
         <div v-if="otherPhotos[0]" class="space-y-4 mb-6">
           <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-            <img :src="`/storage/${otherPhotos[0].file_name}`" class="w-full object-cover" />
+            <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" class="w-full object-cover" />
             <p v-if="otherPhotos[0].description"
                class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none">
               {{ otherPhotos[0].description }}
@@ -60,7 +60,7 @@
         <!-- THIRD PHOTO + MORE INFO -->
         <div v-if="otherPhotos[1]" class="space-y-4 mb-6">
           <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-            <img :src="`/storage/${otherPhotos[1].file_name}`" class="w-full object-cover" />
+            <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" class="w-full object-cover" />
             <p v-if="otherPhotos[1].description"
                class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none">
               {{ otherPhotos[1].description }}
@@ -81,7 +81,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div v-for="(photo, index) in extraPhotos" :key="index" class="relative flex flex-col rounded-md overflow-hidden shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-105 border border-purple-600">
               <img
-                :src="`/storage/${photo.file_name}`"
+                :src="`${API_BASE_URL}/storage/${photo.file_name}`"
                 class="object-cover h-24 sm:h-32 w-full"
                 alt="User photo"
               />
@@ -111,6 +111,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { calculateAge } from '../../utils/age';
 import Spinner from '../../ui/Spinner.vue';
 import { useRoute } from 'vue-router';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const props = defineProps({
     userId: Number,

@@ -54,7 +54,7 @@
           <div class="relative w-14 h-14 flex-shrink-0">
             <img
               v-if="showPhoto && item.other_user.main_photo"
-              :src="`/storage/${item.other_user.main_photo.file_name}`"
+              :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
               alt="user photo"
               class="w-14 h-14 rounded-full object-cover"
               draggable="false"
@@ -86,7 +86,7 @@
       <template v-else>
         <img
           v-if="showPhoto && item.other_user.main_photo"
-          :src="`/storage/${item.other_user.main_photo.file_name}`"
+          :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
           alt="user photo"
           class="w-14 h-14  rounded-full object-cover flex-shrink-0"
         />
@@ -214,6 +214,8 @@ import { useChatUIStore } from '@/store/chatUIStore';
 // import { useChatUIStore } from '../../store/chatUIStore';
 import { useRoute, useRouter } from 'vue-router';
 import axiosClient from '../../axios';
+import { API_BASE_URL } from '@/utils/constants';
+
 
 const router = useRouter();
 const route = useRoute();
