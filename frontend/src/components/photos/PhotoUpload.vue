@@ -29,7 +29,7 @@
 
           </div>
         </div>
-        <img :src="`mainPhoto.url`" alt="Main User photo" class="w-full rounded-lg h-full object-cover">
+        <img :src="mainPhoto.url" alt="Main User photo" class="w-full rounded-lg h-full object-cover">
         <p v-if="mainPhoto.description" 
             class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
             {{ mainPhoto.description }}
@@ -68,7 +68,7 @@
         </div>
 
         </div>
-      <img :src="`photo.url`" alt="User photo" class="w-full rounded-lg h-full object-cover">
+      <img :src="photo.url" alt="User photo" class="w-full rounded-lg h-full object-cover">
         <p v-if="photo.description" 
             class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
             {{ photo.description }}
@@ -129,7 +129,6 @@
 import { ref, onMounted, computed } from 'vue';
 import axiosClient from '../../axios';
 
-
 const photo = ref([]);
 const description= ref('');
 
@@ -148,7 +147,6 @@ const photos= ref([]);
 const fetchPhotos= async () => {
     try{
         const response = await axiosClient.get('/api/photos');
-        console.log('response',response);        
         photos.value = response.data;
     }catch(err){
         console.error(err,'Error fetching photos')
