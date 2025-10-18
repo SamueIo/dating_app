@@ -57,4 +57,4 @@ EXPOSE 8080
 
 # Nastavenie entrypointu a defaultného CMD na spustenie reverb workeru
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=8080"]
+CMD ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=${port}"]
