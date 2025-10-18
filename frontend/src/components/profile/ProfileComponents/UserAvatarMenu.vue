@@ -56,23 +56,31 @@ function toggleMenu(){
   showMenu.value = !showMenu.value  
 }
 
+function eraseAllCookies() {
+  document.cookie.split(";").forEach(cookie => {
+    const name = cookie.split("=")[0].trim();
+
+    // Delete cookies for root
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
+
+    // Delete cookies for domain
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.${location.hostname}`;
+  });
+}
 
 function logout() {
-  userActivityStore.updateUserActivity(false)
+  userActivityStore.updateUserActivity(false);
+
   axiosClient.post('/logout')
-  .then((response) => {
-    eraseCookie('laravel-session');
-    eraseCookie('XSRF-TOKEN');
-    eraseCookie('p4bxAJGpYVpw3tMNQjztWihl2EjWp44Ge5cO0JOV');
-    eraseCookie('R5B1TE7ohz6kbieb0Qe1jM89wVU2GRm2hVjseLUg');
-    eraseCookie('dating-app-session');
-    router.push({name:'Login'})
-  })
-  .catch(error => {
-    console.error('Logout error' , error)
-  })
+    .then(() => {
+      eraseAllCookies();
+      router.push({ name: 'Login' });
+    })
+    .catch(error => {
+      console.error('Logout error', error);
+      eraseAllCookies();
+      router.push({ name: 'Login' });
+    });
 }
-function eraseCookie(name){
-  document.cookie = name + '=; Max-Age=0; path=/;'; 
-}
+
 </script>
