@@ -15,7 +15,7 @@ else
     echo "Storage link už existuje."
 fi
 
-php artisan reverb:start --host=0.0.0.0 --port=8080
+php artisan reverb:start --host=0.0.0.0 --port=3000
 
 chown -R www-data:www-data /app/storage
 chmod -R 775 /app/storage
