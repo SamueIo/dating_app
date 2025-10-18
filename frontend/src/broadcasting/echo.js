@@ -2,6 +2,7 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
 console.log(`ws://${import.meta.env.VITE_REVERB_HOST}:${port || '(default port)'} / wss://${import.meta.env.VITE_REVERB_HOST}:${port || '(default port)'}`);
+const port = wsPort && wsPort !== '' ? wsPort : undefined;
 
 window.Pusher = Pusher;
 
