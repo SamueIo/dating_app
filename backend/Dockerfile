@@ -53,8 +53,8 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Exponovanie portu pre reverb
-EXPOSE 8080
+EXPOSE 443
 
 # Nastavenie entrypointu a defaultného CMD na spustenie reverb workeru
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=${port}"]
+CMD ["php", "artisan", "reverb:start", "--host=0.0.0.0", "--port=443"]
