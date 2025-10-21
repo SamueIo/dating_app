@@ -24,6 +24,8 @@ export function useChatListener(userId) {
       .listen('.message.sent', (event) => {
         
         const message = event.message;
+        console.log('message',message);
+        
         const convId = message.conversation_id;
 
         const activeId = typeof activeConversationStore.activeConversationID === 'function'

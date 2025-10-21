@@ -66,13 +66,13 @@
             <template v-for="(attachment, index) in item.data.attachments" :key="index">
               <img
                 v-if="attachment.type === 'image'"
-                :src="`/storage/${attachment.url}`"
+                :src="`${API_BASE_URL}/storage/${attachment.url}`"
                 alt="Image attachment"
                 class="rounded cursor-pointer hover:opacity-80 h-40 w-40 object-cover"
                 @click="openImageViewer(item.data.attachments, index)"
               />
               <video
-                v-else-if="attachment.type === 'video'"
+                v-else-if="`${API_BASE_URL}attachment.type === 'video'`"
                 controls
                 class="max-w-full rounded"
               >
@@ -125,6 +125,7 @@ const userStore = useUserStore();
 const loggedUserId = ref(userStore.user.id);
 
 const groupedMessages = computed(() => groupMessagesByDate(messages.value));
+
 // Echo
 const windowEcho = window.Echo;
 

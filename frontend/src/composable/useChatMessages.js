@@ -117,6 +117,8 @@ function setupEchoListeners() {
 
 
   channel.listen('.message.sent', (event) => {
+    console.log('event.message',event.message);
+    
   if (!MessagesStore.messagesByConversation[conversationId]) {
     MessagesStore.messagesByConversation[conversationId] = [];
   }
