@@ -2,10 +2,6 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
 
-const wsPort = import.meta.env.VITE_REVERB_PORT;
-const port = wsPort && wsPort !== '' ? wsPort : undefined;
-console.log(`ws://${import.meta.env.VITE_REVERB_HOST}:${port || '(default port)'} / wss://${import.meta.env.VITE_REVERB_HOST}:${port || '(default port)'}`);
-
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
@@ -13,10 +9,9 @@ window.Echo = new Echo({
     key: import.meta.env.VITE_REVERB_APP_KEY ?? 'local',
     cluster: import.meta.env.VITE_REVERB_APP_CLUSTER ?? 'mt1',
     wsHost: import.meta.env.VITE_REVERB_HOST ?? window.location.hostname,
-    // wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-    // wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
-    wsPort: port,
-    wssPort: port,
+    wsPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+    wssPort: import.meta.env.VITE_REVERB_PORT ?? 8080,
+
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'http') === 'https',
     authEndpoint: import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth',
     enabledTransports: ['ws', 'wss'],
