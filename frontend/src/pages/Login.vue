@@ -101,15 +101,9 @@ async function submit() {
   loading.value = true;
   errorMessage.value = '';
 
-  const csrfUrl = axiosClient.defaults.baseURL + '/sanctum/csrf-cookie';
-  console.log('🔐 CSRF URL →', csrfUrl);
-
   axiosClient.get('/sanctum/csrf-cookie')
     .then(response => {
       const loginUrl = axiosClient.defaults.baseURL + '/login';
-      console.log('🔐 LOGIN URL →', loginUrl);
-      console.log('🧾 Axios Base URL:', axiosClient.defaults.baseURL);
-
 
       return axiosClient.post('/login', data.value)
         .then(response => {

@@ -53,6 +53,8 @@ export const useConversationStore = defineStore('conversations', {
       const id = Number(message.conversation_id);
       const index = this.conversations.findIndex(conv => conv.id === id);
 
+      console.log('updating last msg', message);
+      
       if (index !== -1) {
         const conv = { ...this.conversations[index] };
         conv.last_message = message;
