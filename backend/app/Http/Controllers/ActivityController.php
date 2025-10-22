@@ -28,6 +28,8 @@ public function updateUserActivity(Request $request)
                 'is_active' => $request->is_active,
             ]
         );
+        Log::info("Broadcasting UserActivityUpdated for user {$userId}");
+        Log::info("Broadcasting UserActivityUpdated status {$userActivity}");
 
         broadcast(new UserActivityUpdated($userActivity));
 
