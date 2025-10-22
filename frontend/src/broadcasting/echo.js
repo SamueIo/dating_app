@@ -63,3 +63,14 @@ window.Echo = new Echo({
 },
 
 });
+window.Echo.connector.pusher.connection.bind('connected', () => {
+    console.log('WebSocket connected');
+});
+
+window.Echo.connector.pusher.connection.bind('error', (err) => {
+    console.error('WebSocket error:', err);
+});
+
+window.Echo.connector.pusher.connection.bind('disconnected', () => {
+    console.log('WebSocket disconnected');
+});
