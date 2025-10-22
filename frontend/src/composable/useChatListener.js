@@ -20,9 +20,9 @@ export function useChatListener(userId) {
       conversationStore.messagesByConversation = {};
     }
 
-    window.Echo.private(`user.${userId}`)
+    const channel = window.Echo.private(`user.${userId}`)
     console.log('Subscribed to channel:', `user.${userId}`);
-    
+
       channel.listen('.message.sent', (event) => {
         
         const message = event.message;
