@@ -105,6 +105,7 @@ onMounted(() => {
   
     window.Echo.private('user-activity-all')
       .listen('.UserActivityUpdated', (event) => {
+          console.log('Received UserActivityUpdated:', event);
 
         userActivityStore.setUserActivity(event.user_id, {
           last_active_at: event.last_active_at,
