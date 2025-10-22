@@ -1,7 +1,6 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
-
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
@@ -16,10 +15,11 @@ window.Echo = new Echo({
     authEndpoint: import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth',
     enabledTransports: ['ws', 'wss'],
 
-    // Tu pridávame authorizer pre axios s withCredentials: true
+    // Authorizer s logovaním
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
+                console.log(`[Echo] Authorizing channel: ${channel.name}, socketId: ${socketId}`);
                 axios.post(
                     import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth',
                     {
@@ -27,13 +27,15 @@ window.Echo = new Echo({
                         channel_name: channel.name,
                     },
                     {
-                        withCredentials: true, // <---- TOTO je kľúčové pre odosielanie cookies
+                        withCredentials: true, // odosielanie cookies
                     }
                 )
                 .then(response => {
+                    console.log('[Echo] Auth success:', response.data);
                     callback(false, response.data);
                 })
                 .catch(error => {
+                    console.error('[Echo] Auth error:', error.response ? error.response.data : error);
                     callback(true, error);
                 });
             }
