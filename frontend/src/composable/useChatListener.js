@@ -21,7 +21,9 @@ export function useChatListener(userId) {
     }
 
     window.Echo.private(`user.${userId}`)
-      .listen('.message.sent', (event) => {
+    console.log('Subscribed to channel:', `user.${userId}`);
+    
+      channel.listen('.message.sent', (event) => {
         
         const message = event.message;
         console.log('message',message);

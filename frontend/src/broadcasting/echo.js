@@ -16,29 +16,50 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 
     // Authorizer s logovaním
+    // authorizer: (channel, options) => {
+    //     return {
+    //         authorize: (socketId, callback) => {
+    //             console.log(`[Echo] Authorizing channel: ${channel.name}, socketId: ${socketId}`);
+    //             axios.post(
+    //                 import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth',
+    //                 {
+    //                     socket_id: socketId,
+    //                     channel_name: channel.name,
+    //                 },
+    //                 {
+    //                     withCredentials: true, // odosielanie cookies
+    //                 }
+    //             )
+    //             .then(response => {
+    //                 console.log('[Echo] Auth success:', response.data);
+    //                 callback(false, response.data);
+    //             })
+    //             .catch(error => {
+    //                 console.error('[Echo] Auth error:', error.response ? error.response.data : error);
+    //                 callback(true, error);
+    //             });
+    //         }
+    //     };
+    // },
     authorizer: (channel, options) => {
-        return {
-            authorize: (socketId, callback) => {
-                console.log(`[Echo] Authorizing channel: ${channel.name}, socketId: ${socketId}`);
-                axios.post(
-                    import.meta.env.VITE_ECHO_AUTH_ENDPOINT ?? 'http://localhost:8000/broadcasting/auth',
-                    {
-                        socket_id: socketId,
-                        channel_name: channel.name,
-                    },
-                    {
-                        withCredentials: true, // odosielanie cookies
-                    }
-                )
-                .then(response => {
-                    console.log('[Echo] Auth success:', response.data);
-                    callback(false, response.data);
-                })
-                .catch(error => {
-                    console.error('[Echo] Auth error:', error.response ? error.response.data : error);
-                    callback(true, error);
-                });
-            }
-        };
-    },
+    return {
+        authorize: (socketId, callback) => {
+            console.log('Authorizing channel:', channel.name, 'socketId:', socketId);
+            axios.post(
+                import.meta.env.VITE_ECHO_AUTH_ENDPOINT,
+                { socket_id: socketId, channel_name: channel.name },
+                { withCredentials: true }
+            )
+            .then(response => {
+                console.log('Auth success:', response.data);
+                callback(false, response.data);
+            })
+            .catch(error => {
+                console.error('Auth error:', error);
+                callback(true, error);
+            });
+        }
+    };
+},
+
 });

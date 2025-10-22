@@ -69,14 +69,12 @@ function eraseAllCookies() {
 }
 
 function logout() {
-  console.log('logout first test');
   
-  // userActivityStore.updateUserActivity(false);
+  userActivityStore.updateUserActivity(false);
 
   axiosClient.post('/logout')
     .then(() => {
       eraseAllCookies();
-      console.log('pushing login page');
       router.push({ name: 'Login' });
     })
     .catch(error => {

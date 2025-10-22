@@ -115,7 +115,7 @@ function setupEchoListeners() {
 
   const channel = window.Echo.private(`chat.${conversationId}`);
 
-
+  console.log('Subscribed to channel:', `user.${userId}`);
   channel.listen('.message.sent', (event) => {
     console.log('event.message',event.message);
     
@@ -165,6 +165,7 @@ function setupEchoListeners() {
   }
 });
   channel.listen('.message.seen', (event) => {
+    console.log('event.message',event.message);
     const messages = MessagesStore.messagesByConversation[conversationId] || [];
 
     const updatedMessages = messages.map(msg => ({
