@@ -83,8 +83,9 @@ return [
                     'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
                 ],
                 'allowed_origins' => [
-                   'https://datingapp-production-e7be.up.railway.app',
-                   'https://datingapp-production-fa2b.up.railway.app',
+                   'https://matchlove.api.projectbrand.cloud',
+                   'https://matchlove.projectbrand.cloud',
+                   'http://localhost:5173'
                 ],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),
                 'activity_timeout' => env('REVERB_APP_ACTIVITY_TIMEOUT', 30),
