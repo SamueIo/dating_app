@@ -21,7 +21,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['http://localhost:5173',
-                          'https://matchlove.projectbrand.cloud'],
+                          'https://matchlove.projectbrand.cloud',
+                          'https://datingapp-production-e7be.up.railway.app'],
 
     'allowed_origins_patterns' => [],
 
