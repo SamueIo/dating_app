@@ -2,6 +2,7 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
+console.log("VITE_REVERB_SCHEME:", import.meta.env.VITE_REVERB_SCHEME);
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
