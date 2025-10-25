@@ -2,7 +2,6 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
 window.Pusher = Pusher;
-console.log("VITE_REVERB_SCHEME:", import.meta.env.VITE_REVERB_SCHEME);
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
@@ -31,7 +30,6 @@ window.Echo = new Echo({
                     }
                 )
                 .then(response => {
-                    console.log('[Echo] Auth success:', response.data);
                     callback(false, response.data);
                 })
                 .catch(error => {
