@@ -3,12 +3,19 @@
 
   <div @click="onClick" 
     class="relative w-14 h-14 flex-shrink-0">
-    <img
-      :src="`${API_BASE_URL}/storage/${conversation.other_user.main_photo.file_name}`"
-      alt="user photo"
-      class="w-14 h-14 rounded-full object-cover"
-      draggable="false"
-    />
+    
+        <div class="w-14 h-14 rounded-full flex items-center justify-center bg-pink-200">
+          <template v-if="conversation.other_user?.main_photo?.file_name">
+            <img
+              :src="`${API_BASE_URL}/storage/${conversation.other_user.main_photo.file_name}`"
+              alt="user photo"
+              class="w-14 h-14 rounded-full object-cover"
+            />
+          </template>
+          <template v-else>
+            <span class="text-white text-xl">❤️</span>
+          </template>
+        </div>
 
     <!-- Mini správa -->
     <div

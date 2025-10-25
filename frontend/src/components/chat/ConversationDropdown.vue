@@ -14,11 +14,20 @@
         class="flex items-center gap-3 p-2 bg-gray-300 rounded cursor-pointer hover:bg-pink-100 transition"
         @click="$emit('select', item)"
       >
-        <img
-          :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
-          alt="user photo"
-          class="w-13 h-13 rounded-full object-cover"
-        />
+      <!-- Img or heart -->
+        <div class="w-14 h-14 rounded-full flex items-center justify-center bg-pink-200">
+          <template v-if="item.other_user?.main_photo?.file_name">
+            <img
+              :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
+              alt="user photo"
+              class="w-14 h-14 rounded-full object-cover"
+            />
+          </template>
+          <template v-else>
+            <span class="text-white text-xl">❤️</span>
+          </template>
+        </div>
+
         <div class="w-full">
           <p class="font-semibold text-gray-800">{{ item.other_user.name }}</p>
           <p

@@ -114,10 +114,7 @@ function setupEchoListeners() {
   if (!conversationId) return;
 
   const channel = window.Echo.private(`chat.${conversationId}`);
-
-  console.log('Subscribed to channel:', `user.${conversationId}`);
   channel.listen('.message.sent', (event) => {
-    console.log('event.message',event.message);
     
   if (!MessagesStore.messagesByConversation[conversationId]) {
     MessagesStore.messagesByConversation[conversationId] = [];

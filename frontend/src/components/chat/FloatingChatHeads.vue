@@ -70,15 +70,6 @@ const emit = defineEmits(['select', 'close', 'drag-start', 'drag-end']);
 
 const conversations = computed(() => conversationStore.conversations);
 
-const lastReceived = computed(() => {
-  const filtered = conversations.value.filter(c =>
-    c.last_message && c.last_message.user_id !== loggedUserId
-  );
-  filtered.sort((a, b) =>
-    new Date(b.last_message.created_at || 0) - new Date(a.last_message.created_at || 0)
-  );
-  return filtered;
-});
 
 const conversationsToRender = computed(() => {
   const isOpen = props.isChatOpen;
@@ -146,10 +137,17 @@ watch(conversationsToRender, (newConvs) => {
 }, { immediate: true });
 
 
+// Determine if we open chat and mark conversation as read, 
+// or if its already opened, than close chat
 function handleSelect(conversation) {
   if (isDragging.value || hasMoved) return; 
-  conversationStore.markConversationAsSeen(conversation.id);
-  emit('select', conversation);
+
+  if(props.isChatOpen){    
+    closeBubble(currentDraggingId.value);
+  }else{
+    conversationStore.markConversationAsSeen(conversation.id);
+    emit('select', conversation);
+  }
 }
 
 // ** DRAG & DROP LOGIKA **

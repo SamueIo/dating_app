@@ -52,14 +52,20 @@
         
           <!-- AVATAR -->
           <div class="relative w-14 h-14 flex-shrink-0">
-            <img
-              v-if="showPhoto && item.other_user.main_photo"
-              :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
-              alt="user photo"
-              class="w-14 h-14 rounded-full object-cover"
-              draggable="false"
-            />
-            <div v-else class="w-14 h-14  rounded-full object-cover flex-shrink-0 bg-black/20"></div>
+            
+            <div class="w-14 h-14 rounded-full flex items-center justify-center bg-pink-200">
+              <template v-if="showPhoto && item.other_user?.main_photo">
+                <img
+                  :src="`${API_BASE_URL}/storage/${item.other_user.main_photo?.file_name}`"
+                  alt="user photo"
+                  class="w-14 h-14 rounded-full object-cover"
+                  draggable="false"
+                />
+              </template>
+              <template v-else>
+                <span class="text-white text-xl">❤️</span>
+              </template>
+            </div>
 
             <span
               v-if="item.last_message?.user_id !== loggedUserId && item.last_message?.seen !== 1"
@@ -86,7 +92,7 @@
       <template v-else>
         <img
           v-if="showPhoto && item.other_user.main_photo"
-          :src="`${API_BASE_URL}/storage/${item.other_user.main_photo.file_name}`"
+          :src="`${API_BASE_URL}/storage/${item.other_user.main_photo?.file_name}`"
           alt="user photo"
           class="w-14 h-14  rounded-full object-cover flex-shrink-0"
         />
@@ -271,6 +277,8 @@ const openConversations = computed(() => {
 });
 
 const conversationsToRender = computed(() => {
+
+
   
   if (props.isChatOpen || props.showCloseButton) {    
     return props.showEveryChat ? conversations.value : visibleConversations.value;

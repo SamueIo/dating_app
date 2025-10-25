@@ -5,21 +5,21 @@
     </div>
 
     <div v-else class="relative">
-<div class="h-screen flex items-center justify-center">
-  <div 
-    v-if="users.length === 0" 
-    class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
-    style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #f472b6 100%)"
-  >
-    <h1 class="text-4xl font-extrabold text-pink-800 mb-4 flex justify-center items-center space-x-3">
-      <span>No more swipes</span> 
-      <span class="text-5xl">😢</span>
-    </h1>
-    <p class="text-lg text-pink-700">
-      Changing your filters might help you find more matches!
-    </p>
-  </div>
-</div>
+      <div v-if="users.length === 0" class="h-screen flex items-center justify-center">
+        <div 
+        
+          class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
+          style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #f472b6 100%)"
+        >
+          <h1 class="text-4xl font-extrabold text-pink-800 mb-4 flex justify-center items-center space-x-3">
+            <span>No more swipes</span> 
+            <span class="text-5xl">😢</span>
+          </h1>
+          <p class="text-lg text-pink-700">
+            Changing your filters might help you find more matches!
+          </p>
+        </div>
+      </div>
 
 
 
