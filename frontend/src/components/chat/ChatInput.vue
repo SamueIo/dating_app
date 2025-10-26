@@ -39,8 +39,9 @@
     <div class="flex gap-2">
       <input
         type="text"
+        name="msg-12345"
         inputmode="text"
-        autocomplete="no-autocomplete"
+        autocomplete="new-password"
         autocorrect="off"
         spellcheck="false"
         autocapitalize="none"
