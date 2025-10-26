@@ -2,14 +2,13 @@
 set -e
 
 echo "[entrypoint] Čakám na mount volume..."
-until [ -d /app/storage/app/public ]; do
-    echo "Čakám na /app/storage/app/public..."
-    sleep 1
+while [ ! -d /app/storage/app/public ]; do
+  echo "Volume ešte nie je pripojené, čakám..."
+  sleep 1
 done
 
-echo "[entrypoint] Volume je pripojené ✅"
+echo "[entrypoint] Volume pripojené ✅"
 
-echo "[entrypoint] Kontrolujem symlink..."
 if [ ! -L /app/public/storage ]; then
     echo "[entrypoint] Vytváram storage link..."
     php artisan storage:link --relative || true
