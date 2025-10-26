@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isChatOpen" class=".app-container">
+  <div v-if="isChatOpen" class="flex 1">
     <Chat :conversationData="selectedConversation" @close="handleCloseChat" />
   </div>
   <div v-else>

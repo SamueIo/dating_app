@@ -22,41 +22,30 @@ createApp(App)
     .mount('#app')
 
 
-function setRealVh() {
+function setInitialVh() {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
 
-function listenToViewportChanges() {
-  const viewport = window.visualViewport;
+const viewport = window.visualViewport;
+
+function adjustForKeyboard() {
   if (!viewport) return;
 
-  let keyboardOpen = false;
+  viewport.addEventListener('resize', () => {
+    const keyboardHeight = window.innerHeight - viewport.height;
 
-  function updateLayout() {
-    // základná výška layoutu – nechceme fixovať na max, len na aktuálne okno bez klávesnice
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  }
-
-  function handleViewportChange() {
-    const heightDiff = window.innerHeight - viewport.height;
-
-    // ak je rozdiel väčší než 100px, predpokladáme otvorenú klávesnicu
-    if (heightDiff > 100) {
-      keyboardOpen = true;
-      document.body.style.paddingBottom = `${heightDiff}px`; // posunie obsah nad klávesnicu
-    } else if (keyboardOpen) {
-      keyboardOpen = false;
-      document.body.style.paddingBottom = '0px'; // po zavretí klávesnice odstránime padding
+    if (keyboardHeight > 150) { // predpoklad klávesnice
+      document.body.style.transition = 'padding-bottom 0.25s ease';
+      document.body.style.paddingBottom = `${keyboardHeight}px`;
+    } else {
+      document.body.style.paddingBottom = '0px';
     }
-
-    updateLayout();
-  }
-
-  viewport.addEventListener('resize', handleViewportChange);
-  viewport.addEventListener('scroll', handleViewportChange);
-  window.addEventListener('resize', handleViewportChange);
-
-  updateLayout();
+  });
 }
+
+adjustForKeyboard();
+
+
+window.addEventListener('resize', setInitialVh);
+setInitialVh();
