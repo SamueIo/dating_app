@@ -5,29 +5,14 @@
 *::after {
   box-sizing: border-box;
 }
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-main {
-  flex: 1 1 auto; 
-  overflow-y: auto;
-}
 
 :root {
   --vh: 100%;
 }
 
-.js-update-vh {
-  height: calc(var(--vh, 1vh) * 100);
+.app-container {
+  min-height: calc(var(--vh, 1vh) * 100);
 }
 
 .floating-head {

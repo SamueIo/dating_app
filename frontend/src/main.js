@@ -20,3 +20,14 @@ createApp(App)
     .use(router)
     .use(pinia)
     .mount('#app')
+
+
+function setRealVh() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+  console.log('vh',vh);
+  
+}
+
+setRealVh();
+window.addEventListener('resize', setRealVh);
