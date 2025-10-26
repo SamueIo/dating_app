@@ -79,7 +79,7 @@ function handleStartConversation(conversation){
   selectedConversation.value =  conversation;
   isChatOpen.value = true;
 
-  BottomNavStore.showBottomNavFn();
+  BottomNavStore.hideBottomNav();
   conversationStore.markConversationAsSeen(conversation.id);
 }
 function handleCloseChat() {
@@ -99,6 +99,7 @@ function handleCloseChat() {
 onBeforeRouteLeave((to, from, next) => {
   if (isChatOpen.value) {
     handleCloseChat();
+    console.log('debug');
 
     BottomNavStore.hideBottomNav();
     next(false);
