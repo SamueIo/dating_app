@@ -59,25 +59,29 @@ import { useConversationStore } from '../store/conversationsAndLastMessage';
 import ConversationList from '../components/chat/ConversationList.vue';
 import useUserStore from '../store/user';
 import { useActiveConversationStore } from '../store/useActiveConversationStore';
+import { useBottomNavStore } from '@/store/showBottomNavstore';
 
 const userStore = useUserStore();
-
+const BottomNavStore = useBottomNavStore();
 const conversationStore = useConversationStore();
 
 const isChatOpen = ref(false);
 const selectedConversation = ref(null);
 const currentView = ref('messages'); // 'matches' | 'messages'
 
+
 function handleStartConversation(conversation){
   selectedConversation.value =  conversation;
   isChatOpen.value = true;
 
+  BottomNavStore.hideBottomNav();
   conversationStore.markConversationAsSeen(conversation.id);
 }
 function handleCloseChat() {
   isChatOpen.value = false;
   currentView.value = 'messages'
   
+  BottomNavStore.showBottomNavFn();
   const activeConversationStore = useActiveConversationStore();
   activeConversationStore.activeConversationID = null;
 }

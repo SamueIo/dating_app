@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex h-screen pb-10 overflow-hidden ">
+  <div class="relative flex h-screen overflow-hidden">
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
@@ -54,7 +54,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
-            <div v-if="showSidebar">
+            <div v-if="showSidebar ">
             <LeftSidebar :isMobile="true" class="flex-grow overflow-y-auto .hide-scrollbar" />
           </div>
         </div>
@@ -68,7 +68,10 @@
 
 
     <!-- Middle pannel -->
-    <main class="flex-1 p-0.5 md:p-1  overflow-y-auto .hide-scrollbar">
+    <main 
+  class="flex-1 min-h-0 overflow-y-auto"
+  :class="bottomNavStore.showBottomNav ? 'pb-12' : ''"
+>
         <RouterView></RouterView>
     </main>
 
@@ -91,7 +94,11 @@
 
 
     <!-- Bottom navigation -->
-    <div ref="bottomNavRef" class="max-h-[50px] sm:max-h-[60px] md:max-h-[70px] lg:max-h-[80px]">
+    <div 
+      v-if="!(isChatOpen && !isMdUp) && bottomNavStore.showBottomNav" 
+      ref="bottomNavRef" 
+      class="max-h-[50px] sm:max-h-[60px] md:max-h-[70px] lg:max-h-[80px]"
+    >
       <BottomNav />
     </div>
 
@@ -132,6 +139,7 @@ import RightSidebar from './layoutsComponents/RightSidebar.vue';
 import BottomNav from './BottomNav.vue';
 import FloatingChatHeads from '../chat/FloatingChatHeads.vue';
 import UserAvatarMenu from '../profile/ProfileComponents/UserAvatarMenu.vue';
+import { useBottomNavStore } from '@/store/showBottomNavStore';
 
 import { ref, computed, onMounted, watch, onUnmounted  } from 'vue';
 import useUserStore from './../../store/user';
@@ -146,6 +154,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const userStore = useUserStore();
+const bottomNavStore = useBottomNavStore()
 const conversationStore = useConversationStore();
 const isChatOpen = ref(false)
 const showDropdownButton = ref(true)

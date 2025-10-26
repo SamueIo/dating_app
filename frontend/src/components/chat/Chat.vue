@@ -1,6 +1,8 @@
 <template>
-  <div class="flex flex-col h-[calc(100vh-75px)] p-4 max-w-full border border-white/30 rounded shadow container">
-    <div class="flex items-center mb-4 space-x-3 w-full">
+<div
+  class="flex flex-col p-4 max-w-full border border-white/30 rounded shadow container"
+  :style="{ height: windowHeight + 'px' }"
+>    <div class="flex items-center mb-4 space-x-3 w-full">
       <img
         v-if="mainPhotoOfReceiver"
         :src="`${API_BASE_URL}/storage/${mainPhotoOfReceiver}`"
@@ -138,7 +140,7 @@ import { useConversationStore } from '../../store/conversationsAndLastMessage';
 import useUserStore from '../../store/user';
 import axiosClient from '../../axios';
 import ChatInput from './ChatInput.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { CheckIcon } from '@heroicons/vue/24/solid'
 import { useActiveConversationStore } from '../../store/useActiveConversationStore';
 import UserActivitiesList from '../userActivity/UserActivitiesList.vue';
@@ -231,6 +233,20 @@ function formatTime(dateString) {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
+
+// inner width 
+const windowHeight = ref(window.innerHeight)
+function updateHeight() {
+  windowHeight.value = window.innerHeight
+}
+
+onMounted(() => {
+  window.addEventListener('resize', updateHeight)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateHeight)
+})
 
 
 
