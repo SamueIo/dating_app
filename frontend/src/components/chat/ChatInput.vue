@@ -39,6 +39,11 @@
     <div class="flex gap-2">
       <input
         type="text"
+        inputmode="text"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+        autocapitalize="none"
         v-model="message"
         placeholder="Write a message..."
         class="flex-1 border border-white/80 text-white/90 rounded px-3 py-2"
