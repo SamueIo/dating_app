@@ -40,7 +40,7 @@
       <input
         type="text"
         inputmode="text"
-        autocomplete="off"
+        autocomplete="no-autocomplete"
         autocorrect="off"
         spellcheck="false"
         autocapitalize="none"
