@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex h-screen overflow-hidden ">
+  <div class="relative flex h-screen overflow-hidden .main-container">
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
@@ -269,11 +269,6 @@ onUnmounted(() => {
 onMounted(async () => {
   loading.value = true;
   window.addEventListener('resize', onResize, { passive: true });
-
-    setRealVh();
-    listenToViewportChanges();
-    window.addEventListener('resize', setRealVh);
-    
   await conversationStore.fetchConversations();
   if (userId.value) {
     const { register } = useChatListener(userId.value);

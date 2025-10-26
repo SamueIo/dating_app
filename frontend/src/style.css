@@ -6,13 +6,17 @@
   box-sizing: border-box;
 }
 
-
-:root {
-  --vh: 100%;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.app-container {
-  min-height: calc(var(--vh, 1vh) * 100);
+.main-container {
+  height: calc(var(--vh, 1vh) * 100);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .floating-head {

@@ -31,36 +31,32 @@ function listenToViewportChanges() {
   const viewport = window.visualViewport;
   if (!viewport) return;
 
-  let resizeTimeout;
-  const baseHeight = window.innerHeight; // uložíme pôvodnú výšku pri načítaní
+  let keyboardOpen = false;
 
-  function updateViewport() {
-    // vezmeme aktuálnu výšku visualViewport (alebo fallback na innerHeight)
-    const currentHeight = viewport.height || window.innerHeight;
-
-    // ak sa výška zväčšila (napr. klávesnica sa zavrela), nepoužijeme menšiu hodnotu
-    const targetHeight = Math.max(currentHeight, baseHeight);
-
-    // prevedieme na 1% výšku a uložíme do CSS premennej
-    const vh = targetHeight * 0.01;
+  function updateLayout() {
+    // základná výška layoutu – nechceme fixovať na max, len na aktuálne okno bez klávesnice
+    const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   }
 
   function handleViewportChange() {
-    // oneskorenie kvôli Chrome animácii pri otváraní / zatváraní klávesnice
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(updateViewport, 300);
+    const heightDiff = window.innerHeight - viewport.height;
+
+    // ak je rozdiel väčší než 100px, predpokladáme otvorenú klávesnicu
+    if (heightDiff > 100) {
+      keyboardOpen = true;
+      document.body.style.paddingBottom = `${heightDiff}px`; // posunie obsah nad klávesnicu
+    } else if (keyboardOpen) {
+      keyboardOpen = false;
+      document.body.style.paddingBottom = '0px'; // po zavretí klávesnice odstránime padding
+    }
+
+    updateLayout();
   }
 
-  // počiatočné nastavenie
-  updateViewport();
-
-  // reaguj na zmeny výšky viewportu
   viewport.addEventListener('resize', handleViewportChange);
   viewport.addEventListener('scroll', handleViewportChange);
   window.addEventListener('resize', handleViewportChange);
+
+  updateLayout();
 }
-
-
-setRealVh();
-window.addEventListener('resize', setRealVh);
