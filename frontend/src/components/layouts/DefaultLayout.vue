@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex  overflow-hidden .main-container">
+  <div class="relative flex h-screen overflow-hidden ">
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
@@ -280,8 +280,3 @@ onMounted(async () => {
 </script>
 
 
-<style scoped>
-.main-container{
-  height: 100dvh;
-}
-</style>
