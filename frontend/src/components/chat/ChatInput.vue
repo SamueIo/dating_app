@@ -37,19 +37,19 @@
     </div>
         <!-- Messages-->
     <div class="flex gap-2">
-      <input
-        type="text"
-        name="msg"
-        inputmode="text"
-        enterkeyhint="send"
-        autocomplete="one-time-code"
-        autocorrect="off"
-        autocapitalize="none"
-        spellcheck="false"
-        v-model="message"
-        placeholder="Write a message..."
-        class="flex-1 border border-white/80 text-white/90 rounded px-3 py-2"
-      />
+<input
+  type="text"
+  name="msg"
+  inputmode="text"
+  enterkeyhint="send"
+  autocomplete="off"
+  autocorrect="off"
+  autocapitalize="none"
+  spellcheck="false"
+  v-model="message"
+  placeholder="Write a message..."
+  class="flex-1 border border-white/80 text-white/90 rounded px-3 py-2"
+/>
 
       <!-- Upload button -->
       <button
