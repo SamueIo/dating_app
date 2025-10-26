@@ -27,6 +27,19 @@ function setRealVh() {
   document.documentElement.style.setProperty('--vh', `${vh}px`);
   
 }
+function listenToViewportChanges() {
+  const viewport = window.visualViewport;
+  if (!viewport) return;
+
+  function updateViewport() {
+    const vh = viewport.height * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  updateViewport(); // počiatočný výpočet
+  viewport.addEventListener('resize', updateViewport);
+  viewport.addEventListener('scroll', updateViewport); // Chrome to pri klávesnici robí tiež
+}
 
 setRealVh();
 window.addEventListener('resize', setRealVh);
