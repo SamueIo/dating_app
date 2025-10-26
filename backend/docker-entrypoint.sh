@@ -7,19 +7,11 @@ until [ -d /app/storage/app/public ]; do
     sleep 1
 done
 
-echo "[entrypoint] Kontrolujem, či existuje storage link..."
-if [ ! -L /app/public/storage ]; then
-    echo "Vytváram storage link..."
-    php artisan storage:link --relative
-else
-    echo "Storage link už existuje."
-fi
-
+echo "[entrypoint] Vytváram storage link (ak neexistuje)..."
+php artisan storage:link --relative || true
 
 chown -R www-data:www-data /app/storage
 chmod -R 775 /app/storage
-find /app/storage -type f -exec chmod 664 {} \;
-find /app/storage -type d -exec chmod 775 {} \;
 
 echo "[entrypoint] Spúšťam Laravel server..."
-exec "$@"
+exec php artisan serve --host=0.0.0.0 --port=3000
