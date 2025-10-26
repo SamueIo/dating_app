@@ -7,8 +7,15 @@ until [ -d /app/storage/app/public ]; do
     sleep 1
 done
 
-echo "[entrypoint] Vytváram storage link (ak neexistuje)..."
-php artisan storage:link --relative || true
+echo "[entrypoint] Volume je pripojené ✅"
+
+echo "[entrypoint] Kontrolujem symlink..."
+if [ ! -L /app/public/storage ]; then
+    echo "[entrypoint] Vytváram storage link..."
+    php artisan storage:link --relative || true
+else
+    echo "[entrypoint] Storage link už existuje."
+fi
 
 chown -R www-data:www-data /app/storage
 chmod -R 775 /app/storage
