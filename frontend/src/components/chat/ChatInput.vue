@@ -39,12 +39,13 @@
     <div class="flex gap-2">
       <input
         type="text"
-        name="msg-12345"
+        name="msg"
         inputmode="text"
+        enterkeyhint="send"
         autocomplete="one-time-code"
         autocorrect="off"
-        spellcheck="false"
         autocapitalize="none"
+        spellcheck="false"
         v-model="message"
         placeholder="Write a message..."
         class="flex-1 border border-white/80 text-white/90 rounded px-3 py-2"

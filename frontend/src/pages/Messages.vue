@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isChatOpen">
+  <div v-if="isChatOpen" class=".app-container">
     <Chat :conversationData="selectedConversation" @close="handleCloseChat" />
   </div>
   <div v-else>
@@ -101,7 +101,7 @@ onBeforeRouteLeave((to, from, next) => {
     handleCloseChat();
     console.log('debug');
 
-    BottomNavStore.hideBottomNav();
+    BottomNavStore.showBottomNavFn();
     next(false);
   } else {
     next();
