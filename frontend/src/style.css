@@ -5,6 +5,15 @@
 *::after {
   box-sizing: border-box;
 }
+
+:root {
+  --vh: 100%;
+}
+
+.js-update-vh {
+  height: calc(var(--vh, 1vh) * 100);
+}
+
 .floating-head {
   transition: transform 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

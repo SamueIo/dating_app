@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex h-screen overflow-hidden">
+  <div class="relative flex js-update-vh overflow-hidden">
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
@@ -70,7 +70,7 @@
     <!-- Middle pannel -->
     <main 
       class="flex-1 min-h-0 overflow-y-auto"
-      :class="bottomNavStore.showBottomNav ? 'pb-6' : ''"
+      :class="bottomNavStore.showBottomNav ? 'pb-12' : ''"
     >
         <RouterView></RouterView>
     </main>
@@ -259,7 +259,13 @@ const showSidebar = computed(() => {
   return !hideOn.some(path => route.path.startsWith(path));
 });
 
+function setVh() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
 
+window.addEventListener('resize', setVh);
+setVh();
 
 onUnmounted(() => {
   window.removeEventListener('resize', onResize);
