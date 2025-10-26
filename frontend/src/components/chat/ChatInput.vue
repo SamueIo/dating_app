@@ -42,7 +42,7 @@
       name="chatMessage"
       inputmode="text"
       enterkeyhint="send"
-      autocomplete="off"
+      autocomplete="on"
       autocorrect="off"
       autocapitalize="none"
       spellcheck="false"
