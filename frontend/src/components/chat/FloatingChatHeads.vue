@@ -57,6 +57,7 @@ const bubbleInTrash = ref(false);
 const currentDraggingId = ref(null);
 const lockBounds = ref(null);
 const bubbleRefs = reactive({});
+const idOpenChat = ref(0)
 
 let hasMoved = false;
 
@@ -140,11 +141,13 @@ watch(conversationsToRender, (newConvs) => {
 // Determine if we open chat and mark conversation as read, 
 // or if its already opened, than close chat
 function handleSelect(conversation) {
-  if (isDragging.value || hasMoved) return; 
+  if (isDragging.value || hasMoved) return;   
 
-  if(props.isChatOpen){    
+if(props.isChatOpen && idOpenChat.value == conversation.id ){    
     closeBubble(currentDraggingId.value);
+    idOpenChat.value = 0
   }else{
+    idOpenChat.value = conversation.id
     conversationStore.markConversationAsSeen(conversation.id);
     emit('select', conversation);
   }
@@ -308,6 +311,7 @@ function onDragEnd() {
 
 function closeBubble(id) {
   emit('close', id);
+  idOpenChat.value = null
   delete positions[id];
 }
 
