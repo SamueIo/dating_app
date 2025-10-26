@@ -38,8 +38,8 @@
         <!-- Messages-->
     <div class="flex gap-2">
 <input
-  type="text"
-  name="msg"
+  type="search"
+  name="chatMessage"
   inputmode="text"
   enterkeyhint="send"
   autocomplete="off"
