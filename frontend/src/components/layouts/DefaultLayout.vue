@@ -260,12 +260,19 @@ const showSidebar = computed(() => {
 });
 
 function setVh() {
+  // 1% aktuálnej výšky viewportu
   const vh = window.innerHeight * 0.01;
+  // nastavíme premennú --vh
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
 
-window.addEventListener('resize', setVh);
+// spusti pri načítaní stránky
 setVh();
+
+// spusti pri zmene veľkosti okna (orientácia, resize, scroll v mobiloch)
+window.addEventListener('resize', setVh);
+
+
 
 onUnmounted(() => {
   window.removeEventListener('resize', onResize);
