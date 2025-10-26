@@ -1,8 +1,8 @@
 <template>
 <div
-  class="flex flex-col p-4 max-w-full border border-white/30 rounded shadow container"
+  class="flex flex-col px-2 pb-4  max-w-full border border-white/30 rounded shadow container"
   :style="{ height: windowHeight + 'px' }"
->    <div class="flex items-center mb-4 space-x-3 w-full">
+>    <div class="flex items-center p-1 md:p-2 space-x-3 w-full">
       <img
         v-if="mainPhotoOfReceiver"
         :src="`${API_BASE_URL}/storage/${mainPhotoOfReceiver}`"

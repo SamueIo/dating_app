@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex js-update-vh overflow-hidden">
+  <div class="relative flex  overflow-hidden .main-container">
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
@@ -259,18 +259,6 @@ const showSidebar = computed(() => {
   return !hideOn.some(path => route.path.startsWith(path));
 });
 
-function setVh() {
-  // 1% aktuálnej výšky viewportu
-  const vh = window.innerHeight * 0.01;
-  // nastavíme premennú --vh
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
-
-// spusti pri načítaní stránky
-setVh();
-
-// spusti pri zmene veľkosti okna (orientácia, resize, scroll v mobiloch)
-window.addEventListener('resize', setVh);
 
 
 
@@ -292,3 +280,8 @@ onMounted(async () => {
 </script>
 
 
+<style scoped>
+.main-container{
+  height: 100dvh;
+}
+</style>
