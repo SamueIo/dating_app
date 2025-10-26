@@ -59,7 +59,7 @@ import { useConversationStore } from '../store/conversationsAndLastMessage';
 import ConversationList from '../components/chat/ConversationList.vue';
 import useUserStore from '../store/user';
 import { useActiveConversationStore } from '../store/useActiveConversationStore';
-import { useBottomNavStore } from '@/store/showBottomNavstore';
+import { useBottomNavStore } from '../store/showBottomNavStore';
 
 const userStore = useUserStore();
 const BottomNavStore = useBottomNavStore();

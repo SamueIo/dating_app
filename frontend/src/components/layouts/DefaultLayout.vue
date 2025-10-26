@@ -139,8 +139,8 @@ import RightSidebar from './layoutsComponents/RightSidebar.vue';
 import BottomNav from './BottomNav.vue';
 import FloatingChatHeads from '../chat/FloatingChatHeads.vue';
 import UserAvatarMenu from '../profile/ProfileComponents/UserAvatarMenu.vue';
-import { useBottomNavStore } from '@/store/showBottomNavStore';
 
+import { useBottomNavStore } from '@/store/showBottomNavStore';
 import { ref, computed, onMounted, watch, onUnmounted  } from 'vue';
 import useUserStore from './../../store/user';
 import { useChatListener } from '../../composable/useChatListener';
