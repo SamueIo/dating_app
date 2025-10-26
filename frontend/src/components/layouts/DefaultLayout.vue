@@ -69,7 +69,7 @@
 
     <!-- Middle pannel -->
     <main 
-      class="flex-1 min-h-0 overflow-y-auto"
+      class="flex-1 min-h-0 overflow-y-auto .main-container"
       :class="bottomNavStore.showBottomNav ? 'pb-2' : ''"
     >
         <RouterView></RouterView>
