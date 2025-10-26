@@ -41,7 +41,7 @@
         type="text"
         name="msg-12345"
         inputmode="text"
-        autocomplete="new-password"
+        autocomplete="one-time-code"
         autocorrect="off"
         spellcheck="false"
         autocapitalize="none"
