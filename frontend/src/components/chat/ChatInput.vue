@@ -118,16 +118,6 @@ function submit() {
   message.value = ''
 }
 
-// function handleSendMessage(formData) {
-
-//   axiosClient.post('/api/conversation/' + props.conversationData.id + '/messages', formData)
-//     .then(response => {
-//       console.log('Message sent:', response.data);
-//     })
-//     .catch(error => {
-//       console.error('Failed to send message', error);
-//     });
-// }
 
 function handleFiles(event){
   const files = Array.from(event.target.files);
