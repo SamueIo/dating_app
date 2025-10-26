@@ -60,6 +60,8 @@ import ConversationList from '../components/chat/ConversationList.vue';
 import useUserStore from '../store/user';
 import { useActiveConversationStore } from '../store/useActiveConversationStore';
 import { useBottomNavStore } from '../store/showBottomNavStore';
+import { onBeforeRouteLeave } from 'vue-router';
+
 
 const userStore = useUserStore();
 const BottomNavStore = useBottomNavStore();
@@ -69,12 +71,15 @@ const isChatOpen = ref(false);
 const selectedConversation = ref(null);
 const currentView = ref('messages'); // 'matches' | 'messages'
 
+// Data for conversationList 
+const loading = ref(false)
+const conversations = ref([])
 
 function handleStartConversation(conversation){
   selectedConversation.value =  conversation;
   isChatOpen.value = true;
 
-  BottomNavStore.hideBottomNav();
+  BottomNavStore.showBottomNavFn();
   conversationStore.markConversationAsSeen(conversation.id);
 }
 function handleCloseChat() {
@@ -86,9 +91,22 @@ function handleCloseChat() {
   activeConversationStore.activeConversationID = null;
 }
 
-// Data for conversationList 
-const loading = ref(false)
-const conversations = ref([])
+// This navigation guard runs every time the user tries to 
+// navigate away from the current route.
+// It can intercept both manual route changes (e.g. router.push()) 
+// and browser actions (like the back button).
+
+onBeforeRouteLeave((to, from, next) => {
+  if (isChatOpen.value) {
+    handleCloseChat();
+
+    BottomNavStore.hideBottomNav();
+    next(false);
+  } else {
+    next();
+  }
+});
+
 
 onMounted(async () => {
   loading.value = true
