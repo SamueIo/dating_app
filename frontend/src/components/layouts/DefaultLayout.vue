@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex  overflow-hidden ">
+  <div class="relative flex  min-h-screen overflow-hidden ">
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
