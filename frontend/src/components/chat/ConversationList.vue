@@ -271,10 +271,6 @@ function closeChat(chatId) {
 }
 
 
-const openConversations = computed(() => {
-  const openIds = chatUIStore.openChats.value; // ← správne!
-  return conversations.value.filter(c => openIds.includes(c.id));
-});
 
 const conversationsToRender = computed(() => {
 

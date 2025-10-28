@@ -40,11 +40,11 @@
       class="fixed rounded-lg inset-0 flex items-start justify-center z-50 bg-black/50"
       @click="closeUser"
     >
-<div 
-  class="relative shadow-[0_0_40px_rgba(0,0,0,0.6)] p-2 rounded-lg overflow-auto
-         w-[95%] sm:w-[80%] md:w-[60%] max-w-[700px] max-h-[calc(100vh-65px)]"
-  @click.stop
->
+      <div 
+        class="relative shadow-[0_0_40px_rgba(0,0,0,0.6)] p-2 rounded-lg overflow-auto
+               w-[95%] sm:w-[80%] md:w-[60%] max-w-[700px] max-h-[calc(100vh-65px)]"
+        @click.stop
+      >
         <UserModal 
           :userId="selectedUserId"
           :visible="true"

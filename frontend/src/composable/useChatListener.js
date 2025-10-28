@@ -3,6 +3,7 @@
 import { useConversationStore } from "../store/conversationsAndLastMessage";
 import { useChatUIStore } from '@/store/chatUIStore';
 import { useActiveConversationStore } from "../store/useActiveConversationStore";
+import axiosClient from "../axios";
 
 
 let isRegistered = false;
@@ -22,7 +23,7 @@ export function useChatListener(userId) {
 
     const channel = window.Echo.private(`user.${userId}`)
 
-      channel.listen('.message.sent', (event) => {
+      channel.listen('.message.sent',async (event) => {
         
         const message = event.message;
         
@@ -36,6 +37,10 @@ export function useChatListener(userId) {
           chatUIStore.openChat(convId)          
         }
 
+        // Creating conversation if its not active
+        if (!conversationStore.conversations.some(c => c.id === convId)) {
+          await conversationStore.fetchConversations(true);
+        }
 
 
 
