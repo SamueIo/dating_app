@@ -1,6 +1,6 @@
 <template>
   <div class="relative flex  overflow-hidden"
-    style="height: calc(var(--vh, 1vh) * 100)">
+>
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
