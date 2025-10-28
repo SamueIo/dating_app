@@ -1,6 +1,7 @@
 
 import { defineStore } from "pinia";
 import axiosClient from "../axios";
+import { useToast } from "vue-toastification";
 
 export const useMatchesStore = defineStore('matches', {
     state: () => ({
@@ -24,6 +25,25 @@ export const useMatchesStore = defineStore('matches', {
             }finally{
                 this.loading = false
             }
+        },
+
+        listenFroNewMatches(userId){
+            const messages = [
+                "It's a match! You both liked each other 💖",
+                "Mutual attraction! 💘 Check your matches!",
+                "💞 You both swiped right! Time to say hi!",
+                "🔥 Sparks flew! You have a mutual match!",
+                "💖 Someone likes you back! It's a match!"
+            ];
+            const toast = useToast();
+            window.Echo.private(`userMatch${userId}`)
+            .listen('.newMatch', (e) => {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                
+            toast.success(randomMessage, { timeout: 5000 });
+                this.matches.push(e.match)
+            });
         }
     }
+
 })

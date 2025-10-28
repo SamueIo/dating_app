@@ -149,7 +149,8 @@ import { useChatListener } from '../../composable/useChatListener';
 import { useConversationStore } from '../../store/conversationsAndLastMessage';
 import MiniPortableChat from '../chat/MiniPortableChat.vue';
 import { useChatUIStore } from '@/store/chatUIStore';
-// import { useChatUIStore } from '../../store/chatUIStore';
+import { useMatchesStore } from '@/store/matches';
+
 import { useActiveConversationStore } from '../../store/useActiveConversationStore';
 import { useRoute } from 'vue-router';
 
@@ -158,6 +159,7 @@ const route = useRoute();
 const userStore = useUserStore();
 const bottomNavStore = useBottomNavStore()
 const conversationStore = useConversationStore();
+const matchesStore = useMatchesStore();
 const isChatOpen = ref(false)
 const showDropdownButton = ref(true)
 
@@ -271,14 +273,18 @@ onUnmounted(() => {
 });
 // Fetch conversations
 onMounted(async () => {
+  
   isMobile.value = window.matchMedia('(max-width: 768px)').matches
   loading.value = true;
   window.addEventListener('resize', onResize, { passive: true });
   await conversationStore.fetchConversations();
+  
   if (userId.value) {
     const { register } = useChatListener(userId.value);
+    matchesStore.listenFroNewMatches(userId.value);
     register();
   }
+  
   loading.value = false;
 });
 </script>

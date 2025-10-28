@@ -35,7 +35,22 @@
             {{ mainPhoto.description }}
         </p>
       </div>
+
+      <!-- Photo preview -->
     
+      <div
+        v-if="photosPreview.length"
+        v-for="photo in photosPreview"
+        :key="photo.id"
+        class="col-span-1 group relative opacity-70"
+      >
+        <img :src="photo.url" alt="Preview photo" class="w-full rounded-lg h-full object-cover" />
+        <p v-if="photo.description" 
+            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
+            {{ photo.description }}
+        </p>
+        <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
+      </div>
     
     <!-- Other photos -->
      <div
@@ -110,7 +125,7 @@
                           @click.prevent="submit"
                           class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold py-1 px-2 rounded w-full"
                         >
-                          Upload
+                          {{ submitValue}}
                         </button>
                     </div>
                 </form>
@@ -130,7 +145,9 @@ import { ref, onMounted, computed } from 'vue';
 import axiosClient from '../../axios';
 
 const photo = ref([]);
+const photosPreview = ref([]);
 const description= ref('');
+const submitValue = ref('submit')
 
 const showOptions = ref(null); 
 const showEditDescription = ref(null);
@@ -158,43 +175,64 @@ onMounted(fetchPhotos);
 //Uploading photos
 const onFileChange = (e) => {
     photo.value = Array.from(e.target.files);
+
+    photosPreview.value = photo.value.map(file => ({
+        id: `tmp-${file.name}-${Date.now()}`,
+        url: URL.createObjectURL(file),
+        description: description.value,
+        is_main: is_main.value,
+        temp: true // označenie, že ide o lokálny náhľad
+    }))
 }
 
 const submit = async () => {
+    submitValue.value = 'Submitting'
     message.value = '';
     error.value = '';
 
-    if(!photo.value){
+    if (!photo.value || photo.value.length === 0) {
         error.value = 'Choose photo';
-        return
+        return;
     }
 
+    // Generovante local preview
+    photosPreview.value = photo.value.map(file => ({
+        id: `tmp-${file.name}-${Date.now()}`, 
+        url: URL.createObjectURL(file),
+        description: description.value,
+        is_main: is_main.value,
+        temp: true 
+    }));
 
     const formData = new FormData();
-    photo.value.forEach((file, index) => {
+    photo.value.forEach((file) => {
         formData.append('photos[]', file);
-
     });
     formData.append('description', description.value);
+    formData.append('is_main', is_main.value ? 1 : 0);
 
-    formData.append('is_main', is_main.value ? 1 : 0 )
-
-    try{
+    try {
         const response = await axiosClient.post('/api/photos', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
+            headers: { 'Content-Type': 'multipart/form-data' },
         });
+
         message.value = 'Photo successfully uploaded';
-        photo.value = null;
+
+        // Obnovíme fotky zo servera, aby sa nahradili dočasné náhľady
+        await fetchPhotos();
+
+        // Vyčistíme lokálne dočasné náhľady a vstupné polia
+        photo.value = [];
+        photosPreview.value = [];
         description.value = '';
-        fetchPhotos();
+        is_main.value = false;
     } catch (err) {
-        error.value = 'Problem with photo uploading',
-        console.error(err)
+        error.value = 'Problem with photo uploading';
+        console.error(err);
+    } finally{
+      submitValue.value = 'Submit'
     }
-    
-}
+};
 
 //Displaying photos
 

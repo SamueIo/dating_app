@@ -61,6 +61,8 @@ import axiosClient from '../axios'
 import { useFilterStore } from '../store/filterStore'
 import UserModal from '../components/modals/UserModal.vue'
 import Spinner from '../ui/Spinner.vue'
+import { useToast } from "vue-toastification";
+
 
 const currentIndex = ref(0)
 const offset = ref(0)
@@ -151,7 +153,8 @@ async function swipe(direction) {
       direction: direction
     });
     if(response.data.match){
-      alert('match');
+      const toast = useToast();
+      toast.success("🔥 Sparks flew! You have a mutual match!", { timeout: 5000 });
     }
 
     // Delete user locally from list cuz of duplicite swiping option

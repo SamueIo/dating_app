@@ -9,7 +9,6 @@ class FilterController extends Controller
 {
     public function store(Request $request)
     {
-        Log::info('request input', $request->all());
         $user = $request->user();
 
         $validated = $request->validate([

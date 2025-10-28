@@ -15,7 +15,6 @@ class UserFilterService
 {
     public static function filter(Request $request, $authUser, $excludeRated = false)
     {
-        Log::info('filter', $request->all());
 
     $blockedUserIds = BlockedUser::where('blocker_id', $authUser->id)->pluck('blocked_id')->toArray();
     $blockedByOthersIds = BlockedUser::where('blocked_id', $authUser->id)->pluck('blocker_id')->toArray();

@@ -16,6 +16,10 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('user-activity-all', function ($user) {
     return $user !== null;
 });
+Broadcast::channel('userMatch{recipientId}', function ($user, $recipientId) {
+    return (int) $user->id === (int) $recipientId;
+});
+
 
 Broadcast::routes(['middleware' => [ 'web','auth:sanctum']]);
 

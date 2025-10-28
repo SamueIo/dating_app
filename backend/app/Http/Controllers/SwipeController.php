@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Swipe;
 
 use App\Models\UserMatch;
+use App\Events\NewMatch;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserFilterService;
@@ -52,7 +54,8 @@ class SwipeController extends Controller
                 ->exists();
 
             $match = $reciprocated;
-            UserMatch::firstOrCreate(
+            if($match){
+                $userMatch = UserMatch::firstOrCreate(
                 [
                     'user_one_id' => min($user->id, $request->to_user_id),
                     'user_two_id' => max($user->id, $request->to_user_id),
@@ -60,8 +63,9 @@ class SwipeController extends Controller
                 [
                     'matched_at' => now()
                 ]
-            );
-
+                );
+            broadcast(new NewMatch($userMatch, $request->to_user_id));
+            }
         }
         return response()->json([
             'message' => 'Swipe saved',
