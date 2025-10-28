@@ -96,12 +96,14 @@ const filterStore = useFilterStore();
 
 
 const loadUsers = async () => {
+  
   loading.value = true
   try{
     const response = await axiosClient.get('/api/explore', {
       params: filterStore.filters
     })
     users.value = response.data.data ?? []
+    
   }catch (err){
     console.error('Failed to load users', err);
   }finally {

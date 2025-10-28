@@ -35,6 +35,13 @@ export const useChatUIStore = defineStore('chatUI', () => {
     }
   }
 
+  function reset() {
+    showLastMessageMainChat.value = true;
+    showLastMessageBubbles.value = {};
+    openChats.value = [];
+    closedChats.value = [];
+  }
+
   return {
     showLastMessageMainChat,
     showLastMessageBubbles,
@@ -43,5 +50,6 @@ export const useChatUIStore = defineStore('chatUI', () => {
     showBubleFor,
     openChat,
     closeChat,
+    reset,
   };
 });

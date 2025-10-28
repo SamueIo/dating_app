@@ -33,7 +33,7 @@
        <ConversationList
             :conversations="conversations"
             :loading="loading"
-            :loggedUserId="userStore.user.id"
+            :loggedUserId="userStore.user?.id ?? null"
             :showPhoto="true"
             :showName="true"
             :showLastMessage="true"

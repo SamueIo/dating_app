@@ -40,13 +40,13 @@ export const useUserActivityStore = defineStore('userActivity', {
       });
     },
 
-    async updateUserActivity(isActive) {
+    updateUserActivity(isActive) {
       if(isActive == true && this.manualStatus == true) return
 
-      try {
-        await axiosClient.post('/api/activity', {
+      
+        axiosClient.post('/api/activity', {
           is_active: isActive,
-        });
+        }).catch(err => console.error('error in updating activity', err));
 
         const userStore = useUserStore();        
         const currentUserId = userStore.user.id;
@@ -55,9 +55,7 @@ export const useUserActivityStore = defineStore('userActivity', {
           is_active: isActive,
           last_active_at: new Date().toISOString(),
         });
-      } catch (err) {
-        console.error('Error in updating activity:', err);
-      }
+
     },
 
     toggleManualStatus() {

@@ -62,6 +62,7 @@ import axiosClient from '../axios';
 import { ref } from 'vue';
 import router from '../router';
 import Spinner from '../ui/Spinner.vue';
+import { resetAllStores } from '@/utils/resetStore';
 
 const loading = ref(false)
 
@@ -100,7 +101,7 @@ const errorMessage = ref('')
 async function submit() {  
   loading.value = true;
   errorMessage.value = '';
-
+  resetAllStores();
   axiosClient.get('/sanctum/csrf-cookie')
     .then(response => {
       const loginUrl = axiosClient.defaults.baseURL + '/login';

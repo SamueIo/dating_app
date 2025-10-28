@@ -41,7 +41,7 @@ import axiosClient from '../../../axios';
 import { useUserActivityStore } from '../../../store/userActivity';
 import { RouterLink, useRouter } from 'vue-router';
 import { API_BASE_URL } from '@/utils/constants';
-
+import { resetAllStores } from '@/utils/resetStore';
 
 const userStore = useUserStore();
 const userActivityStore = useUserActivityStore();
@@ -74,11 +74,13 @@ function logout() {
 
   axiosClient.post('/logout')
     .then(() => {
+      resetAllStores();
       eraseAllCookies();
       router.push({ name: 'Login' });
     })
     .catch(error => {
       console.error('Logout error', error);
+      resetAllStores()
       eraseAllCookies();
       router.push({ name: 'Login' });
     });

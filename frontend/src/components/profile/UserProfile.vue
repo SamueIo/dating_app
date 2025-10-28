@@ -96,9 +96,6 @@ import { API_BASE_URL } from '@/utils/constants';
 
 
 
-console.log('API_BASE_URL',API_BASE_URL);
-
-
 
 const data = ref(null)
 const loading = ref(true)
@@ -106,12 +103,8 @@ const error = ref(null)
 
 onMounted(() => {
     axiosClient.get('/api/profile')
-    .then(response => {
-      
+    .then(response => {   
       data.value = response.data
-      console.log('response',response);
-      console.log('data.value',data.value);
-      
       loading.value = false
     })
     .catch(err => {
