@@ -20,32 +20,22 @@ createApp(App)
     .use(router)
     .use(pinia)
     .mount('#app')
+function setDynamicVh() {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile) {
+    const vh = window.visualViewport?.height
+      ? window.visualViewport.height * 0.01
+      : window.innerHeight * 0.01;
 
-
-function setInitialVh() {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  } else {
+    document.documentElement.style.removeProperty('--vh');
+  }
 }
 
-const viewport = window.visualViewport;
-
-function adjustForKeyboard() {
-  if (!viewport) return;
-
-  viewport.addEventListener('resize', () => {
-    const keyboardHeight = window.innerHeight - viewport.height;
-
-    if (keyboardHeight > 150) { // predpoklad klávesnice
-      document.body.style.transition = 'padding-bottom 0.25s ease';
-      document.body.style.paddingBottom = `${keyboardHeight}px`;
-    } else {
-      document.body.style.paddingBottom = '0px';
-    }
-  });
+window.addEventListener('resize', setDynamicVh);
+window.addEventListener('orientationchange', setDynamicVh);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', setDynamicVh);
 }
-
-adjustForKeyboard();
-
-
-window.addEventListener('resize', setInitialVh);
-setInitialVh();
+setDynamicVh();

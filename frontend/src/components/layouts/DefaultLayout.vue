@@ -1,6 +1,7 @@
 <template>
   <div class="relative flex  overflow-hidden"
->
+    :style="{ height: isMobile ? 'calc(var(--vh, 1vh) * 100)' : '100vh' }"
+  >
     <!-- Hamburger button visible only on small screens -->
     <div v-if="showSidebar">
 
@@ -170,6 +171,8 @@ const chatUIStore = useChatUIStore();
 const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 
+const isMobile = ref(window.matchMedia('(max-width: 768px)').matches)
+
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
 
@@ -268,6 +271,7 @@ onUnmounted(() => {
 });
 // Fetch conversations
 onMounted(async () => {
+  isMobile.value = window.matchMedia('(max-width: 768px)').matches
   loading.value = true;
   window.addEventListener('resize', onResize, { passive: true });
   await conversationStore.fetchConversations();

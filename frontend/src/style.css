@@ -24,12 +24,11 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
-.main-container {
-  height: calc(var(--vh, 1vh) * 100);
-  overflow-y: auto;
+body.main-container {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #db2777, #7e22ce, #312e81);
 }
 
 .main-scroll {
@@ -38,7 +37,7 @@ html, body {
   -webkit-overflow-scrolling: touch;
 }
 @media (max-width: 768px) {
-  .main-container {
-    height: calc(var(--vh, 1vh) * 100); /* mobilný fix */
+  body.main-container {
+    height: calc(var(--vh, 1vh) * 100);
   }
 }
