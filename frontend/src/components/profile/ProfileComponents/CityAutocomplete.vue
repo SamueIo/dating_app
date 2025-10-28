@@ -1,13 +1,20 @@
 <template>
-  <div class="relative w-full" @keydown.down.prevent="onArrowDown" @keydown.up.prevent="onArrowUp" @keydown.enter.prevent="onEnter">
+  <div class="relative w-full" 
+       @keydown.down.prevent="onArrowDown" 
+       @keydown.up.prevent="onArrowUp" 
+       @keydown.enter.prevent="onEnter">
+
+    <!-- Input field -->
     <input
       type="text"
       v-model="search"
       @input="onInput"
       :placeholder="placeholder"
-      class="w-full rounded-md bg-white/10 text-white  focus:border-pink-500 focus:ring-pink-600 focus:ring-opacity-50 p-2"
+      class="w-full rounded-md bg-white/10 text-white focus:border-pink-500 focus:ring-pink-600 focus:ring-opacity-50 p-2"
       ref="inputEl"
     />
+
+    <!-- Suggestions dropdown -->
     <ul
       v-if="suggestions.length"
       class="absolute bg-white border w-full max-h-60 overflow-y-auto z-10 text-black"
@@ -26,6 +33,7 @@
     </ul>
   </div>
 </template>
+
 
 <script setup>
 import { ref, watch } from 'vue'
@@ -75,6 +83,7 @@ const fetchSuggestions = debounce(async () => {
 
 function onInput() {
   fetchSuggestions()
+  emit('update:modelValue', search.value)
 }
 
 function selectCity(city) {

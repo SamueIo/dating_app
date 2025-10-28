@@ -43,7 +43,7 @@
       <label class="block mb-1 font-medium">Radius (km):</label>
       <input
         type="number"
-        min="1"
+        min="0"
         v-model.number="filters.radiusKm"
         placeholder="Radius in kilometers"
         class="w-full p-2 rounded bg-white/10 text-white border border-white/20"

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\UserFilter;
 use Illuminate\Http\Request;
 
@@ -9,6 +9,7 @@ class FilterController extends Controller
 {
     public function store(Request $request)
     {
+        Log::info('request input', $request->all());
         $user = $request->user();
 
         $validated = $request->validate([

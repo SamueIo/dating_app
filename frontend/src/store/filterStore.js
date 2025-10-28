@@ -43,11 +43,11 @@ export const useFilterStore = defineStore('filters', {
            location: data.location || '',
            latitude: data.latitude || '',  
            longitude: data.longitude || '', 
-           radiusKm: data.radius_km || '',
+           radiusKm: data.radius_km || 0,
            heightFrom: data.height_from || '',
            heightTo: data.height_to || '',
-           onlyOnline: ! data.only_online || false,
-           withPhoto: ! data.with_photo || false,
+           onlyOnline: data.only_online || false,
+           withPhoto: data.with_photo || false,
          };
         }
 
@@ -70,7 +70,7 @@ export const useFilterStore = defineStore('filters', {
     },
     async setFilters(newFilters) {
       this.filters = {...this.filters, ...newFilters};
-      // await this.saveFilters();
+      await this.saveFilters();
     }
   }
 })
