@@ -6,6 +6,19 @@
   box-sizing: border-box;
 }
 
+
+.floating-head {
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 html, body {
   height: 100%;
   margin: 0;
@@ -24,16 +37,8 @@ html, body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
-
-.floating-head {
-  transition: transform 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
+@media (max-width: 768px) {
+  .main-container {
+    height: calc(var(--vh, 1vh) * 100); /* mobilný fix */
+  }
 }
