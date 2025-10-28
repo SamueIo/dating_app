@@ -5,7 +5,7 @@
     </div>
 
     <div v-else class="relative">
-      <div v-if="users.length === 0 || noMoreUsers" class="h-screen flex items-center justify-center">
+      <div v-if="users.length === 0 " class="h-screen flex items-center justify-center">
         <div 
         
           class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
@@ -20,9 +20,6 @@
           </p>
         </div>
       </div>
-
-
-
 
       <div v-if="currentUser">
       
@@ -61,9 +58,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue'
 import axiosClient from '../axios' 
-import Filter from '../components/Filter/Filter.vue'
 import { useFilterStore } from '../store/filterStore'
-import { calculateAge } from '../utils/age'
 import UserModal from '../components/modals/UserModal.vue'
 import Spinner from '../ui/Spinner.vue'
 
@@ -87,7 +82,8 @@ const loadUsers = async () => {
       params: filterStore.filters,
       offset: offset,
     excludeRated: true,
-    })
+    
+  })
 
     const newUsers = response.data.data ?? []
     
@@ -146,12 +142,6 @@ watch(
 );
 
 
-function calculateUserAge (user){
-  if(!user.profile?.birth_date) return null
-  return calculateAge(user.profile.birth_date)
-}
-
-
 async function swipe(direction) {
   if(!currentUser.value) return;
 
@@ -179,7 +169,7 @@ function nextUser()
   if(currentIndex.value < users.value.length - 1){
     currentIndex.value ++
   }else{
-    noMoreUsers.value = true
+
     console.log('No more users')
     loadUsers();
   }

@@ -9,7 +9,7 @@
       type="text"
       v-model="search"
       @input="onInput"
-      :placeholder="placeholder"
+      placeholder="City"
       class="w-full rounded-md bg-white/10 text-white focus:border-pink-500 focus:ring-pink-600 focus:ring-opacity-50 p-2"
       ref="inputEl"
     />
@@ -41,7 +41,6 @@ import debounce from 'lodash.debounce'
 
 const props = defineProps({
   modelValue: String,
-  placeholder: String,
 })
 
 const emit = defineEmits(['update:modelValue', 'selectedLocationCoords'])

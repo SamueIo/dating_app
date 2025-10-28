@@ -13,7 +13,6 @@ class ExploreController extends Controller
     public function index(Request $request)
     {
     $users = UserFilterService::filter($request, $request->user());
-    \Log::error('Test error log entry');
     return response()->json(['data' => $users]);
     }
 

@@ -121,7 +121,6 @@ fields.forEach(field => {
 })
 
 function onSelectedLocationCoords(coords) {
-  console.log('Coords received in parent:', coords)
   form.latitude = coords.lat
   form.longitude = coords.lon
 }

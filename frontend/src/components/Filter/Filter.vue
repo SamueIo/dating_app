@@ -43,7 +43,7 @@
       <label class="block mb-1 font-medium">Radius (km):</label>
       <input
         type="number"
-        min="0"
+        min="5"
         v-model.number="filters.radiusKm"
         placeholder="Radius in kilometers"
         class="w-full p-2 rounded bg-white/10 text-white border border-white/20"
@@ -106,36 +106,49 @@ import { reactive, onMounted } from 'vue'
 import { useFilterStore } from '../../store/filterStore'
 import CityAutocomplete from '../profile/ProfileComponents/CityAutocomplete.vue'
 
-  const filters = reactive({
-    gender: '',
-    ageFrom: '',
-    ageTo: '',
-    location: '',
-    radiusKm: '',
-    heightFrom: '',
-    heightTo: '',
-    onlyOnline: false,
-    withPhoto: false,
-    latitude: null,
-    longitude: null,
-  })
+const filters = reactive({
+  gender: '',
+  ageFrom: null,
+  ageTo: null,
+  location: '',
+  radiusKm: 5,
+  heightFrom: null,
+  heightTo: null,
+  onlyOnline: false,
+  withPhoto: false,
+  latitude: null,
+  longitude: null,
+})
 
 const filterStore = useFilterStore()
 
 function onSelectedLocationCoords(coords) {
-  console.log('coords',coords);
-  
+
   filters.latitude = coords.lat
   filters.longitude = coords.lon
+
+  if(filters.latitude && filters.radiusKm == 0){
+    filters.radiusKm = 5
+  }
 }
 
 
 onMounted(async () => {
   await filterStore.fetchFilters()
   Object.assign(filters, filterStore.filters)
+
+  if(filters.longitude && filters.radiusKm == 0){
+    filters.radiusKm = 5    
+  }
+  
 })
 
 const applyFilters = async () => {
+  if(!filters.location){
+    filters.latitude = null
+    filters.longitude = null
+    filters.radiusKm = 0
+  }
   filterStore.setFilters(filters)
   await filterStore.saveFilters()  
 }
