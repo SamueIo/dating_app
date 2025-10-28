@@ -24,13 +24,21 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
 body.main-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: linear-gradient(to bottom right, #db2777, #7e22ce, #312e81);
-}
+  overflow: hidden;
+  background: linear-gradient(
+    to bottom right,
+    rgb(219, 39, 119),   
+    rgb(162, 28, 175),   
+    rgb(49, 46, 129)    
+  );
+  -webkit-overflow-scrolling: touch;
 
+}
 .main-scroll {
   flex: 1;
   overflow-y: auto;

@@ -24,31 +24,44 @@ createApp(App)
     
 function setupViewportFix() {
   const mediaQuery = window.matchMedia('(max-width: 768px)');
-  let lastVh = 0;
-  let timeout;
+  let lastHeight = 0;
+  let ticking = false;
 
-  function updateVh(safe = false) {
-    if (!mediaQuery.matches) return; // iba na mobile
+  function updateVh(force = false) {
+    if (!mediaQuery.matches) return;
 
-    clearTimeout(timeout);
+    const viewport = window.visualViewport;
+    if (!viewport) return;
 
-    const newVh = window.visualViewport?.height
-      ? window.visualViewport.height * 0.01
-      : window.innerHeight * 0.01;
+    const newHeight = viewport.height;
+    const diff = Math.abs(newHeight - lastHeight);
 
-    // Ak je rozdiel malý, neprepisuj hodnotu hneď
-    if (!safe && Math.abs(newVh - lastVh) < 0.5) return;
-
-    document.documentElement.style.setProperty('--vh', `${newVh}px`);
-    lastVh = newVh;
-
-    // Po malej pauze aktualizuj znova – Chrome potrebuje “dozrieť”
-    timeout = setTimeout(() => updateVh(true), 300);
+    // len ak sa výška zmenila o viac než pár pixelov
+    if (force || diff > 5) {
+      const vh = newHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      lastHeight = newHeight;
+    }
   }
 
-  // reaguje na všetko: klávesnica, otočenie, resize
-  window.visualViewport?.addEventListener('resize', () => updateVh());
-  window.addEventListener('resize', () => updateVh());
+  function onViewportChange() {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        updateVh();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+
+  const viewport = window.visualViewport;
+  if (viewport) {
+    viewport.addEventListener('resize', onViewportChange);
+    viewport.addEventListener('scroll', onViewportChange); 
+    // scroll zachytí aj posuny spôsobené návrhmi klávesnice
+  }
+
+  window.addEventListener('resize', () => updateVh(true));
   window.addEventListener('orientationchange', () => updateVh(true));
 
   updateVh(true);
