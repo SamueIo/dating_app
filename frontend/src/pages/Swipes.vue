@@ -5,7 +5,7 @@
     </div>
 
     <div v-else class="relative">
-      <div v-if="users.length === 0" class="h-screen flex items-center justify-center">
+      <div v-if="users.length === 0 || noMoreUsers" class="h-screen flex items-center justify-center">
         <div 
         
           class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
@@ -179,6 +179,7 @@ function nextUser()
   if(currentIndex.value < users.value.length - 1){
     currentIndex.value ++
   }else{
+    noMoreUsers.value = true
     console.log('No more users')
     loadUsers();
   }

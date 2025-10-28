@@ -52,7 +52,16 @@ class SwipeController extends Controller
                 ->exists();
 
             $match = $reciprocated;
-            UserMatch::signMatchedToDb($user->id, $request->to_user_id);
+            UserMatch::firstOrCreate(
+                [
+                    'user_one_id' => min($user->id, $request->to_user_id),
+                    'user_two_id' => max($user->id, $request->to_user_id),
+                ],
+                [
+                    'matched_at' => now()
+                ]
+            );
+
         }
         return response()->json([
             'message' => 'Swipe saved',
