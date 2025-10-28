@@ -20,22 +20,39 @@ createApp(App)
     .use(router)
     .use(pinia)
     .mount('#app')
-function setDynamicVh() {
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  if (isMobile) {
-    const vh = window.visualViewport?.height
+
+    
+function setupViewportFix() {
+  const mediaQuery = window.matchMedia('(max-width: 768px)');
+  let lastVh = 0;
+  let timeout;
+
+  function updateVh(safe = false) {
+    if (!mediaQuery.matches) return; // iba na mobile
+
+    clearTimeout(timeout);
+
+    const newVh = window.visualViewport?.height
       ? window.visualViewport.height * 0.01
       : window.innerHeight * 0.01;
 
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-  } else {
-    document.documentElement.style.removeProperty('--vh');
+    // Ak je rozdiel malý, neprepisuj hodnotu hneď
+    if (!safe && Math.abs(newVh - lastVh) < 0.5) return;
+
+    document.documentElement.style.setProperty('--vh', `${newVh}px`);
+    lastVh = newVh;
+
+    // Po malej pauze aktualizuj znova – Chrome potrebuje “dozrieť”
+    timeout = setTimeout(() => updateVh(true), 300);
   }
+
+  // reaguje na všetko: klávesnica, otočenie, resize
+  window.visualViewport?.addEventListener('resize', () => updateVh());
+  window.addEventListener('resize', () => updateVh());
+  window.addEventListener('orientationchange', () => updateVh(true));
+
+  updateVh(true);
 }
 
-window.addEventListener('resize', setDynamicVh);
-window.addEventListener('orientationchange', setDynamicVh);
-if (window.visualViewport) {
-  window.visualViewport.addEventListener('resize', setDynamicVh);
-}
-setDynamicVh();
+setupViewportFix();
+
