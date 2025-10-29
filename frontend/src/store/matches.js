@@ -2,6 +2,7 @@
 import { defineStore } from "pinia";
 import axiosClient from "../axios";
 import { useToast } from "vue-toastification";
+import router from "../router";
 
 export const useMatchesStore = defineStore('matches', {
     state: () => ({
@@ -40,7 +41,13 @@ export const useMatchesStore = defineStore('matches', {
             .listen('.newMatch', (e) => {
             const randomMessage = messages[Math.floor(Math.random() * messages.length)];
                 
-            toast.success(randomMessage, { timeout: 5000 });
+            toast.success(randomMessage, { timeout: 5000,
+                        pauseOnHover: true,  
+                        toastClassName: 'custom-toast',
+                        onClick: () => {
+                        router.push({ path: 'Matches', query: { highlightMatch: true } });
+        }
+             });
                 this.matches.push(e.match)
             });
         }

@@ -154,7 +154,7 @@ async function swipe(direction) {
       direction: direction
     });
     if(response.data.match){
-      console.log('response.data.match',response.data.match);
+
       
       const toast = useToast();
 
