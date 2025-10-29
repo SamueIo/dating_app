@@ -295,19 +295,8 @@ function showChatOptions(chatId) {
 }
 
 function openChatElsewhere(chatId) {
-  const isInMessagesPage = route.path === '/messages';
-
-  if (isInMessagesPage) {
-    // 1. Presmeruj napríklad do /swipes
-    router.push('/swipes');
-
-    // 2. Počkáj chvíľku a otvor chat
-    setTimeout(() => {
-      chatUIStore.openChat(chatId);
-    }, 300); // záleží na animácii/prechode stránky
-  } else {
     chatUIStore.openChat(chatId);
-  }
+    activeChatOptions.value = null
 }
 async function blockUser(id) {
   // Closing option menu 

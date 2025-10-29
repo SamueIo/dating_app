@@ -36,21 +36,7 @@
         </p>
       </div>
 
-      <!-- Photo preview -->
-    
-      <div
-        v-if="photosPreview.length"
-        v-for="photo in photosPreview"
-        :key="photo.id"
-        class="col-span-1 group relative opacity-70"
-      >
-        <img :src="photo.url" alt="Preview photo" class="w-full rounded-lg h-full object-cover" />
-        <p v-if="photo.description" 
-            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
-            {{ photo.description }}
-        </p>
-        <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
-      </div>
+
     
     <!-- Other photos -->
      <div
@@ -93,7 +79,7 @@
     
     <div class="col-span-1 group relative">
         <!-- form -->
-            <div class="bg-gray-400 w-full h-[100%]  rounded-lg">
+            <div class="bg-gray-400 w-auto h-auto  rounded-lg">
                   <form @submit.prevent="submit" enctype="multipart/form-data" 
                     class="w-full h-full flex flex-col justify-center items-center">
                         <input
@@ -105,12 +91,29 @@
                         @change="onFileChange"
                       />
                       <!-- Plus icon -->
-                        <label for="photo-upload" class="cursor-pointer">
+                        <label v-if="!photosPreview.length" for="photo-upload" class="cursor-pointer">
                           <svg class="w-[100%] h-[100%] text-gray-700 hover:text-gray-900" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                           </svg>
                         </label>
+
                     <div v-if="photo && photo.length > 0" class="w-full p-2">
+                          <!-- Photo preview -->
+    
+                      <div
+                        v-if="photosPreview.length"
+                        v-for="photo in photosPreview"
+                        :key="photo.id"
+                        class="col-span-1 group relative opacity-70"
+                      >
+                        <img :src="photo.url" alt="Preview photo" class="w-full rounded-lg h-full object-cover" />
+                        <p v-if="photo.description" 
+                            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
+                            {{ photo.description }}
+                        </p>
+                        <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
+                      </div>
+
                         <input
                           type="text"
                           v-model="description"

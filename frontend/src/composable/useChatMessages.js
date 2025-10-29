@@ -80,7 +80,8 @@ function isScrolledToBottom() {
   if(!messagesContainer.value) return false;
   const el = messagesContainer.value;
   const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
-  return distanceFromBottom < 10; 
+  
+  return distanceFromBottom < 200; 
 }
 
 const isUserAtBottom  = ref (true);
@@ -162,7 +163,6 @@ function setupEchoListeners() {
   }
 });
   channel.listen('.message.seen', (event) => {
-    console.log('event.message',event.message);
     const messages = MessagesStore.messagesByConversation[conversationId] || [];
 
     const updatedMessages = messages.map(msg => ({

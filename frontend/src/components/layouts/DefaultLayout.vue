@@ -211,10 +211,7 @@ function closeChatBubble(conversationID) {
   activeConversationStore.clearActiveConversation();
   chatUIStore.closeChat(conversationID);
   chatUIStore.isChatOpen = false; 
-  isChatOpen.value = false
-  console.log('closeChatBubble was caled');
-  
-  
+  isChatOpen.value = false  
 }
 
 function handleCloseChat() {

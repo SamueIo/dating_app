@@ -2,8 +2,8 @@
   <div
     class="fixed z-50 flex flex-col bg-black/50 backdrop-blur-2xl p-2 rounded-lg md:static md:h-[400px] md:rounded-lg md:w-[320px] md:shadow"
     :style="{
-      height: windowWidth < 768 ? 'calc(100vh - 80px)' : '',
-      bottom: windowWidth < 768 ? '10px' : '',
+      height: windowWidth < 768 ? `calc(${viewportHeight}px - 80px)` : '',
+      bottom: windowWidth < 768 ? 'env(safe-area-inset-bottom, 10px)' : '',
       top: windowWidth < 768 ? '70px' : '',
       left: windowWidth < 768 ? '10px' : '',
       right: windowWidth < 768 ? '10px' : ''
@@ -100,7 +100,11 @@
     </div>
 
     <!-- Input -->
-    <ChatInput :conversationId="props.conversationData.id" @send="onSubmit" class="w-full" />
+     
+    <ChatInput :conversationId="props.conversationData.id" 
+      @send="onSubmit" 
+      class="w-full"
+      style="padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);"  />
   </div>
 </template>
 
@@ -126,6 +130,11 @@ const loggedUserId = ref(userStore.user.id);
 
 const groupedMessages = computed(() => groupMessagesByDate(messages.value));
 
+const viewportHeight = ref(window.visualViewport?.height || window.innerHeight);
+
+const updateViewportHeight = () => {
+  viewportHeight.value = window.visualViewport?.height || window.innerHeight
+};
 // Echo
 const windowEcho = window.Echo;
 
@@ -200,11 +209,13 @@ function handleResize() {
 }
 const windowWidth = ref(window.innerWidth);
 onMounted(() => {
+  window.visualViewport?.addEventListener('resize', updateViewportHeight);
   window.addEventListener('resize', handleResize, { passive: true });
 
 });
 
 onBeforeUnmount(() => {
+  window.visualViewport.removeEventListener('resize', updateViewportHeight);
   window.removeEventListener('resize', handleResize);
 });
 </script>
