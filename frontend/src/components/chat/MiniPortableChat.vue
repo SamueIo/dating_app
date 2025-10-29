@@ -106,6 +106,13 @@
       class="w-full"
       style="padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);"  />
   </div>
+
+  <!-- Photos preview modal -->
+  <PhotoModal v-if="isPhotoModalOpen"
+    :images="currentAttachments"
+    :startIndex="currentImageIndex"
+    @close="isPhotoModalOpen = false"/>
+
 </template>
 
 
@@ -120,6 +127,7 @@ import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import { CheckIcon } from '@heroicons/vue/24/solid'
 import { useSendMessage } from '../../composable/useSendMessage';
 import { API_BASE_URL } from '@/utils/constants';
+import PhotoModal from '../modals/PhotoModal.vue';
 
 
 // Stores
@@ -127,6 +135,10 @@ const MessagesStore = useMessagesStore();
 const conversationStore = useConversationStore();
 const userStore = useUserStore();
 const loggedUserId = ref(userStore.user.id);
+
+const currentAttachments= ref([])
+const isPhotoModalOpen= ref(false)
+const currentImageIndex= ref(0)
 
 const groupedMessages = computed(() => groupMessagesByDate(messages.value));
 
@@ -137,6 +149,7 @@ const updateViewportHeight = () => {
 };
 // Echo
 const windowEcho = window.Echo;
+
 
 const props = defineProps({
   conversationData: {
@@ -156,6 +169,7 @@ const { messages, messagesContainer, scrollToBottom, loading } = useChatMessages
 );
 const emits = defineEmits(['close']);
 
+
 function formatDate(dateString) {
   const date = new Date(dateString)
   return date.toLocaleDateString(undefined, {
@@ -174,9 +188,6 @@ function onSubmit(formData) {
 
 
 function handleCloseChat() {
-  // if( MessagesStore.messagesByConversation[props.conversationData.id]){
-  //   MessagesStore.messagesByConversation[props.conversationData.id]= []
-  // }
   emits('close');
 }
 
@@ -201,6 +212,22 @@ function groupMessagesByDate(messages) {
   });
 
   return grouped;
+}
+
+const allImages = computed(() => {
+  return groupedMessages.value
+    .filter(item => item.type === 'message' && item.data.attachments?.length)
+    .flatMap(item => item.data.attachments.filter(a => a.type === 'image'));
+})
+
+function openImageViewer(attachments, index){
+
+  const img = attachments[index];
+  const globalIndex = allImages.value.findIndex(a => a.url === img.url);
+
+  currentAttachments.value = allImages.value;
+  currentImageIndex.value = globalIndex;
+  isPhotoModalOpen.value = true;
 }
 
 // Right size for mini portable chat 
