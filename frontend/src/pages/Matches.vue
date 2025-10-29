@@ -17,11 +17,14 @@
                lg:grid-cols-4"
       >
         <div
-          v-for="user in MatchesStore.matches"
+          v-for="(user, index) in matches"
           :key="user.id"
           @click="openUser(user.id)"
-          class="p-1 rounded-xl bg-white/20 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 transform transition duration-300 cursor-pointer"
-        >
+          :class="[
+              'p-1 rounded-xl bg-white/20 backdrop-blur-sm shadow-md hover:shadow-xl hover:scale-105 transform transition duration-300 cursor-pointer',
+              (index === 0 && highlightLastMatch) ? 'highlighted' : ''
+            ]" 
+          >
           <img
             v-if="user.main_photo?.file_name"
             :src="`${API_BASE_URL}/storage/${user.main_photo.file_name}`"
@@ -68,19 +71,31 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useMatchesStore } from '../store/matches';
 import Spinner from '../ui/Spinner.vue';
 import UserModal from '../components/modals/UserModal.vue';
 import { API_BASE_URL } from '@/utils/constants';
+import { useRoute } from 'vue-router';
 
-
+const route = useRoute();
 const MatchesStore = useMatchesStore();
 const selectedUserId = ref(null);
+const highlightLastMatch = ref(false);
 
+const matches = computed(() => MatchesStore.matches)
 onMounted(async () => {
   await MatchesStore.fetchMatches();
+
+  if(route.query.highlightMatch){
+    triggerHighlight()
+  }
 });
+
+function triggerHighlight() {
+  highlightLastMatch.value = true;
+  setTimeout(() => highlightLastMatch.value = false, 2500); // po 2.5s zmizne
+}
 
 function openUser(id) {
   selectedUserId.value = id;
@@ -101,5 +116,17 @@ function formatDate(dateStr) {
 /* Výška obrázka h-55 môžeš upraviť podľa potreby, napríklad: */
 .h-55 {
   height: 220px;
+}
+
+.highlighted {
+  background: linear-gradient(135deg, #ff7ce5, #9b59b6);
+  animation: highlightPulse 1s ease-in-out 2;
+  transition: background 0.5s ease;
+}
+
+@keyframes highlightPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
 }
 </style>

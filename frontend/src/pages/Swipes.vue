@@ -62,6 +62,7 @@ import { useFilterStore } from '../store/filterStore'
 import UserModal from '../components/modals/UserModal.vue'
 import Spinner from '../ui/Spinner.vue'
 import { useToast } from "vue-toastification";
+import router from '../router'
 
 
 const currentIndex = ref(0)
@@ -153,8 +154,18 @@ async function swipe(direction) {
       direction: direction
     });
     if(response.data.match){
+      console.log('response.data.match',response.data.match);
+      
       const toast = useToast();
-      toast.success("🔥 Sparks flew! You have a mutual match!", { timeout: 5000 });
+
+      toast.success("🔥 Sparks flew! You have a mutual match!", {
+        timeout: 5000,       
+        pauseOnHover: true,  
+        toastClassName: 'custom-toast',
+        onClick: () => {
+          router.push({ path: 'Matches', query: { highlightMatch: true } });
+        }
+      });
     }
 
     // Delete user locally from list cuz of duplicite swiping option

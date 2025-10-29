@@ -44,8 +44,22 @@ body.main-container {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
+
 @media (max-width: 768px) {
   body.main-container {
     height: calc(var(--vh, 1vh) * 100);
   }
+}
+
+/* toast from vue toaster */
+.custom-toast {
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.custom-toast:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.356);
 }
