@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isChatOpen" class="flex-1">
+  <div v-if="isChatOpen " class="flex-1">
     <Chat :conversationData="selectedConversation" @close="handleCloseChat" />
   </div>
   <div v-else>
@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import MatchesList from '@/components/matches/MatchesList.vue'
 import Chat from '../components/chat/Chat.vue';
 import { useConversationStore } from '../store/conversationsAndLastMessage';
@@ -61,11 +61,13 @@ import useUserStore from '../store/user';
 import { useActiveConversationStore } from '../store/useActiveConversationStore';
 import { useBottomNavStore } from '../store/showBottomNavStore';
 import { onBeforeRouteLeave } from 'vue-router';
+import { useSiblingsMatchesDataShareStore } from '../store/siblingsMatchesDataShare';
 
 
 const userStore = useUserStore();
 const BottomNavStore = useBottomNavStore();
 const conversationStore = useConversationStore();
+const SiblingsMDSS = useSiblingsMatchesDataShareStore();
 
 const isChatOpen = ref(false);
 const selectedConversation = ref(null);
@@ -77,6 +79,7 @@ const conversations = ref([])
 
 function handleStartConversation(conversation){
   selectedConversation.value =  conversation;
+  
   isChatOpen.value = true;
 
   BottomNavStore.hideBottomNav();
@@ -111,6 +114,12 @@ onBeforeRouteLeave((to, from, next) => {
 
 onMounted(async () => {
   loading.value = true
+
+  if (SiblingsMDSS.conversationData.value ) {
+    console.log('ConversationData:', SiblingsMDSS.conversationData);
+    handleStartConversation(SiblingsMDSS.conversationData);
+    SiblingsMDSS.conversationData = null;
+  }
   await conversationStore.fetchConversations()
   conversations.value = conversationStore.conversations
   loading.value = false

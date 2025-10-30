@@ -213,18 +213,15 @@
  */
 
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import Spinner from '../../ui/Spinner.vue';
 import { useConversationStore } from '../../store/conversationsAndLastMessage';
 import { useChatUIStore } from '@/store/chatUIStore';
-// import { useChatUIStore } from '../../store/chatUIStore';
-import { useRoute, useRouter } from 'vue-router';
 import axiosClient from '../../axios';
 import { API_BASE_URL } from '@/utils/constants';
 
 
-const router = useRouter();
-const route = useRoute();
+
 
 const props = defineProps({
   loading: Boolean,

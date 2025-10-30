@@ -62,6 +62,19 @@
             >
               &times;
             </button>
+
+                  <!-- Fixed buttons for start conversation -->
+            <div
+              class="fixed bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-30 flex justify-around w-auto bg-white/20 rounded-full shadow-lg  backdrop-blur-sm"
+            >
+            <button 
+            @click="() => startChat(selectedUserId)" 
+            class="flex items-center cursor-pointer space-x-2 transition-colors text-white px-2 py-1 rounded-full shadow-md text-lg font-semibold select-none"
+            >
+              <span class="text-2xl ">Write a message</span>
+             </button>
+
+            </div>
           </template>
         </UserModal>
       </div>
@@ -76,10 +89,15 @@ import { useMatchesStore } from '../store/matches';
 import Spinner from '../ui/Spinner.vue';
 import UserModal from '../components/modals/UserModal.vue';
 import { API_BASE_URL } from '@/utils/constants';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { useSiblingsMatchesDataShareStore } from '@/store/siblingsMatchesDataShare';
+import axiosClient from '../axios';
+
 
 const route = useRoute();
+const router = useRouter();
 const MatchesStore = useMatchesStore();
+const SiblingsMDSS = useSiblingsMatchesDataShareStore()
 const selectedUserId = ref(null);
 const highlightLastMatch = ref(false);
 
@@ -103,6 +121,24 @@ function openUser(id) {
 
 function closeUser() {
   selectedUserId.value = null;
+}
+
+async function startChat(selectedUserId) {
+  try {
+    const response = await axiosClient.post('/api/conversation', { user_id: selectedUserId });
+    if (response && response.data) {
+
+      const conversationData = response.data;
+      SiblingsMDSS.startConversation({ conversationData: conversationData});
+      console.log('sendign data to store ',conversationData);
+      router.push({name: 'Messages'})
+
+    }
+  } catch (err) {
+    console.error('Error in creating conversation', err);
+  }
+
+  
 }
 
 function formatDate(dateStr) {

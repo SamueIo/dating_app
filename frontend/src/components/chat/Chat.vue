@@ -1,6 +1,6 @@
 <template>
 <div
-  class="flex flex-col px-2 pb-4  max-w-full border border-white/30 rounded shadow container"
+  class="flex flex-col px-2 pb-4  max-w-full border border-white/30 rounded shadow chat-container"
   :style="{ height: windowHeight + 'px' }"
 >    <div class="flex items-center p-1 md:p-2 space-x-3 w-full">
       <img
@@ -35,10 +35,10 @@
         <div
           v-else-if="item.type === 'message'"
           :class="[
-            'rounded-lg p-1 max-w-xs mb-1',
+            'rounded-lg px-1 max-w-[65%] mb-0.5',
             item.data.user_id === loggedUserId
-              ? 'bg-blue-500 text-white ml-auto text-right'
-              : 'bg-purple-400 text-black mr-auto text-left'
+            ? 'message-sent ml-auto text-right'
+            : 'message-received mr-auto text-left'
           ]"
         >
           <!-- Text správy -->
@@ -50,7 +50,7 @@
           <div v-if="item.data.attachments && item.data.attachments.length" class="mt-2">
             <template v-if="item.data.attachments.length > 1">
               <div
-                class="grid gap-1"
+                class="grid gap-1 "
                 :class="{
                   'grid-cols-1': item.data.attachments.length === 1,
                   'grid-cols-2': item.data.attachments.length === 2,
@@ -65,7 +65,7 @@
                     v-if="attachment.type === 'image'"
                     :src="`${API_BASE_URL}/storage/${attachment.url}`"
                     alt="Image attachment"
-                    class="rounded cursor-pointer hover:opacity-80 h-40 w-40 object-cover"
+                    class="rounded cursor-pointer hover:opacity-80 h-30 w-30 object-cover"
                     @click="openImageViewer(item.data.attachments, index)"
                   />
                 </template>
@@ -78,7 +78,7 @@
                   v-if="attachment.type === 'image'"
                   :src="`${API_BASE_URL}/storage/${attachment.url}`"
                   alt="Image attachment"
-                  class="max-w-full rounded"
+                  class="max-w-full rounded max-h-[450px]"
                   @click="openImageViewer(item.data.attachments, index)"
                 />
                 <video
@@ -251,20 +251,67 @@ onBeforeUnmount(() => {
 
 
 </script>
-
-<style scoped>
+<!-- 
 .container {
-  background: linear-gradient(
-  270deg,
-  rgba(255, 0, 128, 0.5),  /* polopriehľadná pink */
-  rgba(121, 40, 202, 0.5),
-  rgba(0, 159, 253, 0.5)
-);
-  background-size: 800% 800%;
-  animation: gradientShift 40s ease infinite;
-  /* prípadne výška a šírka */
-
+  position: relative;
+  background: radial-gradient(circle at 30% 30%, #812ea3, #2a0a4a, #05010a);
+  background-image: url('https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png');
+  background-blend-mode: soft-light;
+  background-size: cover;
+  background-attachment: fixed;
+  color: #eee;
 }
+.container {
+  position: relative;
+  background: linear-gradient(135deg, #f9e1d9 0%, #f5b8b0 50%, #e6a2c6 100%);
+  background-image: url('https://www.transparenttextures.com/patterns/gplay.png');
+  background-blend-mode: multiply;
+  background-size: auto;
+  color: #3a0a2a;
+} -->
+<style scoped>
+.chat-container {
+  position: relative;
+  background: 
+    linear-gradient(
+      to bottom right,
+      rgb(120, 15, 70),    /* tmavá fialovo-ružová */
+      rgb(90, 10, 110),    /* tmavá fialová */
+      rgb(20, 18, 80)      /* tmavá modro-fialová */
+    ),
+    url('https://www.transparenttextures.com/patterns/soft-wallpaper.png');
+  background-blend-mode: overlay; /* jemné prepojenie gradientu a textúry */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #fff;
+}
+
+
+
+
+.message-sent {
+  background: linear-gradient(145deg, #7f3fbf 0%, #7c3cbf 100%);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.message-received {
+  background: linear-gradient(145deg, #71647f 0%, #726380 100%);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 @keyframes gradientShift {
   0% {background-position: 0% 50%;}

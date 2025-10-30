@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex  overflow-hidden"
+  <div class="relative flex  overflow-hidden "
     :style="{ height: isMobile ? 'calc(var(--vh, 1vh) * 100)' : '100vh' }"
   >
     <!-- Hamburger button visible only on small screens -->

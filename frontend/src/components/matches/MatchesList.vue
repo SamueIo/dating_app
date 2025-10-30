@@ -38,7 +38,7 @@
 </template>
 <script setup>
 import Spinner from '../../ui/Spinner.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { defineEmits } from 'vue';
 
 import { useMatchesStore } from '../../store/matches';
@@ -48,6 +48,7 @@ import { API_BASE_URL } from '@/utils/constants';
 
 const emit = defineEmits(['startConversation'])
 const MatchesStore = useMatchesStore();
+
 
 onMounted(async () => {
   await MatchesStore.fetchMatches();

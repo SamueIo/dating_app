@@ -28,6 +28,7 @@
         </span>
 
         <button
+          type="button"
           class="absolute top-0 right-0 bg-black/60 text-white text-xs px-1"
           @click.prevent="removeFile(index)"
         >
@@ -37,19 +38,20 @@
     </div>
         <!-- Messages-->
     <div class="flex gap-2">
-    <input
-      type="search"
-      name="chatMessage"
-      inputmode="text"
-      enterkeyhint="send"
-      autocomplete="off"
-      autocorrect="off"
-      autocapitalize="none"
-      spellcheck="false"
-      v-model="message"
-      placeholder="Write a message..."
-      class="flex-1 border border-white/80 text-white/90 rounded px-3 py-2"
-    />
+      <input
+        ref="inputRef"
+        type="search"
+        name="chatMessage"
+        inputmode="text"
+        enterkeyhint="send"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="none"
+        spellcheck="false"
+        v-model="message"
+        placeholder="Write a message..."
+        class="flex-1 min-w-0 border border-white/80 text-white/90 rounded px-3 py-2"
+      />
 
       <!-- Upload button -->
       <button
@@ -69,13 +71,13 @@
         @change="handleFiles"
       />
 
-    <button
-      type="submit"
-      class="bg-pink-500 text-white p-2 rounded-full hover:bg-pink-600 flex items-center justify-center"
-      title="Odoslať správu"
-    >
-      <ChatBubbleOvalLeftEllipsisIcon class="w-5 h-5" />
-    </button>
+      <button
+        type="submit"
+        class="bg-pink-500 text-white p-2 rounded-full hover:bg-pink-600 flex items-center justify-center"
+        title="Odoslať správu"
+      >
+        <ChatBubbleOvalLeftEllipsisIcon class="w-5 h-5" />
+      </button>
     </div>
 
   </form>
@@ -83,8 +85,9 @@
 
 <script setup>
 
-import { ref } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/vue/24/solid'
+
 
 const props = defineProps({
   conversationId: {
@@ -97,6 +100,7 @@ const emit = defineEmits(['send']);
 const message = ref('');
 const attachments = ref([]);
 const previews = ref([]);
+const inputRef = ref(null)
 
 function submit() {
 
@@ -116,6 +120,8 @@ function submit() {
   attachments.value = [];
   previews.value = [];
   message.value = ''
+
+  inputRef.value?.focus();
 }
 
 
@@ -132,4 +138,10 @@ function removeFile(index) {
   attachments.value.splice(index, 1)
   previews.value.splice(index, 1)
 }
+
+onMounted(() => {
+  nextTick(() => {
+    inputRef.value?.focus();
+  });
+})
 </script>
