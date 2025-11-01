@@ -1,8 +1,7 @@
 <template>
-  <div class="relative flex  overflow-hidden "
-    :style="{ height: isMobile ? 'calc(var(--vh, 1vh) * 100)' : '100vh' }"
-  >
-    <!-- Hamburger button visible only on small screens -->
+  <div class="relative flex overflow-hidden" :style="themeStyles">
+    <CirclesDesign/>
+   <!-- Hamburger button visible only on small screens  -->
     <div v-if="showSidebar">
 
       <!-- Hlavné tlačidlo s dropdown menu (mobil only) -->
@@ -152,10 +151,15 @@ import { useChatUIStore } from '@/store/chatUIStore';
 import { useMatchesStore } from '@/store/matches';
 import { useUserActivityStore } from '@/store/userActivity';
 
+
+import CirclesDesign from '@/ui/CirclesDesign.vue';
 import { useActiveConversationStore } from '../../store/useActiveConversationStore';
 import { useRoute } from 'vue-router';
 
+import { useThemeStore } from '@/store/themeStore';
+
 const route = useRoute();
+const themeStore = useThemeStore();
 
 const activityStore = useUserActivityStore()
 const userStore = useUserStore();
@@ -176,6 +180,15 @@ const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 
 const isMobile = ref(window.matchMedia('(max-width: 768px)').matches)
+
+// theme logic
+const themeStyles = computed(() => ({
+  backgroundColor: themeStore.themes[themeStore.currentTheme].bg,
+  color: themeStore.themes[themeStore.currentTheme].text,
+  height: isMobile ? 'calc(var(--vh, 1vh) * 100)' : '100vh',
+  transition: 'background-color 0.3s, color 0.3s' // pekná animácia
+}))
+
 
 function toggleMobileMenu() {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;

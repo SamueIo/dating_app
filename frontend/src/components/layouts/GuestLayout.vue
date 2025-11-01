@@ -1,6 +1,7 @@
 <template>
-  <div class="flex items-center justify-center w-screen h-screen overflow-auto">
+  <div class="flex items-center justify-center w-screen h-screen overflow-auto  bg-purple-900">
 
+    <CirclesDesign/>
     <div
       class="flex flex-col items-center justify-center p-1 sm:p-4 md:p-10 lg:p-14
         rounded-2xl border border-pink-400/30 bg-white/10 backdrop-blur-md shadow-2xl
@@ -12,3 +13,6 @@
     </div>
   </div>
 </template>
+<script setup>
+import CirclesDesign from '@/ui/CirclesDesign.vue';
+</script>
