@@ -6,7 +6,7 @@
       <div class="md:w-1/2 flex justify-center items-center p-8 bg-purple-900">
         <GuestLayout>
           <div class="text-center">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-6">
               Find Someone Who Truly Gets You
             </h1>
             <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-sm mx-auto">
