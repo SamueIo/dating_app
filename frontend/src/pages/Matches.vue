@@ -68,11 +68,16 @@
               class="fixed bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-30 flex justify-around w-auto bg-white/20 rounded-full shadow-lg  backdrop-blur-sm"
             >
             <button 
-            @click="() => startChat(selectedUserId)" 
-            class="flex items-center cursor-pointer space-x-2 transition-colors text-white px-2 py-1 rounded-full shadow-md text-lg font-semibold select-none"
+              @click="() => startChat(selectedUserId)" 
+              class="flex items-center justify-center space-x-2 px-3 py-1.5 rounded-full 
+                     bg-purple-700 hover:bg-purple-800 text-white text-sm sm:text-base 
+                     font-medium shadow-sm cursor-pointer transition-colors  duration-200 ease-in-out
+                     focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-400"
             >
-              <span class="text-2xl ">Write a message</span>
-             </button>
+              <span class="select-none">Write a message</span>
+            </button>
+
+
 
             </div>
           </template>
@@ -93,7 +98,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { useSiblingsMatchesDataShareStore } from '@/store/siblingsMatchesDataShare';
 import axiosClient from '../axios';
 
-
 const route = useRoute();
 const router = useRouter();
 const MatchesStore = useMatchesStore();
@@ -104,10 +108,9 @@ const highlightLastMatch = ref(false);
 const matches = computed(() => MatchesStore.matches)
 onMounted(async () => {
   await MatchesStore.fetchMatches();
-
   if(route.query.highlightMatch){
     triggerHighlight()
-  }
+  }  
 });
 
 function triggerHighlight() {
@@ -127,10 +130,8 @@ async function startChat(selectedUserId) {
   try {
     const response = await axiosClient.post('/api/conversation', { user_id: selectedUserId });
     if (response && response.data) {
-
       const conversationData = response.data;
-      SiblingsMDSS.startConversation({ conversationData: conversationData});
-      console.log('sendign data to store ',conversationData);
+      SiblingsMDSS.startConversation(conversationData);
       router.push({name: 'Messages'})
 
     }

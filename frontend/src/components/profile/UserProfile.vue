@@ -1,9 +1,14 @@
 <template>
   <div class="p-0 sm:p-4 bg-gray-900 rounded-xl text-white max-w-2xl mx-auto shadow-lg space-y-6">
-    <div v-if="error">
+    <!-- Error / Loading -->
+    <div v-if="error" class="text-sm text-center text-gray-400">
       <h1>No profile yet</h1>
     </div>
-    <div v-else-if="loading">Loading...</div>
+    <div v-else-if="loading" class="text-sm text-center text-gray-400">
+      Loading...
+    </div>
+
+    <!-- Actual content -->
     <div v-else>
       <!-- MAIN PHOTO -->
       <div v-if="mainPhoto" class="relative">

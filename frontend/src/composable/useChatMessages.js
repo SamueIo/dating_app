@@ -5,7 +5,7 @@ export function useChatMessages(props, MessagesStore, conversationStore, userSto
 const messagesContainer = ref(null)
 const offset = ref(0);
 const loggedUserId = ref(null)
-const loading = ref(false)
+const loading = ref(true)
 let cleanupEcho = null;
 
 const messages = computed(() => MessagesStore.messagesByConversation[props.conversationData.id] || [])

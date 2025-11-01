@@ -23,7 +23,15 @@
       ref="messagesContainer"
       class="flex-1 overflow-y-auto border border-white/20 p-2 flex flex-col space-y-2 mb-4 hide-scrollbar "
     >
-      <template v-for="(item, index) in groupedMessages" :key="index">
+      <div v-if="loading" class="flex-1 flex flex-col justify-end items-center text-gray-500">
+        <span class="text-sm">Loading...</span>
+      </div>
+    
+      <div v-else-if="!loading && groupedMessages.length === 0" class="flex-1 flex flex-col justify-end items-center text-gray-500">
+        <span class="text-sm">Write your first message</span>
+      </div>
+      
+      <template v-else v-for="(item, index) in groupedMessages" :key="index">
         <!-- Dátumový oddelovač -->
         <div v-if="item.type === 'date'" class="flex justify-center my-2">
           <span class="px-3 py-1 text-xs text-white/80 bg-white/10 rounded-full shadow">
@@ -226,7 +234,6 @@ function handleCloseChat() {
   if(ActiveConversationStore.activeConversationID)ActiveConversationStore.clearActiveConversation()
   emits('close');
 }
-
 
 function formatTime(dateString) {
   const date = new Date(dateString)

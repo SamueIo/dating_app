@@ -29,12 +29,12 @@ export const useConversationStore = defineStore('conversations', {
      */
     async fetchConversations(allowReload = false) {
       if (this.loaded && !allowReload) return;
-
+      
       this.loading = true;
       
       try {
         const response = await axiosClient.get(`/api/conversation`);
-        this.conversations = response.data;
+        this.conversations = response.data;        
         this.loaded = true;
       } catch (err) {
         console.error('Error in fetching conversations:', err);

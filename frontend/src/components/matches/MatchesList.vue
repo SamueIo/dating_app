@@ -60,6 +60,8 @@ async function createConversation(id) {
     if (response && response.data) {
 
       const conversationData = response.data;
+      console.log('conversationData in createConversation',conversationData);
+      
       emit('startConversation',conversationData)
 
     }

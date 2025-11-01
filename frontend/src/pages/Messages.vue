@@ -78,8 +78,7 @@ const loading = ref(false)
 const conversations = ref([])
 
 function handleStartConversation(conversation){
-  selectedConversation.value =  conversation;
-  
+  selectedConversation.value =  conversation;  
   isChatOpen.value = true;
 
   BottomNavStore.hideBottomNav();
@@ -115,11 +114,11 @@ onBeforeRouteLeave((to, from, next) => {
 onMounted(async () => {
   loading.value = true
 
-  if (SiblingsMDSS.conversationData.value ) {
-    console.log('ConversationData:', SiblingsMDSS.conversationData);
+  if (SiblingsMDSS.conversationData ) {
     handleStartConversation(SiblingsMDSS.conversationData);
     SiblingsMDSS.conversationData = null;
   }
+
   await conversationStore.fetchConversations()
   conversations.value = conversationStore.conversations
   loading.value = false

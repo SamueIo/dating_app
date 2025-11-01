@@ -65,16 +65,19 @@ public function updateUserActivity(Request $request)
 
             // Načítať aktivity len iných používateľov
             $activities = UserActivity::with('user:id,name')
-                ->whereIn('user_id', $otherUserIds)
-                ->get()
-                ->map(function ($activity) {
-                    return [
-                        'user_id' => $activity->user_id,
-                        'name' => $activity->user->name ?? 'Neznámy používateľ',
-                        'last_active_at' => optional($activity->last_active_at)->toDateTimeString(),
-                        'is_active' => $activity->is_active,
-                    ];
-                });
+            ->whereIn('user_id', $otherUserIds)
+            ->get()
+            ->map(function ($activity) {
+                $lastActive = optional($activity->last_active_at);
+                $isActive = $lastActive && $lastActive->diffInMinutes(now()) <= 2;
+
+                return [
+                    'user_id' => $activity->user_id,
+                    'name' => $activity->user->name ?? 'Neznámy používateľ',
+                    'last_active_at' => $lastActive ? $lastActive->toDateTimeString() : null,
+                    'is_active' => $isActive,
+                ];
+            });
 
             $result[] = [
                 'conversation_id' => $conversationId,

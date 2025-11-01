@@ -150,12 +150,14 @@ import { useConversationStore } from '../../store/conversationsAndLastMessage';
 import MiniPortableChat from '../chat/MiniPortableChat.vue';
 import { useChatUIStore } from '@/store/chatUIStore';
 import { useMatchesStore } from '@/store/matches';
+import { useUserActivityStore } from '@/store/userActivity';
 
 import { useActiveConversationStore } from '../../store/useActiveConversationStore';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
+const activityStore = useUserActivityStore()
 const userStore = useUserStore();
 const bottomNavStore = useBottomNavStore()
 const conversationStore = useConversationStore();
@@ -282,6 +284,7 @@ onMounted(async () => {
     register();
   }
   
+  activityStore.startHeartbeat();
   loading.value = false;
 });
 </script>

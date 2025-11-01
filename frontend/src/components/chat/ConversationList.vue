@@ -269,21 +269,10 @@ function closeChat(chatId) {
 
 
 
-const conversationsToRender = computed(() => {
-
-
-  
+const conversationsToRender = computed(() => {  
   if (props.isChatOpen || props.showCloseButton) {    
     return props.showEveryChat ? conversations.value : visibleConversations.value;
   } 
-  // else {
-  //   const openChats = openConversations.value;
-  //   if (openChats.length > 0) {
-  //     return [openChats[0]];
-  //   }
-  //   return lastConversation.value ? [lastConversation.value] : [];
-  // }
-    
 });
 
 function showChatOptions(chatId) {

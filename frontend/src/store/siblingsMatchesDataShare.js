@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const useSiblingsMatchesDataShareStore = defineStore('chat', () => {
+export const useSiblingsMatchesDataShareStore = defineStore('siblingsMatchesDataShare', () => {
     const conversationData = ref(null);
     const matchesChatOpen = ref(false);
 

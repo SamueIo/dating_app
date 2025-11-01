@@ -32,12 +32,12 @@
     </li>
   </ul>
 
-  <p v-else class="text-gray-400 italic text-sm">No participants found</p>
+  <p v-else class="text-gray-400 italic text-sm">{{loading ? 'Loading...' : 'No participants found'}}</p>
 </template>
 
 
 <script setup>
-import { computed, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useUserActivityStore } from '../../store/userActivity';
 import useUserStore from '../../store/user';
 
@@ -46,6 +46,7 @@ const props = defineProps({
   conversationId: Number,
 });
 
+const loading = ref(true)
 const userActivityStore = useUserActivityStore();
 
 // ✅ Získaj konkrétnu konverzáciu zo store
@@ -99,14 +100,12 @@ function formatDate(dateStr) {
 
 // ✅ Realtime & heartbeat
 let heartbeatInterval;
-onMounted(() => {
-
-  userActivityStore.fetchUserActivities();
-  
+onMounted(async () => {
+  loading.value = true
+  await userActivityStore.fetchUserActivities();
+  loading.value = false
     window.Echo.private('user-activity-all')
       .listen('.UserActivityUpdated', (event) => {
-          console.log('Received UserActivityUpdated:', event);
-
         userActivityStore.setUserActivity(event.user_id, {
           last_active_at: event.last_active_at,
           is_active: event.is_active,
