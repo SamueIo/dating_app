@@ -137,7 +137,7 @@ onMounted(() => {
 
   // Mobile delay pre top-bar
   if (window.innerWidth < 768) {
-    isMobile = true
+    isMobile.value = true
     setTimeout(() => {
       boxState.value = 'top';
     }, 4000);
@@ -209,7 +209,7 @@ onUnmounted(() => {
 
 @keyframes shrinkLine {
   from { width: 100%; opacity: 1; }
-  to { width: 0; opacity: 0.2; }
+  to { width: 0; opacity: 0.5; }
 }
 
 </style>
