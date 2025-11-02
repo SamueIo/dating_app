@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-purple-900 text-gray-300 py-8 mt-12">
+  <footer class="bg-purple-900 text-gray-300 py-8 mt-1">
     <div class="max-w-6xl mx-auto px-4 md:flex md:justify-between md:items-center">
       
       <!-- Logo / Branding -->
