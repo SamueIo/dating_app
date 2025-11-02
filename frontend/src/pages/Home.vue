@@ -30,14 +30,14 @@
      
        <!-- Text len v center stave -->
        <p
-         v-if="boxState === 'center'"
+         v-if="boxState === 'center' "
          class="text-lg md:text-xl text-gray-300 mb-8 max-w-sm mx-auto text-center transition-all duration-500"
        >
          Join our community and start meaningful connections today.
        </p>
      
        <!-- Tlačidlá -->
-        <div v-if="boxState === 'center'" class="line-container">
+        <div v-if="boxState === 'center' && isMobile" class="line-container">
           <div class="animated-line"></div>
         </div>
        <div v-else class="flex gap-2 flex-wrap md:flex-nowrap justify-center md:justify-end  md:w-auto">
@@ -124,6 +124,7 @@ import CirclesDesign from '@/ui/CirclesDesign.vue';
 import Footer from './Footer.vue';
 
 const boxState = ref('center');
+const isMobile = ref(false)
 
 const handleResize = () => {
   if (window.innerWidth >= 768) {
@@ -136,6 +137,7 @@ onMounted(() => {
 
   // Mobile delay pre top-bar
   if (window.innerWidth < 768) {
+    isMobile = true
     setTimeout(() => {
       boxState.value = 'top';
     }, 4000);

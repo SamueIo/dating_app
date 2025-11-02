@@ -35,7 +35,7 @@ export const useFilterStore = defineStore('filters', {
         
         if (data == null) {
           this.filters = {...defaultFilters}
-        }else{
+        }else{          
           this.filters = {
            gender: data.gender || '',
            ageFrom: data.age_from || '',
@@ -46,8 +46,8 @@ export const useFilterStore = defineStore('filters', {
            radiusKm: data.radius_km || 0,
            heightFrom: data.height_from || '',
            heightTo: data.height_to || '',
-           onlyOnline: data.only_online || false,
-           withPhoto: data.with_photo || false,
+           onlyOnline: Boolean(data.only_online) || false,
+           withPhoto: Boolean(data.with_photo) || false,
          };
         }
 

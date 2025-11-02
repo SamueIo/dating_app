@@ -17,7 +17,7 @@
       <div v-else>
         <!-- MAIN PHOTO -->
         <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg border border-purple-500 mb-4">
-          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover" />
+          <img :src="`/storage/${mainPhoto.file_name}`" class="w-full object-cover" />
           <p
             v-if="mainPhoto.description"
             class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none"

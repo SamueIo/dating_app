@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Swipe;
 use App\Models\User;
 use App\Models\BlockedUser;
+use App\Models\UserActivity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -75,32 +76,38 @@ class UserFilterService
     if ($request->boolean('withPhoto')) {
         $query->whereHas('photos');
     }
+    // Online filter
+    if ($request->boolean('onlyOnline')) {
+        $minutesAgo = Carbon::now()->subMinutes(3);
 
-        $defaultRadius = 5; // predvolený radius v km
+        // pripojíme user_activities a filtrujeme podľa last_active_at
+        $query->join('user_activities', 'user_activities.user_id', '=', 'users.id')
+              ->where('user_activities.last_active_at', '>=', $minutesAgo);
+    }
 
-        if ($request->latitude && $request->longitude) {
-            $lat = $request->latitude;
-            $lon = $request->longitude;
-            $distance = (float) $request->radiusKm;
+    $defaultRadius = 5; // predvolený radius v km
 
-            // ak radius nie je zadaný alebo je 0, použijeme predvolený radius
-            if ($distance <= 0) {
-                $distance = $defaultRadius;
-            }
-
-            $query->join('profiles', 'profiles.user_id', '=', 'users.id')
-                  ->whereNotNull('profiles.latitude')
-                  ->whereNotNull('profiles.longitude')
-                  ->select('users.*')
-                  ->selectRaw("(
-                      6371 * acos(
-                          cos(radians(?)) * cos(radians(profiles.latitude)) *
-                          cos(radians(profiles.longitude) - radians(?)) +
-                          sin(radians(?)) * sin(radians(profiles.latitude))
-                      )
-                  ) AS distance", [$lat, $lon, $lat])
-                  ->having('distance', '<=', $distance);
+    if ($request->latitude && $request->longitude) {
+        $lat = $request->latitude;
+        $lon = $request->longitude;
+        $distance = (float) $request->radiusKm;
+        // ak radius nie je zadaný alebo je 0, použijeme predvolený radius
+        if ($distance <= 0) {
+            $distance = $defaultRadius;
         }
+        $query->join('profiles', 'profiles.user_id', '=', 'users.id')
+              ->whereNotNull('profiles.latitude')
+              ->whereNotNull('profiles.longitude')
+              ->select('users.*')
+              ->selectRaw("(
+                  6371 * acos(
+                      cos(radians(?)) * cos(radians(profiles.latitude)) *
+                      cos(radians(profiles.longitude) - radians(?)) +
+                      sin(radians(?)) * sin(radians(profiles.latitude))
+                  )
+              ) AS distance", [$lat, $lon, $lat])
+              ->having('distance', '<=', $distance);
+    }
 
 
 

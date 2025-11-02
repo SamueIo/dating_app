@@ -1,16 +1,16 @@
 <template>
-  <div class="mx-auto max-w-6xl p-4 .hide-scrollbar">
+  <div class="mx-auto max-w-5xl p-4 .hide-scrollbar">
     <div v-if="loading" class="fixed inset-0 flex justify-center items-center">
       <Spinner />
     </div>
     
     <div v-else>
       <div
-        class="grid gap-6 
-               grid-cols-1 
+        class="grid gap-3
+               grid-cols-2 
                sm:grid-cols-2 
-               md:grid-cols-3 
-               lg:grid-cols-4"
+               md:grid-cols-2 
+               lg:grid-cols-3"
       >
         <div
           v-for="user in users"
@@ -20,12 +20,13 @@
         >
        
         
-          <img
-            v-if="user.photos && user.photos.length"
-            :src="`${API_BASE_URL}/storage/${user.photos.find(photo => photo.is_main == 1)?.file_name}`"
-            alt="User photo"
-            class="rounded-lg object-cover h-55 w-full mb-3 shadow-sm"
-          />
+<img
+  v-if="user.photos && user.photos.length"
+  :src="`${API_BASE_URL}/storage/${user.photos.find(photo => photo.is_main == 1)?.file_name}`"
+  alt="User photo"
+  class="rounded-lg object-cover h-[250px] w-full mb-3 shadow-sm"
+/>
+
           <p class="font-semibold text-xl text-white">{{ user.name }}</p>
           <p class="text-sm text-white/80">{{ calculateUserAge(user) ?? 'Age unknown' }}</p>
         </div>
