@@ -37,7 +37,10 @@
        </p>
      
        <!-- Tlačidlá -->
-       <div class="flex gap-2 flex-wrap md:flex-nowrap justify-center md:justify-end  md:w-auto">
+        <div v-if="boxState === 'center'" class="line-container">
+          <div class="animated-line"></div>
+        </div>
+       <div v-else class="flex gap-2 flex-wrap md:flex-nowrap justify-center md:justify-end  md:w-auto">
          <router-link
            :to="{ name: 'Login' }"
            class="bg-white text-purple-700 font-semibold rounded-full shadow-lg transform hover:scale-105 transition
@@ -184,4 +187,27 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
 }
+.line-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  width: 100%;       /* dôležité! */
+  max-width: 300px;  /* podľa potreby */
+}
+
+.animated-line {
+  display: block;        /* dôležité pre prázdny element */
+  width: 100%;
+  max-width: 300px;
+  height: 4px;
+  background-color: yellow;
+  animation: shrinkLine 4s forwards;
+}
+
+
+@keyframes shrinkLine {
+  from { width: 100%; opacity: 1; }
+  to { width: 0; opacity: 0.2; }
+}
+
 </style>
