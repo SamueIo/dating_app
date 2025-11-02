@@ -20,15 +20,15 @@
         >
        
         
-<img
-  v-if="user.photos && user.photos.length"
-  :src="`${API_BASE_URL}/storage/${user.photos.find(photo => photo.is_main == 1)?.file_name}`"
-  alt="User photo"
-  class="rounded-lg object-cover h-[250px] w-full mb-3 shadow-sm"
-/>
+          <img
+            v-if="user.photos && user.photos.length"
+            :src="`${API_BASE_URL}/storage/${user.photos.find(photo => photo.is_main == 1)?.file_name}`"
+            alt="User photo"
+            class="rounded-lg object-cover h-[250px] w-full mb-3 shadow-sm"
+          />
 
-          <p class="font-semibold text-xl text-white">{{ user.name }}</p>
-          <p class="text-sm text-white/80">{{ calculateUserAge(user) ?? 'Age unknown' }}</p>
+          <p class="font-semibold text-center text-xl text-white">{{ user.name }} - {{ calculateUserAge(user) ?? 'Age unknown' }}</p>
+
         </div>
       </div>
 

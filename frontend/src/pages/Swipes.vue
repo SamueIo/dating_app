@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-6xl p-0">
+  <div class="mx-auto max-w-[90%] p-0">
     <div v-if="loading" class="fixed inset-0 flex justify-center items-center z-50 bg-black/10">
       <Spinner />
     </div>
@@ -24,13 +24,13 @@
       <div v-if="currentUser">
       
       <div
-      class="relative top-0 py-1 shadow-[0_0_40px_rgba(0,0,0,0.6)]  mx-auto mt-0"
-      style="max-width: 700px; background-color: transparent; max-height: calc(100vh - 60px);"
-      @click.stop
-      >
-      <UserModal :userId="currentUser.id" :visible="true" />
-      
-      <!-- Fixed buttons for swipes -->
+        class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)]  mx-auto mt-0"
+        style="max-width: 700px; background-color: transparent; max-height: calc(100vh - 60px);"
+        @click.stop
+        >
+        <UserModal :userId="currentUser.id" :visible="true" />
+        
+        <!-- Fixed buttons for swipes -->
         <div
           class="fixed bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-30 flex justify-around w-auto bg-white/20 rounded-full shadow-lg p-2 backdrop-blur-sm"
         >
