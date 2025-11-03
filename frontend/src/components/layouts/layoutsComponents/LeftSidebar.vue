@@ -2,7 +2,7 @@
     <aside
       :class="{
         'w-full p-2 bg-black/10 text-white border-r border-white/10  overflow-y-auto' : isMobile,
-        'w-1/5 p-2 bg-black/10 text-white border-r border-white/10 max-h-screen  overflow-y-auto': !isMobile
+        'w-1/5 p-2 bg-black/10 text-white border-r border-white/10 max-h-screen z-10 overflow-y-auto': !isMobile
       }"
     >
         <div v-if="route.path.startsWith('/profile')" class="w-full max-w-sm mx-auto mt-4 flex flex-col gap-1">

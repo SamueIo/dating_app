@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use App\Models\Photos;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Undefined;
-
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Log;
 class PhotoController extends Controller
 {
     public function index()
@@ -32,55 +34,60 @@ class PhotoController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'photos.*' => 'required|image|max:2048',
+    {
+        $request->validate([
+        'photos.*' => 'required|image|max:5120', // 5MB max
         'description' => 'nullable|string|max:255',
         'is_main' => 'nullable|boolean',
-    ]);
-
-    $user = Auth::user();
-    $isMain = null;
-
-
-
-    $mainPhoto = Auth::user()->photos()->where('is_main', true)->first();
-
-    $currentMain = $request->is_main;
-    if($request->is_main == 0 && !Auth::user()->photos()->exists()){
-        $currentMain = 1;
-    }else{
-        $currentMain = $request->is_main;
-    }
-
-    if ($currentMain == 1) {
-        $user->photos()->update(['is_main' => 0]);
-    }
-
-    $photos = [];
-
-    $photosFiles = $request->file('photos');
-
-
-    foreach ($request->file('photos') as $photo) {
-        $path = $photo->store('photos', 'public');
-
-        $photoRecord = $user->photos()->create([
-            'file_name' => $path,
-            'description' => $request->description,
-            'is_main' => $currentMain,
         ]);
 
-        $photos[] = $photoRecord;
+        $user = Auth::user();
 
-    }
+        $currentMain = $request->is_main;
+        if ($request->is_main == 0 && !$user->photos()->exists()) {
+            $currentMain = 1;
+        }
 
+        if ($currentMain == 1) {
+            $user->photos()->update(['is_main' => 0]);
+        }
 
+        $manager = new ImageManager(new Driver());
 
-    return response()->json([
-        'message' => 'Photos uploaded successfully',
-        'photos' => $photos
-    ], 201);
+        $photos = [];
+
+        foreach ($request->file('photos') as $photoFile) {
+            // image load
+
+            $image = $manager->read($photoFile);
+
+            $width = 1200;
+            $height = intval($image->height() * ($width / $image->width()));
+
+            $image->resize($width, $height);
+
+            // compresion and webp
+            $encoded = $image->encodeByExtension('webp', quality: 65);
+
+            // name and storage
+            $fileName = uniqid('photo_') . '.webp';
+            $path = 'photos/' . $fileName;
+            Storage::disk('public')->put($path, (string) $encoded);
+
+            // db write
+            $photoRecord = $user->photos()->create([
+                'file_name' => $path,
+                'description' => $request->description,
+                'is_main' => $currentMain,
+            ]);
+
+            $photos[] = $photoRecord;
+        }
+
+        return response()->json([
+            'message' => 'Photos uploaded successfully',
+            'photos' => $photos,
+        ], 201);
 }
     public function setMain($id)
     {

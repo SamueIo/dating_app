@@ -34,6 +34,8 @@ export const useConversationStore = defineStore('conversations', {
       
       try {
         const response = await axiosClient.get(`/api/conversation`);
+        console.log('response',response);
+        
         this.conversations = response.data;        
         this.loaded = true;
       } catch (err) {
