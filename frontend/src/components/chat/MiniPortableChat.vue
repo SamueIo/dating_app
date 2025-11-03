@@ -136,6 +136,7 @@ const conversationStore = useConversationStore();
 const userStore = useUserStore();
 const loggedUserId = ref(userStore.user.id);
 
+// Photo modal
 const currentAttachments= ref([])
 const isPhotoModalOpen= ref(false)
 const currentImageIndex= ref(0)

@@ -5,19 +5,24 @@
   <div v-else>
     <!-- Prepínač medzi Matches a Messages -->
     <div class="flex justify-center gap-4 my-4">
-        <button
-        :class="[
-        'w-full px-4 py-2 rounded font-semibold transition',
-        currentView === 'messages' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
-        ]"
-        @click="currentView = 'messages'"
-        >
-        Messages
-        </button>
       <button
         :class="[
-          'w-full px-4 py-2 rounded font-semibold transition',
-          currentView === 'matches' ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
+          'w-full px-4 py-2 rounded font-semibold transition-all duration-200',
+          currentView === 'messages' 
+            ? 'bg-blue-500 text-white shadow-md' 
+            : 'bg-white text-blue-500 border border-blue-500'
+        ]"
+        @click="currentView = 'messages'"
+      >
+        Messages
+      </button>
+    
+      <button
+        :class="[
+          'w-full px-4 py-2 rounded font-semibold transition-all duration-200',
+          currentView === 'matches' 
+            ? 'bg-blue-500 text-white shadow-md' 
+            : 'bg-white text-blue-500 border border-blue-500'
         ]"
         @click="currentView = 'matches'"
       >
@@ -27,7 +32,7 @@
 
    
         <!-- Messages View -->
-    <div v-if="currentView === 'messages'" class="p-4 text-center">
+    <div v-if="currentView === 'messages'" class="p-4 mb-4 text-center ">
       <h2 class="text-xl font-semibold text-gray-800 mb-2">Messages</h2>
       <!-- <ChatList @select="handleStartConversation"/> -->
        <ConversationList
@@ -43,7 +48,7 @@
     </div>
 
     <!-- Matches View -->
-    <div v-else class="p-2 max-w-md mx-auto sm:max-w-lg md:max-w-xl lg:max-w-3xl">
+    <div v-else class="p-4 mb-4 z-10">
       <MatchesList @startConversation="handleStartConversation" />
     </div>
 

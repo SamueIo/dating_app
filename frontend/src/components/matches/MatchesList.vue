@@ -3,32 +3,29 @@
       <div v-if="MatchesStore.loading" class="flex items-center justify-center min-h-full">
         <Spinner />
       </div>
-      <div v-else>
-        <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">
-           Matches
-         </h1>
-   
+      <div v-else class="cursor-pointer">
+        <h2 class="text-xl font-semibold text-gray-800 text-center mb-2">Matches</h2>
          <div
            v-for="item in MatchesStore.matches"
            :key="item.id"
-           class="mb-2 sm:mb-4"
+           class="mb-2 "
          >
            <div
-             class="flex items-center gap-2 bg-white/20 hover:bg-white/30 rounded-md p-2 transition-colors"
+             class="flex items-center gap-4 border border-white-300 hover:border-blue-500 hover:shadow-md rounded-lg p-1 transition-colors"
            >
              <img
                :src="`${API_BASE_URL}/storage/${item.main_photo?.file_name}`"
                alt="main photo"
-               class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover flex-shrink-0"
+               class="w-14 h-14 rounded-full object-cover flex-shrink-0"
              />
    
              <div class="flex flex-col flex-grow">
-               <h2 class="text-lg sm:text-xl font-semibold text-gray-800 truncate">
+               <h2 class="text-lg font-semibold text-gray-900">
                  {{ item.name }}
                </h2>
              </div>
    
-             <p @click="createConversation(item.id)" class="text-sm text-gray-900 italic  whitespace-nowrap">
+             <p @click="createConversation(item.id)" class="text-sm text-gray-900 italic w-full text-right pr-2 whitespace-nowrap">
                Start conversation 
              </p>
            </div>

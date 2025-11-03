@@ -1,10 +1,10 @@
 <template>
-  <div class="mx-auto max-w-[90%] p-0">
+  <div class="mx-auto max-w-[100%] p-0 ">
     <div v-if="loading" class="fixed inset-0 flex justify-center items-center z-50 bg-black/10">
       <Spinner />
     </div>
 
-    <div v-else class="relative">
+    <div v-else class="relative overflow-hidden">
       <div v-if="users.length === 0 " class="h-screen flex items-center justify-center">
         <div 
         
@@ -28,7 +28,14 @@
         style="max-width: 700px; background-color: transparent; max-height: calc(100vh - 60px);"
         @click.stop
         >
-        <UserModal :userId="currentUser.id" :visible="true" />
+        <div
+          ref="cardRef"
+          :key="currentUser ? currentUser.id : 'empty'"
+          :class="['swipe-card', swipeState === 'like' ? 'swipe-like' : '', swipeState === 'dislike' ? 'swipe-dislike' : '']"
+          class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)] mx-auto mt-0 max-w-[700px] max-h-[calc(100vh-60px)]"
+        >
+          <UserModal :userId="currentUser.id" :visible="true" />
+        </div>
         
         <!-- Fixed buttons for swipes -->
         <div
@@ -75,6 +82,9 @@ const filterStore = useFilterStore();
 const limit = 2;
 
 
+// Swipe animation 
+const cardRef = ref(null);
+const swipeState = ref('');
 
 const loadUsers = async () => {
   if (noMoreUsers.value) return;
@@ -87,9 +97,7 @@ const loadUsers = async () => {
     excludeRated: true,
     
   })
-
     const newUsers = response.data.data ?? []
-    
     if(newUsers.length ===0){
       noMoreUsers.value = true;
     }
@@ -103,6 +111,7 @@ const loadUsers = async () => {
     console.error('Failed to load users', err);
   }finally {
     loading.value = false
+
   }
 }
 
@@ -146,36 +155,50 @@ watch(
 
 
 async function swipe(direction) {
-  if(!currentUser.value) return;
+  if (!currentUser.value) return;
 
-  try{
-    const response =  await axiosClient.post('/api/swipes', {
-      to_user_id: currentUser.value.id,
-      direction: direction
-    });
-    if(response.data.match){
+  // spusti animáciu len pre odchádzajúcu kartu
+  swipeState.value = direction;
 
-      
-      const toast = useToast();
-
-      toast.success("🔥 Sparks flew! You have a mutual match!", {
-        timeout: 5000,       
-        pauseOnHover: true,  
-        toastClassName: 'custom-toast',
-        onClick: () => {
-          router.push({ path: 'Matches', query: { highlightMatch: true } });
-        }
+  // počkaj 300ms kým sa animácia dokončí
+  setTimeout(async () => {
+    try {
+      // pošleme swipe na server
+      const response = await axiosClient.post('/api/swipes', {
+        to_user_id: currentUser.value.id,
+        direction: direction
       });
+
+      if (response.data.match) {
+        const toast = useToast();
+        toast.success("🔥 Sparks flew! You have a mutual match!", {
+          timeout: 5000,
+          pauseOnHover: true,
+          toastClassName: 'custom-toast',
+          onClick: () => {
+            router.push({ path: 'Matches', query: { highlightMatch: true } });
+          }
+        });
+      }
+
+      // odstránime aktuálneho používateľa
+      users.value = users.value.filter(user => user.id !== currentUser.value.id);
+
+      // reset animácie
+      swipeState.value = '';
+      currentIndex.value = 0; // aby sa nová karta zobrazila na rovnakom mieste
+
+      // ak treba, načítaj ďalších používateľov
+      if (users.value.length === 0) {
+        loadUsers();
+      }
+    } catch (err) {
+      console.error("Nepodarilo sa swipe", err);
     }
-
-    // Delete user locally from list cuz of duplicite swiping option
-    users.value = users.value.filter(user => user.id !== currentUser.value.id);
-
-    nextUser();
-  }catch (err){
-    console.error('Failed to swipe user', err);
-  }
+  }, 300);
 }
+
+
 
 
 function nextUser()
@@ -194,3 +217,18 @@ function nextUser()
 const currentUser = computed(() => users.value[currentIndex.value] || null)
 </script>
 
+<style scoped>
+.swipe-card {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.swipe-like {
+  transform: translateX(500px) rotate(15deg);
+  opacity: 0;
+}
+
+.swipe-dislike {
+  transform: translateX(-500px) rotate(-15deg);
+  opacity: 0;
+}
+</style>

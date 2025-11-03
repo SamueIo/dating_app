@@ -89,7 +89,6 @@ export const useUserActivityStore = defineStore('userActivity', {
      * Pings every 30 seconds and handles tab visibility/unload events
      */
     startHeartbeat() {
-      console.log('new heartbeat');
       
       if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
 
@@ -99,9 +98,7 @@ export const useUserActivityStore = defineStore('userActivity', {
 
         if (diff > 300) { // 5 minutes
           this.updateUserActivity(false);
-          console.log('new heartbeat updateUserActivity(false)');
         } else {
-        console.log('new heartbeat updateUserActivity(true)');
           this.updateUserActivity(true);
         }
       }, 30000); // every 30s

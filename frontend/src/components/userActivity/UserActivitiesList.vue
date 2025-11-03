@@ -101,7 +101,7 @@ function formatDate(dateStr) {
 // ✅ Realtime & heartbeat
 let heartbeatInterval;
 onMounted(async () => {
-  loading.value = true
+  // loading.value = true
   await userActivityStore.fetchUserActivities();
   loading.value = false
     window.Echo.private('user-activity-all')

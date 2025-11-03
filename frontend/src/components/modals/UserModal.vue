@@ -18,7 +18,9 @@
         <!-- MAIN PHOTO -->
         <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg border border-purple-500 mb-4">
           <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover z-60" />
-        
+          <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          </div>
           <!-- Meno, vek a pohlavie – v strede dole -->
           <div class="absolute inset-x-0 bottom-12 flex flex-col items-center px-4 select-none">
             <h1 class="text-2xl sm:text-3xl font-extrabold bg-white bg-clip-text text-transparent drop-shadow-2xl text-center">
@@ -30,7 +32,7 @@
           <!-- Popisok (description) – stále dole, ale v strede alebo vľavo podľa preferencie -->
           <p 
             v-if="mainPhoto.description" 
-            class="absolute inset-x-0 bottom-1 text-center px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded mx-auto max-w-[90%] select-none"
+            class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent"
           >
             {{ mainPhoto.description }}
           </p>
@@ -38,7 +40,7 @@
 
         <div class="relative z-70 p-4">
           <h2 class="ml-2 pb-1">About:</h2>
-          <div class="bg-black/50 border border-purple-700 rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb-6">
+          <div class="bg-black/50 border border-purple-700 rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb" >
             {{ userData.profile.bio || "This user hasn't added a bio yet." }}
           </div>
 
@@ -47,7 +49,7 @@
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
               <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" class="w-full object-cover" />
               <p v-if="otherPhotos[0].description"
-                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none">
+                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
                 {{ otherPhotos[0].description }}
               </p>
             </div>
@@ -65,7 +67,7 @@
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
               <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" class="w-full object-cover" />
               <p v-if="otherPhotos[1].description"
-                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none">
+                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
                 {{ otherPhotos[1].description }}
               </p>
             </div>
@@ -90,7 +92,7 @@
                 />
                 <p
                   v-if="photo.description"
-                  class="absolute left-2 bottom-2 text-xs text-gray-300 truncate select-none"
+                  class="absolute left-2 bottom-2 text-xs text-gray-300 truncate select-none .accent"
                   :title="photo.description"
                 >
                   {{ photo.description }}
@@ -98,7 +100,6 @@
               </div>
             </div>
           </div>
-          <div v-else class="pb-20">Medzera</div>
         </div>
         
 

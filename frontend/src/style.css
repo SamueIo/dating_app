@@ -5,6 +5,11 @@
 *::after {
   box-sizing: border-box;
 }
+:root {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Dancing Script', cursive;
+}
 
 
 .floating-head {
@@ -23,6 +28,7 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: var(--font-body);
 }
 
 body.main-container {
@@ -38,6 +44,12 @@ body.main-container {
   );
   -webkit-overflow-scrolling: touch;
 
+}
+h1, h2, h3 {
+  font-family: var(--font-heading);
+}
+.accent {
+  font-family: var(--font-accent);
 }
 .main-scroll {
   flex: 1;

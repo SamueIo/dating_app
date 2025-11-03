@@ -1,7 +1,7 @@
 <template>
     <div class="fixed inset-0 z-[9990] bg-black/70 
                 backdrop-blur-sm flex items-center justify-center"
-        @click.self="close">
+        @click="close">
 
         <!-- Close button -->
         <button class="absolute z-[9999] top-4 right-4 text-black bg-white/80 
@@ -18,6 +18,7 @@
         >
            <Transition name="fade" mode="out-in">
                <img
+                @click.stop
                  :key="currentIndex"
                  v-if="images.length"
                  alt="clicked photo"
@@ -66,7 +67,6 @@ const props = defineProps({
         default: 0
     }
 });
-console.log('props.images',props.images);
 
 const emits = defineEmits(['close'])
 

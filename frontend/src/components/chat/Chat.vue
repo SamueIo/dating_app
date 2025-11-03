@@ -136,6 +136,10 @@
     <!-- Input -->
     <ChatInput :conversationId="props.conversationData.id" @send="onSubmit" />
   </div>
+    <PhotoModal v-if="isPhotoModalOpen"
+    :images="currentAttachments"
+    :startIndex="currentImageIndex"
+    @close="isPhotoModalOpen = false"/>
 </template>
 
 
@@ -154,6 +158,7 @@ import { useActiveConversationStore } from '../../store/useActiveConversationSto
 import UserActivitiesList from '../userActivity/UserActivitiesList.vue';
 import { useSendMessage } from '../../composable/useSendMessage';
 import { API_BASE_URL } from '@/utils/constants';
+import PhotoModal from '../modals/PhotoModal.vue';
 
 
 
@@ -180,6 +185,11 @@ const conversationStore = useConversationStore();
 const userStore = useUserStore();
 const ActiveConversationStore = useActiveConversationStore()
 
+// Photo modal
+const currentAttachments= ref([])
+const isPhotoModalOpen= ref(false)
+const currentImageIndex= ref(0)
+
 // Id of logged user
 const loggedUserId = ref(null)
 loggedUserId.value = userStore.user.id
@@ -205,6 +215,26 @@ function groupMessagesByDate(messages) {
   return grouped;
 }
 
+
+// Photo modal 
+function openImageViewer(attachments, index){
+    const img = attachments[index];
+    const globalIndex = allImages.value.findIndex(a => a.url === img.url);
+
+    currentAttachments.value = allImages.value;
+    currentImageIndex.value = globalIndex;
+    isPhotoModalOpen.value = true;
+}
+const allImages = computed(() => {
+  return groupedMessages.value
+    .filter(item => item.type === 'message' && item.data.attachments?.length)
+    .flatMap(item => item.data.attachments.filter(a => a.type === 'image'));
+})
+const handleEsc = (e) => {
+  if(e.key === 'Escape' && isPhotoModalOpen){
+    isPhotoModalOpen.value = false
+  }
+}
 
 // window.echo
 const windowEcho = window.Echo;
@@ -249,33 +279,18 @@ function updateHeight() {
 
 onMounted(() => {
   window.addEventListener('resize', updateHeight)
+  window.addEventListener('keydown', handleEsc)
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateHeight)
+  window.removeEventListener('keydown', handleEsc)
 })
 
 
 
 </script>
-<!-- 
-.container {
-  position: relative;
-  background: radial-gradient(circle at 30% 30%, #812ea3, #2a0a4a, #05010a);
-  background-image: url('https://www.transparenttextures.com/patterns/noise-pattern-with-subtle-cross-lines.png');
-  background-blend-mode: soft-light;
-  background-size: cover;
-  background-attachment: fixed;
-  color: #eee;
-}
-.container {
-  position: relative;
-  background: linear-gradient(135deg, #f9e1d9 0%, #f5b8b0 50%, #e6a2c6 100%);
-  background-image: url('https://www.transparenttextures.com/patterns/gplay.png');
-  background-blend-mode: multiply;
-  background-size: auto;
-  color: #3a0a2a;
-} -->
+
 <style scoped>
 .chat-container {
   position: relative;
