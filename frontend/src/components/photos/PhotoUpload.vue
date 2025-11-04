@@ -79,7 +79,7 @@
     
     <div class="col-span-1 group relative">
         <!-- form -->
-            <div class="bg-gray-400 w-auto h-auto  rounded-lg">
+            <div class="bg-gray-400 w-auto h-auto   rounded-lg">
                   <form @submit.prevent="submit" enctype="multipart/form-data" 
                     class="w-full h-full flex flex-col justify-center items-center">
                         <input
@@ -108,10 +108,11 @@
                       >
                         <img :src="photo.url" alt="Preview photo" class="w-full rounded-lg h-full object-cover" />
                         <p v-if="photo.description" 
-                            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
+                            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] min-w-[250px] overflow-hidden line-clamp-2">
                             {{ photo.description }}
                         </p>
                         <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
+                        <span v-if="errorMessage">{{ errorMessage }}</span>
                       </div>
 
                         <input
@@ -151,6 +152,7 @@ const photo = ref([]);
 const photosPreview = ref([]);
 const description= ref('');
 const submitValue = ref('submit')
+const errorMessage = ref('')
 
 const showOptions = ref(null); 
 const showEditDescription = ref(null);
@@ -232,6 +234,7 @@ const submit = async () => {
     } catch (err) {
         error.value = 'Problem with photo uploading';
         console.error(err);
+        errorMessage.value= err 
     } finally{
       submitValue.value = 'Submit'
     }
