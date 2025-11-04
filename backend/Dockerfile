@@ -14,9 +14,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     procps \
-    libwebp-dev \  # Pridanie balíka pre WebP podporu
-    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \  # Konfigurácia GD knižnice pre WebP
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl gd \  # Inštalácia PHP rozšírení
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl gd \
     && apt-get clean
 
 # Nastavenie pracovného adresára v kontejnery
