@@ -106,9 +106,9 @@
                         :key="photo.id"
                         class="col-span-1 group relative opacity-70"
                       >
-                        <img :src="photo.url" alt="Preview photo" class="w-full rounded-lg h-full object-cover" />
+                        <img :src="photo.url" alt="Preview photo" class="min-w-[350px] rounded-lg h-full object-cover" />
                         <p v-if="photo.description" 
-                            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] min-w-[250px] overflow-hidden line-clamp-2">
+                            class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%]  overflow-hidden line-clamp-2">
                             {{ photo.description }}
                         </p>
                         <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
