@@ -27,7 +27,7 @@
             class="w-full mb-4 rounded-md bg-white/20 text-white placeholder-fuchsia-100 px-4 py-2
               focus:outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white/30 transition duration-300"
           />
-          <div class="flex flex-row justify-between">
+          <div class="relative flex flex-row justify-between">
             <button
               type="submit"
               class="w-44 px-4 py-2 bg-white/20 backdrop-blur-md text-white font-semibold rounded-lg
@@ -36,7 +36,8 @@
             >
               Log in
             </button>
-              <div v-if="loading">
+              <div v-if="loading"
+                    class="absolute right-0 -top-4  ">
                 <Spinner />
               </div>
           </div>
