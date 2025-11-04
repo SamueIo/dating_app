@@ -7,7 +7,6 @@
     <div v-else class="relative overflow-hidden">
       <div v-if="users.length === 0 " class="h-screen flex items-center justify-center">
         <div 
-        
           class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
           style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #f472b6 100%)"
         >
@@ -22,11 +21,13 @@
       </div>
 
       <div v-if="currentUser">
-      
         <div
           class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)] mx-auto mt-0"
           :style="{ maxWidth: '700px', backgroundColor: 'transparent', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
           @click.stop
+          @touchstart="onTouchStart"
+          @touchmove="onTouchMove"
+          @touchend="onTouchEnd"
         >
               
           <div
@@ -90,6 +91,9 @@ const bottomNavStore = useBottomNavStore()
 // Swipe animation 
 const cardRef = ref(null);
 const swipeState = ref('');
+let touchStartX = ref(0)
+let touchEndX = ref(0)
+
 const loadUsers = async () => {
   if (noMoreUsers.value) return;
   loading.value = true;
@@ -207,6 +211,30 @@ async function swipe(direction) {
 function nextUser() {
   if (users.value.length === 0) {
     // loadUsers();
+  }
+}
+
+// Handle touch start event
+const onTouchStart = (event) => {
+  touchStartX.value = event.touches[0].clientX
+}
+
+// Handle touch move event
+const onTouchMove = (event) => {
+  touchEndX.value = event.touches[0].clientX
+}
+
+// Handle touch end event
+const onTouchEnd = () => {
+  const swipeThreshold = 50
+  const swipeDirection = touchEndX.value - touchStartX.value
+
+  if (Math.abs(swipeDirection) > swipeThreshold) {
+    if (swipeDirection > 0) {
+      swipe('like')
+    } else {
+      swipe('dislike')
+    }
   }
 }
 
