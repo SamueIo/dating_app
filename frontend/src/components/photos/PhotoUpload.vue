@@ -112,7 +112,8 @@
                             {{ photo.description }}
                         </p>
                         <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
-                        <span v-if="errorMessage">{{ errorMessage }}</span>
+                        <span v-if="errorMessage">Errormessage{{ errorMessage }}</span>
+                        <span v-else>Message{{ message }}</span>
                       </div>
 
                         <input
