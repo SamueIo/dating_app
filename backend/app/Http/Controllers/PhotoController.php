@@ -67,7 +67,7 @@ class PhotoController extends Controller
             $image->resize($width, $height);
 
             // compresion and webp
-            $encoded = $image->encodeByExtension('webp', quality: 65);
+            $encoded = $image->encodeByExtension('webp', quality: 70);
 
             // name and storage
             $fileName = uniqid('photo_') . '.webp';

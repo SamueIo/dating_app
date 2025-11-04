@@ -23,19 +23,20 @@
 
       <div v-if="currentUser">
       
-      <div
-        class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)]  mx-auto mt-0"
-        style="max-width: 700px; background-color: transparent; max-height: calc(100vh - 60px);"
-        @click.stop
-        >
         <div
-          ref="cardRef"
-          :key="currentUser ? currentUser.id : 'empty'"
-          :class="['swipe-card', swipeState === 'like' ? 'swipe-like' : '', swipeState === 'dislike' ? 'swipe-dislike' : '']"
-          class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)] mx-auto mt-0 max-w-[700px] max-h-[calc(100vh-60px)]"
+          class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)] mx-auto mt-0"
+          :style="{ maxWidth: '700px', backgroundColor: 'transparent', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
+          @click.stop
         >
-          <UserModal :userId="currentUser.id" :visible="true" />
-        </div>
+              
+          <div
+            ref="cardRef"
+            :key="currentUser ? currentUser.id : 'empty'"
+            :class="['swipe-card', swipeState === 'like' ? 'swipe-like' : '', swipeState === 'dislike' ? 'swipe-dislike' : '']"
+            :style="{ maxWidth: '700px', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
+          >
+            <UserModal :userId="currentUser.id" :visible="true" />
+          </div>
         
         <!-- Fixed buttons for swipes -->
         <div
@@ -70,6 +71,7 @@ import UserModal from '../components/modals/UserModal.vue'
 import Spinner from '../ui/Spinner.vue'
 import { useToast } from "vue-toastification";
 import router from '../router'
+import { useBottomNavStore } from '../store/showBottomNavStore'
 
 
 const currentIndex = ref(0)
@@ -80,6 +82,8 @@ const noMoreUsers = ref(false);
 const filterStore = useFilterStore();
 
 const limit = 2;
+
+const bottomNavStore = useBottomNavStore()
 
 
 // Swipe animation 
@@ -188,14 +192,12 @@ async function swipe(direction) {
       swipeState.value = '';
       currentIndex.value = 0; // aby sa nová karta zobrazila na rovnakom mieste
 
-      // ak treba, načítaj ďalších používateľov
-      if (users.value.length === 0) {
-        loadUsers();
-      }
+
+      nextUser()
     } catch (err) {
       console.error("Nepodarilo sa swipe", err);
     }
-  }, 300);
+  }, 150);
 }
 
 

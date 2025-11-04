@@ -21,11 +21,10 @@
 
 <script setup>
 import { routes } from '../../router'
-import { GlobeAltIcon } from '@heroicons/vue/24/outline'
 import DefaultLayout from './DefaultLayout.vue'
 
 
-  const defaultLayoutRoute = routes.find(route => route.component === DefaultLayout)
+const defaultLayoutRoute = routes.find(route => route.component === DefaultLayout)
   const BottomNavLinks = (defaultLayoutRoute?.children || [])
   .filter( route => route.meta?.showInBottomNav)
   .map(route => ({

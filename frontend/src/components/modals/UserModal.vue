@@ -1,16 +1,18 @@
 <template>
   <div 
-    class="relative max-w-2xl mx-auto bg-black/70 backdrop-blur-lg rounded-xl text-white shadow-xl border border-purple-600"
-    style="max-height: calc(100vh - 60px); width: 100%;"
+    class="relative  max-w-2xl mx-auto bg-black/70 backdrop-blur-lg rounded-xl text-white shadow-xl border border-purple-600"
+    :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`, width: '100%' }"
   >
+
     <div class="z-60">
       <slot name="actions"></slot>
     </div>
  
-    <div 
-      class="p-0  pb-14 overflow-y-auto hide-scrollbar" 
-      style="max-height: calc(100vh - 85px);"
-    >
+      <div 
+        class="p-0 pb-14 overflow-y-auto hide-scrollbar"
+        :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
+      >
+
       <div v-if="loading" class="flex justify-center items-center py-6">
         <Spinner/>
       </div>
@@ -118,7 +120,7 @@ import { calculateAge } from '../../utils/age';
 import Spinner from '../../ui/Spinner.vue';
 import { useRoute } from 'vue-router';
 import { API_BASE_URL } from '@/utils/constants';
-
+import { useBottomNavStore } from '@/store/showBottomNavStore';
 
 const props = defineProps({
     userId: Number,
@@ -130,6 +132,8 @@ const emit = defineEmits(['close']);
 const userData = ref(null);
 const loading = ref(true);
 const route = useRoute();
+
+const bottomNavStore = useBottomNavStore()
 
 watch(
   () => props.userId,

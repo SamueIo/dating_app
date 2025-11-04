@@ -180,6 +180,7 @@ const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 
 const isMobile = ref(window.matchMedia('(max-width: 768px)').matches)
+const isMdUp = ref(window.innerWidth >= 768);
 
 // theme logic
 const themeStyles = computed(() => ({
@@ -254,20 +255,16 @@ function handleDragEnd(){
 
 
 const isLeftSidebarOpen = ref(false) 
-function toggleLeftSidebar(){
-  isLeftSidebarOpen.value = !isLeftSidebarOpen.value
-}
+
 function closeLeftSidebar() {
   isLeftSidebarOpen.value = false;
   showDropdownButton.value = true
 
 }
 
-const isMdUp = ref(window.innerWidth >= 768);
 
-function onResize() {
-  isMdUp.value = window.innerWidth >= 768;
-}
+
+
 
 const showSidebar = computed(() => {
   // cesty, kde nechceš sidebar
@@ -277,18 +274,28 @@ const showSidebar = computed(() => {
   return !hideOn.some(path => route.path.startsWith(path));
 });
 
+function setVh() {
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+}
 
 
+function handleResize() {
+  setVh();
+  isMdUp.value = window.innerWidth >= 768;
+  isMobile.value = window.innerWidth < 768;
+}
 
 onUnmounted(() => {
-  window.removeEventListener('resize', onResize);
+  window.removeEventListener('resize', handleResize);
 });
 // Fetch conversations
 onMounted(async () => {
-  
+  handleResize(); 
+  window.addEventListener('resize', handleResize, { passive: true });
+
   isMobile.value = window.matchMedia('(max-width: 768px)').matches
   loading.value = true;
-  window.addEventListener('resize', onResize, { passive: true });
+  activityStore.startHeartbeat();
   await conversationStore.fetchConversations();
   
   if (userId.value) {
@@ -297,7 +304,6 @@ onMounted(async () => {
     register();
   }
   
-  activityStore.startHeartbeat();
   loading.value = false;
 });
 </script>
