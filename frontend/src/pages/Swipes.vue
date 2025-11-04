@@ -25,8 +25,8 @@
           class="relative top-0 shadow-[0_0_40px_rgba(0,0,0,0.6)] mx-auto mt-0"
           :style="{ maxWidth: '700px', backgroundColor: 'transparent', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
           @click.stop
-          @touchstart="onTouchStart"
-          @touchmove="onTouchMove"
+          @touchstart.passive="onTouchStart"
+          @touchmove.passive="onTouchMove"
           @touchend="onTouchEnd"
         >
               
@@ -80,6 +80,7 @@ const currentIndex = ref(0)
 const offset = ref(0)
 const loading = ref(true)
 const users = ref([])
+const isSwiping = ref(false)
 const noMoreUsers = ref(false);
 const filterStore = useFilterStore();
 
@@ -166,8 +167,9 @@ watch(
 
 
 async function swipe(direction) {
-  if (!currentUser.value) return;
+  if (isSwiping.value || !currentUser.value) return;
 
+  isSwiping.value = true;
   // spusti animáciu len pre odchádzajúcu kartu
   swipeState.value = direction;
 
@@ -201,6 +203,8 @@ async function swipe(direction) {
       nextUser()
     } catch (err) {
       console.error("Nepodarilo sa swipe", err);
+    } finally{
+      isSwiping.value = false
     }
   }, 100 );
 }
