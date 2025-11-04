@@ -26,9 +26,9 @@
           <!-- Meno, vek a pohlavie – v strede dole -->
           <div class="absolute inset-x-0 bottom-12 flex flex-col items-center px-4 select-none">
             <h1 class="text-2xl sm:text-3xl font-extrabold bg-white bg-clip-text text-transparent drop-shadow-2xl text-center">
-              {{ userData.name }}, <span class="text-white text-base sm:text-xl drop-shadow-2xl">{{ calculateAge(birthDate) }}</span>
+              {{ props.userData.name }}, <span class="text-white text-base sm:text-xl drop-shadow-2xl">{{ calculateAge(birthDate) }}</span>
             </h1>
-            <div class="text-white text-sm sm:text-base drop-shadow-2xl">{{ userData.profile.location }}</div>
+            <div class="text-white text-sm sm:text-base drop-shadow-2xl">{{ props.userData.profile.location }}</div>
           </div>
         
           <!-- Popisok (description) – stále dole, ale v strede alebo vľavo podľa preferencie -->
@@ -40,10 +40,10 @@
           </p>
         </div>
 
-        <div class="relative  p-4">
+        <div class="relative z-70 p-4">
           <h2 class="ml-2 pb-1">About:</h2>
           <div class="bg-black/50 border border-purple-700 rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb" >
-            {{ userData.profile.bio || "This user hasn't added a bio yet." }}
+            {{ props.userData.profile.bio || "This user hasn't added a bio yet." }}
           </div>
 
           <!-- SECOND PHOTO + INFO -->
@@ -58,10 +58,10 @@
           </div>
 
           <div class="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-200 mb-6">
-            <div>📏 <strong>Gender:</strong> {{  userData.profile.gender  }} cm</div>
-            <div>📏 <strong>Height:</strong> {{ userData.profile.height }} cm</div>
-            <div>💼 <strong>Job:</strong> {{ userData.profile.job_title }}</div>
-            <div>🎓 <strong>Education:</strong> {{ userData.profile.education }}</div>
+            <div>📏 <strong>Gender:</strong> {{  props.userData.profile.gender  }} cm</div>
+            <div>📏 <strong>Height:</strong> {{ props.userData.profile.height }} cm</div>
+            <div>💼 <strong>Job:</strong> {{ props.userData.profile.job_title }}</div>
+            <div>🎓 <strong>Education:</strong> {{ props.userData.profile.education }}</div>
           </div>
 
           <!-- THIRD PHOTO + MORE INFO -->
@@ -76,10 +76,10 @@
           </div>
 
           <div class="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-200 mb-8">
-            <div>🚬 <strong>Smoking:</strong> {{ userData.profile.smoking }}</div>
-            <div>🍷 <strong>Drinking:</strong> {{ userData.profile.drinking }}</div>
-            <div>🐾 <strong>Pets:</strong> {{ userData.profile.pets }}</div>
-            <div>❤️ <strong>Interested In:</strong> {{ userData.profile.interested_in }}</div>
+            <div>🚬 <strong>Smoking:</strong> {{ props.userData.profile.smoking }}</div>
+            <div>🍷 <strong>Drinking:</strong> {{ props.userData.profile.drinking }}</div>
+            <div>🐾 <strong>Pets:</strong> {{ props.userData.profile.pets }}</div>
+            <div>❤️ <strong>Interested In:</strong> {{ props.userData.profile.interested_in }}</div>
           </div>
 
           <!-- EXTRA PHOTOS -->
@@ -123,47 +123,24 @@ import { API_BASE_URL } from '@/utils/constants';
 import { useBottomNavStore } from '@/store/showBottomNavStore';
 
 const props = defineProps({
-    userId: Number,
+    userData: Object,
     visible: Boolean
 })
 
 const emit = defineEmits(['close']);
 
-const userData = ref(null);
-const loading = ref(true);
+const loading = ref(false);
 const route = useRoute();
 
 const bottomNavStore = useBottomNavStore()
 
-watch(
-  () => props.userId,
-  async (newId) => {
-    if (!newId) return;
-    loading.value = true;
-    try {
-      const response = await axiosClient.get(`/api/users/${newId}`);
-      userData.value = response.data;
-    } catch (err) {
-      console.error('Failed to load user ', err);
-    } finally {
-      loading.value = false;
-    }
-  },
-  { immediate: true }
-);
 
 
-const mainPhoto = computed(() => {
-    return userData.value?.photos.find(photo => photo.is_main) || null
-})
-const otherPhotos = computed(() => {
-    return userData.value?.photos.filter(photo => !photo.is_main) || []
-})
-const extraPhotos = computed(() => otherPhotos.value.slice(2)) // všetky fotky po prvej a druhej
+const mainPhoto = computed(() => props.userData?.photos.find(photo => photo.is_main) || null)
+const otherPhotos = computed(() => props.userData?.photos.filter(photo => !photo.is_main) || [])
+const extraPhotos = computed(() => otherPhotos.value.slice(2))
+const birthDate = computed(() => props.userData?.profile?.birth_date || null)
 
-
-
-const birthDate = computed(() => userData.value?.profile?.birth_date || null);
 // calculateAge(birthDate)
 
 const close = () => emit('close');

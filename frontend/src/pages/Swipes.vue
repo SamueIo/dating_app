@@ -35,7 +35,8 @@
             :class="['swipe-card', swipeState === 'like' ? 'swipe-like' : '', swipeState === 'dislike' ? 'swipe-dislike' : '']"
             :style="{ maxWidth: '700px', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
           >
-            <UserModal :userId="currentUser.id" :visible="true" />
+            <UserModalSwipe :userData="currentUser" :visible="true" />
+            <!-- <UserModal :userId="currentUser.id" :visible="true" /> -->
           </div>
         
         <!-- Fixed buttons for swipes -->
@@ -67,7 +68,7 @@
 import { ref, onMounted, watch, computed } from 'vue'
 import axiosClient from '../axios' 
 import { useFilterStore } from '../store/filterStore'
-import UserModal from '../components/modals/UserModal.vue'
+import UserModalSwipe from '../components/modals/UserModalSwipe.vue'
 import Spinner from '../ui/Spinner.vue'
 import { useToast } from "vue-toastification";
 import router from '../router'
@@ -89,42 +90,44 @@ const bottomNavStore = useBottomNavStore()
 // Swipe animation 
 const cardRef = ref(null);
 const swipeState = ref('');
-
 const loadUsers = async () => {
   if (noMoreUsers.value) return;
-  loading.value = true
-  try{
-
+  loading.value = true;
+  try {
     const response = await axiosClient.get('/api/swipes', {
       params: filterStore.filters,
-      offset: offset,
-    excludeRated: true,
+      offset: offset.value,
+      excludeRated: true,
+    });
     
-  })
-    const newUsers = response.data.data ?? []
-    if(newUsers.length ===0){
+    const newUsers = response.data.data ?? [];
+    
+    if (newUsers.length === 0) {
       noMoreUsers.value = true;
     }
-    if(offset.value ===0){
+
+    // Odstránime duplikáty na základe ID používateľov
+    if (offset.value === 0) {
       users.value = newUsers;
     } else {
-      users.value.push(...newUsers);
+      // Pridáme iba používateľov, ktorí ešte nie sú v zozname
+      users.value.push(...newUsers.filter(user => !users.value.some(existingUser => existingUser.id === user.id)));
     }
-    offset.value += limit;
-  }catch (err){
-    console.error('Failed to load users', err);
-  }finally {
-    loading.value = false
 
+    offset.value += limit;
+
+  } catch (err) {
+    console.error('Failed to load users', err);
+  } finally {
+    loading.value = false;
   }
 }
+
 
 onMounted(async () => {
   try{
     if(filterStore.filtersLoaded){
       loadUsers()
-      
-      
     }else{
       await filterStore.fetchFilters();
       loadUsers()
@@ -172,6 +175,9 @@ async function swipe(direction) {
         to_user_id: currentUser.value.id,
         direction: direction
       });
+      // remove swiped user
+      users.value.shift();
+      
 
       if (response.data.match) {
         const toast = useToast();
@@ -185,38 +191,28 @@ async function swipe(direction) {
         });
       }
 
-      // odstránime aktuálneho používateľa
-      users.value = users.value.filter(user => user.id !== currentUser.value.id);
-
-      // reset animácie
       swipeState.value = '';
-      currentIndex.value = 0; // aby sa nová karta zobrazila na rovnakom mieste
 
 
       nextUser()
     } catch (err) {
       console.error("Nepodarilo sa swipe", err);
     }
-  }, 150);
+  }, 100 );
 }
 
 
 
 
-function nextUser()
-{
-  if(currentIndex.value < users.value.length - 1){
-    currentIndex.value ++
-  }else{
-
-    console.log('No more users')
-    loadUsers();
+function nextUser() {
+  if (users.value.length === 0) {
+    // loadUsers();
   }
 }
 
 
-
-const currentUser = computed(() => users.value[currentIndex.value] || null)
+const currentUser = computed(() => users.value[0] || null);
+// const currentUser = computed(() => users.value[currentIndex.value] || null)
 </script>
 
 <style scoped>

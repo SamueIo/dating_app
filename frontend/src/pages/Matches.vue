@@ -43,11 +43,13 @@
       class="fixed rounded-lg inset-0 flex items-start justify-center z-50 bg-black/50"
       @click="closeUser"
     >
-      <div 
-        class="relative shadow-[0_0_40px_rgba(0,0,0,0.6)] p-2 rounded-lg overflow-auto
-               w-[95%] sm:w-[80%] md:w-[60%] max-w-[700px] max-h-[calc(100vh-65px)]"
-        @click.stop
-      >
+
+        <div 
+          class="relative shadow-[0_0_40px_rgba(0,0,0,0.6)]  rounded-lg overflow-auto
+                w-[95%] sm:w-[80%] md:w-[60%] max-w-[700px] .hide-scrollbar"
+          :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`, width: '100%' }"
+          @click.stop
+        >
         <UserModal 
           :userId="selectedUserId"
           :visible="true"
@@ -64,16 +66,16 @@
             </button>
 
                   <!-- Fixed buttons for start conversation -->
-            <div
+            <div 
               class="fixed bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-30 flex justify-around w-auto bg-white/20 rounded-full shadow-lg  backdrop-blur-sm"
             >
-            <button 
-              @click="() => startChat(selectedUserId)" 
-              class="flex items-center justify-center space-x-2 px-3 py-1.5 rounded-full 
-                     bg-purple-700 hover:bg-purple-800 text-white text-sm sm:text-base 
-                     font-medium shadow-sm cursor-pointer transition-colors  duration-200 ease-in-out
-                     focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-400"
-            >
+              <button 
+                @click="() => startChat(selectedUserId)" 
+                class="flex items-center justify-center space-x-2 px-3 py-1.5 rounded-full 
+                       bg-purple-700 hover:bg-purple-800 text-white text-sm sm:text-base 
+                       font-medium shadow-sm cursor-pointer transition-colors  duration-200 ease-in-out
+                       focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-yellow-400"
+              >
               <span class="select-none">Write a message</span>
             </button>
 
@@ -97,11 +99,13 @@ import { API_BASE_URL } from '@/utils/constants';
 import { useRoute, useRouter } from 'vue-router';
 import { useSiblingsMatchesDataShareStore } from '@/store/siblingsMatchesDataShare';
 import axiosClient from '../axios';
+import { useBottomNavStore } from '../store/showBottomNavStore';
 
 const route = useRoute();
 const router = useRouter();
 const MatchesStore = useMatchesStore();
 const SiblingsMDSS = useSiblingsMatchesDataShareStore()
+const bottomNavStore = useBottomNavStore()
 const selectedUserId = ref(null);
 const highlightLastMatch = ref(false);
 
