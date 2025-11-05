@@ -22,6 +22,7 @@
     <ManualToggleStatus/>  
 
     <RouterLink to="/profile"
+    @click="closeMobileMenu"
     class="block w-full text-left px-4 py-2 hover:bg-pink-200 transition-colors duration-200">
     Settings
     </RouterLink>
@@ -42,10 +43,12 @@ import { useUserActivityStore } from '../../../store/userActivity';
 import { RouterLink, useRouter } from 'vue-router';
 import { API_BASE_URL } from '@/utils/constants';
 import { resetAllStores } from '@/utils/resetStore';
+import { useToggleMobileMenuStore } from '@/store/ToggleMobileMenuStore';
 
 const userStore = useUserStore();
 const userActivityStore = useUserActivityStore();
 const router = useRouter();
+const toggleMobileMenuStore = useToggleMobileMenuStore()
 
 const showMenu = ref(false);
 
@@ -54,6 +57,10 @@ const props = defineProps({
 })
 function toggleMenu(){
   showMenu.value = !showMenu.value  
+}
+
+function closeMobileMenu(){
+  toggleMobileMenuStore.closeMobileMenu()
 }
 
 function eraseAllCookies() {

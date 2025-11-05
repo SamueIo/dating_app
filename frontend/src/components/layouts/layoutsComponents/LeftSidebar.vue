@@ -1,11 +1,12 @@
 <template>
     <aside
       :class="{
-        'w-full p-2 bg-black/10 text-white border-r border-white/10  overflow-y-auto' : isMobile,
+        'w-full p-1 bg-black/10 text-white border-r border-white/10 mt-2  overflow-y-auto h-[calc(var(--vh,1vh)*90)]' : isMobile,
         'w-1/5 p-2 bg-black/10 text-white border-r border-white/10 max-h-screen z-10 overflow-y-auto': !isMobile
       }"
+      :style="!isMobile ? { height: `calc(100vh - ${bottomNavStore.height}px)` } : ''"
     >
-        <div v-if="route.path.startsWith('/profile')" class="w-full max-w-sm mx-auto mt-4 flex flex-col gap-1">
+        <div v-if="route.path.startsWith('/profile')" class="w-full max-w-sm mx-auto  flex flex-col gap-1">
             <!-- Tlačidlo na otvorenie submenu -->
             <div>
                  <button
@@ -67,12 +68,40 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import Filter from '../../Filter/Filter.vue';
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { useBottomNavStore } from '@/store/showBottomNavStore';
+
+const bottomNavStore = useBottomNavStore()
+
 const showProfileMenu = ref(false)
 
 const props = defineProps({
     isMobile: {type: Boolean, default: false}
 })
 
+const isMobile = ref(props.isMobile);
+
+function handleResize() {
+  console.log('Resizing...');
+  isMobile.value = window.innerWidth < 768;
+}
+
+onMounted(() => {
+  if (isMobile.value) {
+    window.addEventListener('resize', handleResize);
+  }
+});
+
+watch(isMobile, (newVal, oldVal) => {
+  if (newVal && !oldVal) {
+    window.addEventListener('resize', handleResize);
+  } else if (!newVal && oldVal) {
+    window.removeEventListener('resize', handleResize);
+  }
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
 const route = useRoute();
 </script>

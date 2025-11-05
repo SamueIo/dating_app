@@ -5,7 +5,9 @@
     </div>
 
     <div v-else class="relative overflow-hidden">
-      <div v-if="users.length === 0 " class="h-screen flex items-center justify-center">
+      <div v-if="users.length === 0 " class="flex items-center justify-center"
+          :style="{height: `calc(100vh - ${bottomNavStore.height}px)` }"
+          >
         <div 
           class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
           style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #f472b6 100%)"
@@ -37,28 +39,34 @@
             :style="{ maxWidth: '700px', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
           >
             <UserModalSwipe :userData="currentUser" :visible="true" />
-            <!-- <UserModal :userId="currentUser.id" :visible="true" /> -->
           </div>
         
         <!-- Fixed buttons for swipes -->
         <div
-          class="fixed bottom-20 left-1/2 transform -translate-x-1/2 gap-2 z-30 flex justify-around w-auto bg-white/20 rounded-full shadow-lg p-2 backdrop-blur-sm"
+          class="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex items-center justify-center gap-4 z-30"
         >
-          <button 
-            @click="() => swipe('dislike')" 
-            class="flex items-center space-x-2 bg-red-600 hover:bg-red-700 transition-colors text-white px-5 py-3 rounded-full shadow-md text-lg font-semibold select-none"
+          <!-- Dislike -->
+          <button
+            @click="() => swipe('dislike')"
+            class="w-16 h-16 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 active:scale-110 transition-transform duration-150 shadow-md hover:shadow-lg text-white text-2xl"
           >
-            <span class="text-2xl">👎</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
           </button>
         
-          <button 
-            @click="() => swipe('like')" 
-            class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 transition-colors text-white px-5 py-3 rounded-full shadow-md text-lg font-semibold select-none"
+          <!-- Like (main) -->
+          <button
+            @click="() => swipe('like')"
+            class="w-16 h-16 flex items-center justify-center rounded-full bg-green-500 hover:bg-green-600 active:scale-110 transition-transform duration-150 shadow-xl hover:shadow-2xl text-white text-3xl"
           >
-          <span class="text-2xl">👍</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+            </svg>
           </button>
-          
         </div>
+
+
       </div>
       </div>
     </div>
@@ -202,7 +210,7 @@ async function swipe(direction) {
 
       nextUser()
     } catch (err) {
-      console.error("Nepodarilo sa swipe", err);
+      console.error("Error in swipe", err);
     } finally{
       isSwiping.value = false
     }

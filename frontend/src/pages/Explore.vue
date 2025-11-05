@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import axiosClient from '../axios' 
 import { useFilterStore } from '../store/filterStore'
 import { calculateAge } from '../utils/age'
@@ -112,16 +112,7 @@ const loadUsers = async () => {
   }
 }
 
-onMounted(() => {
-  loadUsers()
-  userActivityStore.updateUserActivity(true)
-})
 
-watch(
-  () => filterStore.filters,
-  () => loadUsers(),
-  {deep: true}
-)
 
 function calculateUserAge (user){
   if(!user.profile?.birth_date) return null
@@ -131,10 +122,40 @@ function calculateUserAge (user){
 
 const openUser = (id) => {
   selectedUserId.value = id;
+
+  // fake history path for closeUser to not goint back in history, but to close modal first 
+  history.pushState({ modal:true }, '', window.location.href)
 };
 
 const closeUser = () => {
   selectedUserId.value = null;
+
+  if(history.state?.modal) {
+    history.back()
+  }
 };
+
+function handlePopState(e) {
+  if(selectedUserId.value ){
+    closeUser()
+  }
+}
+
+onMounted(() => {
+  loadUsers()
+  userActivityStore.updateUserActivity(true)
+
+  window.addEventListener('popstate', handlePopState)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('popstate',handlePopState)
+})
+
+watch(
+  () => filterStore.filters,
+  () => loadUsers(),
+  {deep: true}
+)
 </script>
 

@@ -10,18 +10,18 @@
           <!-- Toggle button -->
           <button v-if="showDropdownButton" @click="toggleMobileMenu"
                   class="p-2 bg-white/60 shadow-md rounded-md"
-                  aria-label="Otvoriť menu">
+                  aria-label="Open menu">
             ☰
           </button>
         
           <!-- Dropdown menu -->
-          <div v-if="isMobileMenuOpen"
-               class="absolute left-0 mt-2 w-40 bg-white/70 shadow-lg rounded-md  z-50">
+          <div v-if="toggleMobileMenuStore.isMobileMenuOpen"
+               class="absolute left-0 mt-2 w-auto min-w-[150px] bg-white/60 text-black shadow-lg rounded-md  z-50">
             <ul class="flex flex-col">
               <li>
                 <button @click="openSidebar"
-                        class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                  📂 Menu
+                        class="w-full text-left px-4 py-2 hover:bg-gray-100 whitespace-nowrap">
+                  {{navNameValue}}
                 </button>
               </li>
                 <button @click="openUserMenu">
@@ -44,18 +44,26 @@
         <div @click="closeLeftSidebar" class="fixed inset-0 bg-black/50"></div>
 
          <!-- Sidebar content -->
-        <div class="relative max-w-[280px] bg-fuchsia-500 p-5 shadow-lg rounded-r-xl z-50 h-full flex flex-col">
-          <button 
-            @click="closeLeftSidebar" 
-            class="absolute top-2 right-0 text-gray-500 hover:text-red-500 transition-colors duration-300 focus:outline-none"
-            aria-label="Close menu"
+          <div
+            class="relative max-w-[280px] 
+                   bg-gradient-to-b from-fuchsia-700 via-purple-800 to-indigo-900
+                   p-5 shadow-[0_0_25px_rgba(0,0,0,0.4)] 
+                   rounded-r-2xl z-50 h-full flex flex-col 
+                   text-white border-r border-fuchsia-400/30"
           >
-            <!-- jednoduchá SVG ikona krížika -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-            </svg>
-          </button>
-            <div v-if="showSidebar ">
+            <button 
+              @click="closeLeftSidebar" 
+              class="absolute top-1 right-1 text-white hover:text-red-500 transition-colors duration-300 
+                     bg-black/40 rounded-full p-1 shadow-lg focus:outline-none"
+              aria-label="Close menu"
+            >
+              <!-- jednoduchá SVG ikona krížika -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+
+            <div v-if="showSidebar">
             <LeftSidebar :isMobile="true" class="flex-grow overflow-y-auto .hide-scrollbar" />
           </div>
         </div>
@@ -150,6 +158,8 @@ import MiniPortableChat from '../chat/MiniPortableChat.vue';
 import { useChatUIStore } from '@/store/chatUIStore';
 import { useMatchesStore } from '@/store/matches';
 import { useUserActivityStore } from '@/store/userActivity';
+import { useToggleMobileMenuStore } from '@/store/ToggleMobileMenuStore';
+
 
 
 import CirclesDesign from '@/ui/CirclesDesign.vue';
@@ -173,14 +183,15 @@ const userId = computed(() => userStore.user?.id);
 const loading = ref(false);
 const tempCloseChat = ref(true)
 const chatUIStore = useChatUIStore();
-// const isChatOpen = computed(() => chatUIStore.isChatOpen);
+const toggleMobileMenuStore = useToggleMobileMenuStore()
 
-
-const isMobileMenuOpen = ref(false);
 const isUserMenuOpen = ref(false);
 
 const isMobile = ref(window.matchMedia('(max-width: 768px)').matches)
 const isMdUp = ref(window.innerWidth >= 768);
+
+// const for naming hamburger section 
+const navNameValue = ref('')
 
 // theme logic
 const themeStyles = computed(() => ({
@@ -192,20 +203,20 @@ const themeStyles = computed(() => ({
 
 
 function toggleMobileMenu() {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value;
-
+  toggleMobileMenuStore.toggleMobileMenu()  
 }
+
 
 function openSidebar() {
   isLeftSidebarOpen.value = true;
-  isMobileMenuOpen.value = false;
-  showDropdownButton.value = false
+  toggleMobileMenuStore.toggleMobileMenu()
+  showDropdownButton.value = false  
 }
 
 
 function openUserMenu() {
   isUserMenuOpen.value = true;
-  isMobileMenuOpen.value = false;
+  toggleMobileMenuStore.closeMobileMenu()
 }
 
 // Register if id exists
@@ -218,6 +229,18 @@ watch(userId, (id, oldId) => {
     register();
   }
 });
+
+// watching current path to provide right names in hamburger menu
+watch(() => route.path,
+  (newPath) => {
+    if(newPath.startsWith('/explore')) {
+      navNameValue.value = ' 🔍 Filter'
+    }else{
+      navNameValue.value = '⚙️ Profile navigation'
+    }
+  },
+  { immediate: true}
+)
 
 
 const activeConversationStore = useActiveConversationStore();

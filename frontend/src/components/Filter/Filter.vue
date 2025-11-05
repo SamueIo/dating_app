@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-full h-full p-4 text-white bg-opacity-50 backdrop-blur-sm bg-black/10">
+  <aside class="w-full h-full p-4 pb-6 text-white bg-opacity-50 backdrop-blur-sm bg-black/10">
     <h2 class="text-xl font-semibold mb-4">Filters</h2>
 
     <!-- Gender -->

@@ -10,11 +10,11 @@
       </h1>
 
       <div
-        class="grid gap-6 
-               grid-cols-1 
+        class="grid gap-3
+               grid-cols-2 
                sm:grid-cols-2 
-               md:grid-cols-3 
-               lg:grid-cols-4"
+               md:grid-cols-2 
+               lg:grid-cols-3"
       >
         <div
           v-for="(user, index) in matches"
@@ -29,7 +29,7 @@
             v-if="user.main_photo?.file_name"
             :src="`${API_BASE_URL}/storage/${user.main_photo.file_name}`"
             alt="User photo"
-            class="rounded-lg object-cover h-55 w-full mb-3 shadow-sm"
+            class="rounded-lg object-cover h-60 w-full mb-3 shadow-sm"
           />
           <p class="font-semibold text-xl text-white">{{ user.name }}</p>
           <p class="text-sm text-white/80">Matched at: {{ formatDate(user.matched_at) }}</p>
@@ -42,6 +42,7 @@
       v-if="selectedUserId" 
       class="fixed rounded-lg inset-0 flex items-start justify-center z-50 bg-black/50"
       @click="closeUser"
+      @keydown.esc="closeUser"
     >
 
         <div 
@@ -91,7 +92,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, onUnmounted, ref, computed } from 'vue';
 import { useMatchesStore } from '../store/matches';
 import Spinner from '../ui/Spinner.vue';
 import UserModal from '../components/modals/UserModal.vue';
@@ -110,12 +111,7 @@ const selectedUserId = ref(null);
 const highlightLastMatch = ref(false);
 
 const matches = computed(() => MatchesStore.matches)
-onMounted(async () => {
-  await MatchesStore.fetchMatches();
-  if(route.query.highlightMatch){
-    triggerHighlight()
-  }  
-});
+
 
 function triggerHighlight() {
   highlightLastMatch.value = true;
@@ -124,10 +120,23 @@ function triggerHighlight() {
 
 function openUser(id) {
   selectedUserId.value = id;
+
+  // fake history path for closeUser to not goint back in history, but to close modal first 
+  history.pushState({ modal:true }, '', window.location.href)
 }
 
 function closeUser() {
   selectedUserId.value = null;
+
+  if(history.state?.modal) {
+    history.back()
+  }
+}
+
+function handlePopState(e) {
+  if(selectedUserId.value ){
+    closeUser()
+  }
 }
 
 async function startChat(selectedUserId) {
@@ -151,6 +160,17 @@ function formatDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString();
 }
+
+onMounted(async () => {
+  await MatchesStore.fetchMatches();
+  if(route.query.highlightMatch){
+    triggerHighlight()
+  }  
+  window.addEventListener('popstate', handlePopState)
+});
+onUnmounted(() => {
+  window.removeEventListener('popstate',handlePopState)
+})
 </script>
 
 <style scoped>
