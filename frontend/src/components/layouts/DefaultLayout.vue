@@ -16,7 +16,7 @@
         
           <!-- Dropdown menu -->
           <div v-if="toggleMobileMenuStore.isMobileMenuOpen"
-               class="absolute left-0 mt-2 w-auto min-w-[150px] bg-white/60 text-black shadow-lg rounded-md  z-50">
+               class="absolute left-0 mt-2 w-auto min-w-[180px] bg-white/60 backdrop-blur-sm text-black shadow-lg rounded-md  z-50">
             <ul class="flex flex-col">
               <li>
                 <button @click="openSidebar"
@@ -35,7 +35,7 @@
       </div>
     </div>
      <!-- Left sidebar desktop -->
-    <LeftSidebar class="hidden md:block"/>
+    <LeftSidebar class="hidden md:block hide-scrollbar"/>
 
     <!-- left sidebar mobile -->
     <Transition name="slide">
@@ -64,7 +64,7 @@
             </button>
 
             <div v-if="showSidebar">
-            <LeftSidebar :isMobile="true" class="flex-grow overflow-y-auto .hide-scrollbar" />
+            <LeftSidebar :isMobile="true" class="flex-grow overflow-y-auto hide-scrollbar" />
           </div>
         </div>
       </div>

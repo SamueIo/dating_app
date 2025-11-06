@@ -43,16 +43,17 @@
         
         <!-- Fixed buttons for swipes -->
         <div
-          class="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex items-center justify-center gap-4 z-30"
+          class="fixed bottom-20 left-1/2 transform -translate-x-1/2  flex items-center justify-center gap-4 z-30"
         >
           <!-- Dislike -->
           <button
             @click="() => swipe('dislike')"
             class="w-16 h-16 flex items-center justify-center rounded-full bg-red-500 hover:bg-red-600 active:scale-110 transition-transform duration-150 shadow-md hover:shadow-lg text-white text-2xl"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6L18 18M6 18L18 6" />
+          </svg>
+
           </button>
         
           <!-- Like (main) -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto max-w-6xl p-4 .hide-scrollbar">
+  <div class="mx-auto max-w-6xl p-4 hide-scrollbar">
     <div v-if="MatchesStore.loading" class="fixed inset-0 flex justify-center items-center">
       <Spinner />
     </div>
@@ -47,7 +47,7 @@
 
         <div 
           class="relative shadow-[0_0_40px_rgba(0,0,0,0.6)]  rounded-lg overflow-auto
-                w-[95%] sm:w-[80%] md:w-[60%] max-w-[700px] .hide-scrollbar"
+                w-[95%] sm:w-[80%] md:w-[60%] max-w-[700px] hide-scrollbar"
           :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`, width: '100%' }"
           @click.stop
         >

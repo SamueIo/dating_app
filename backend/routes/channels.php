@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Broadcast;
 use App\Models\Conversation;
 
 Broadcast::channel('chat.{conversationId}', function ($user, $roomId) {
-        \Log::info("AUTH: User {$user->id} trying to access chat.{$roomId}");
         return $user && $user->conversation()->where('conversations.id', $roomId)->exists();
     });
 Broadcast::channel('user.{userId}', function ($user, $userId) {

@@ -9,6 +9,10 @@ use App\Events\MessageSentToConversation;
 use App\Events\MessageSentToUser;
 use App\Models\BlockedUser;
 use App\Events\MessageSeen;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Facades\Log;
 
 
@@ -100,12 +104,14 @@ class ConversationController extends Controller
 
     public function storeMessages(Request $request)
     {
-        $tempId  = $request->input('temp_id');
+        $tempId = $request->input('temp_id');
+
         $request->validate([
             'conversation_id' => 'required|exists:conversations,id',
             'body' => 'nullable|string',
-            'attachments.*' => 'file|max:10240'
+            'attachments.*' => 'required|image|max:10240', // len obrázky, max 10MB
         ]);
+
         $message = Message::create([
             'conversation_id' => $request->conversation_id,
             'user_id' => auth()->id(),
@@ -113,35 +119,46 @@ class ConversationController extends Controller
             'seen' => false,
         ]);
 
-        // Message attachments if exists
-        if($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $file){
-                $mime = $file->getMimeType();
-                $type = str_contains($mime, 'image') ? 'image'
-                   : (str_contains($mime, 'video') ? 'video'
-                   : (str_contains($mime, 'audio') ? 'audio' : 'file'));
+        // ✅ Kompresia a uloženie obrázkov
+        if ($request->hasFile('attachments')) {
+            $manager = new ImageManager(new Driver());
 
-                $path = $file->store('attachments', 'public');
+            foreach ($request->file('attachments') as $file) {
+                // Načíta obrázok
+                $image = $manager->read($file);
 
+                // Ak je väčší ako 1200px, zmenši ho
+                $width = $image->width() > 1200 ? 1200 : $image->width();
+                $height = intval($image->height() * ($width / $image->width()));
+                $image->resize($width, $height);
+
+                // Konverzia na .webp s kvalitou 65
+                $encoded = $image->encodeByExtension('webp', quality: 65);
+
+                // Uloženie
+                $fileName = uniqid('msg_img_') . '.webp';
+                $path = 'attachments/' . $fileName;
+                Storage::disk('public')->put($path, (string) $encoded);
+
+                // Zápis do DB
                 $message->attachments()->create([
-                    'type' => $type,
-                    'mime_type' => $mime,
+                    'type' => 'image',
+                    'mime_type' => 'image/webp',
                     'url' => $path,
                 ]);
             }
         }
 
-
-
+        // 🔁 Broadcast
         $roomId = $request->conversation_id;
-
-        $conversation =Conversation::with('users')->findOrFail($roomId);
+        $conversation = Conversation::with('users')->findOrFail($roomId);
         $recipient = $conversation->users->firstWhere('id', '!=', auth()->id());
+
         $message->load('attachments');
 
         broadcast(new MessageSentToConversation($message, $roomId, $tempId))->toOthers();
 
-        if($recipient) {
+        if ($recipient) {
             broadcast(new MessageSentToUser($message, $recipient->id));
         }
 

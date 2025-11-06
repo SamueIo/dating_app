@@ -34,7 +34,7 @@
 
         <!-- Other photos -->
         <div v-if="otherPhotos" v-for="photo in otherPhotos" class="col-span-1 group relative">
-          <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-80 rounded w-6 h-6 flex items-center justify-center shadow-md">
+          <div class="absolute top-2 right-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity bg-white bg-opacity-80 rounded w-6 h-6 flex items-center justify-center shadow-md">
             <button @click="toggleOptions(photo.id)" class="text-black font-bold cursor-pointer">...</button>
             <div v-if="showOptions" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg z-10">
               <ul>

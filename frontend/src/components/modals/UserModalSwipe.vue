@@ -18,7 +18,7 @@
       </div>
       <div v-else>
         <!-- MAIN PHOTO -->
-        <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg border border-purple-500 mb-4">
+        <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg mb-4">
           <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover z-60" />
           <div class="absolute inset-0 pointer-events-none">
             <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -42,7 +42,7 @@
 
         <div class="relative z-70 p-4">
           <h2 class="ml-2 pb-1">About:</h2>
-          <div class="bg-black/50 border border-purple-700 rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb" >
+          <div class="bg-black/50  rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb" >
             {{ props.userData.profile.bio || "This user hasn't added a bio yet." }}
           </div>
 

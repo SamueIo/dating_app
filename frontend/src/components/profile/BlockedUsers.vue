@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto h-screen max-w-6xl p-4 .hide-scrollbar">
+  <div class="mx-auto h-screen max-w-6xl p-4 hide-scrollbar">
     <div v-if="loading" class="fixed inset-0 flex justify-center items-center">
       <Spinner />
     </div>

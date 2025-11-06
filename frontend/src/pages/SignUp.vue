@@ -1,6 +1,7 @@
 <template>
     <!-- <GuestLayout> -->
         <h2 class=" text-center text-2xl/9 font-bold tracking-tight text-white">Create new account</h2>
+        
         <div v-if="errorMessage" class="py-2 px-3 rounded text-white bg-red-500">{{ errorMessage }}</div>
         <form @submit.prevent="submit" class="space-y-5 mt-6 w-full">
         <div>
@@ -110,13 +111,18 @@
       .then(response => {
         return axiosClient.post("/register", data.value, {withCredentials: true})
         .then(response => {
-          router.push({name:'Explore'})
+          router.push({name:'PublicProfileSettings'})
         })
         .catch(error => {
           if(error.response?.data?.errors) {
             loading.value= false
             errors.value=(error.response.data.errors)
+            errorMessage.value=(error.response.data.errors)
 
+          }else{
+            console.log('error',error)
+
+            errorMessage.value = error
           }
           
         })

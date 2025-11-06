@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="relative  max-w-2xl mx-auto bg-black/70 backdrop-blur-lg rounded-xl text-white shadow-xl border border-purple-600"
+    class="relative p-2 max-w-2xl mx-auto bg-black/70 backdrop-blur-lg rounded-xl text-white shadow-xl border border-purple-600 overflow-hidden"
     :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`, width: '100%' }"
   >
 
@@ -9,16 +9,16 @@
     </div>
  
       <div 
-        class="p-0 pb-14 overflow-y-auto hide-scrollbar"
-        :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
+        class="p-0 pb-14 h-full overflow-y-auto hide-scrollbar"
       >
 
       <div v-if="loading" class="flex justify-center items-center py-6">
         <Spinner/>
       </div>
-      <div v-else>
+      <div v-else
+      :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`}">
         <!-- MAIN PHOTO -->
-        <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg border border-purple-500 mb-4">
+        <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg  mb-4">
           <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover z-60" />
           <div class="absolute inset-0 pointer-events-none">
             <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -42,7 +42,7 @@
 
         <div class="relative  p-4">
           <h2 class="ml-2 pb-1">About:</h2>
-          <div class="bg-black/50 border border-purple-700 rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb" >
+          <div class="bg-black/50  rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb-2" >
             {{ userData.profile.bio || "This user hasn't added a bio yet." }}
           </div>
 

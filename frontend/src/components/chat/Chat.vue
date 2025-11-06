@@ -23,7 +23,7 @@
       ref="messagesContainer"
       class="flex-1 overflow-y-auto border border-white/20 p-2 flex flex-col space-y-2 mb-4 hide-scrollbar "
     >
-      <div v-if="loading" class="flex-1 flex flex-col justify-end items-center text-gray-500">
+      <div v-if="loading && !loadedMessages" class="flex-1 flex flex-col justify-end items-center text-gray-500">
         <span class="text-sm">Loading...</span>
       </div>
     
@@ -162,7 +162,6 @@ import PhotoModal from '../modals/PhotoModal.vue';
 
 
 
-const mainPhoto = ref(null)
 // Props emits
 const props = defineProps({
   conversationData: {
@@ -174,6 +173,7 @@ const emits = defineEmits(['close']);
 
 
 const groupedMessages = computed(() => groupMessagesByDate(messages.value))
+const loadedMessages = computed(() => groupedMessages.value.length > 0)
 
 function formatDate(dateString) {
   const date = new Date(dateString)
