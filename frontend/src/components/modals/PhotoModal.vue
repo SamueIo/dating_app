@@ -22,7 +22,9 @@
                  :key="currentIndex"
                  v-if="images.length"
                  alt="clicked photo"
-                 :src="`${API_BASE_URL}/storage/${images[currentIndex].url}`"
+                 :src="images[currentIndex].url 
+                        ? `${API_BASE_URL}/storage/${images[currentIndex].url}` 
+                        : `${API_BASE_URL}/storage/${images[currentIndex].file_name}`"
                  class="max-h-[95vh] max-w-[95vw] select-none object-contain transition-transform duration-300"
                />
            </Transition>
@@ -67,6 +69,7 @@ const props = defineProps({
         default: 0
     }
 });
+
 
 const emits = defineEmits(['close'])
 

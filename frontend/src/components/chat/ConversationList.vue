@@ -3,7 +3,7 @@
     <Spinner />
   </div>
   <div v-else :class="[
-  'flex max-w-full mx-auto gap-2 ',
+  'flex max-w-full mx-auto gap-2 pb-[60px]',
   isChatOpen ? 'flex-row-reverse flex-nowrap' : 'flex-col'
 ]">
     <div

@@ -113,7 +113,7 @@ class UserFilterService
 
 
     $offset = (int) $request->input('offset', 0);
-    $limit = (int) $request->input('limit', 10);
+    $limit = (int) $request->input('limit', 9);
 
     $users = $query->inRandomOrder()
         ->limit($limit)

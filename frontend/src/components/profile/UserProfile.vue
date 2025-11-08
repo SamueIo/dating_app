@@ -1,5 +1,5 @@
 <template>
-  <div class="p-0 sm:p-4 bg-gray-900 rounded-xl text-white max-w-2xl mx-auto shadow-lg space-y-6">
+  <div class="relative p-0 sm:p-4 bg-gray-900 rounded-xl text-white max-w-2xl mx-auto shadow-lg space-y-6">
     <!-- Error / Loading -->
     <div v-if="error" class="text-sm text-center text-gray-400">
       <h1>No profile yet</h1>
@@ -12,7 +12,9 @@
     <div v-else>
       <!-- MAIN PHOTO -->
       <div v-if="mainPhoto" class="relative">
-        <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full rounded-lg mb-2 shadow-md" />
+        <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" 
+        class="w-full rounded-lg mb-2 shadow-md" 
+        @click="openPhotoModal(mainPhoto)"/>
         <p
           v-if="mainPhoto.description"
           class="absolute bottom-1 left-1 px-1 sm:px-2 py-0.5 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%]"
@@ -36,7 +38,11 @@
       <!-- SECOND PHOTO + INFO -->
       <div v-if="otherPhotos[0]" class="space-y-4">
         <div class="relative">
-          <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" class="w-full rounded-md shadow-sm" />
+          <img 
+            :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" 
+            @click="openPhotoModal(otherPhotos[0])"
+            class="w-full object-cover" 
+          />
           <p v-if="otherPhotos[0].description"
              class="absolute bottom-1 left-1 px-1 sm:px-2 py-0.5 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%]">
             {{ otherPhotos[0].description }}
@@ -53,7 +59,9 @@
       <!-- THIRD PHOTO + MORE INFO -->
       <div v-if="otherPhotos[1]" class="space-y-4">
         <div class="relative">
-          <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" class="w-full rounded-md shadow-sm" />
+          <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" 
+          class="w-full rounded-md shadow-sm" 
+          @click="openPhotoModal(otherPhotos[1])"/>
           <p v-if="otherPhotos[1].description"
              class="absolute bottom-1 left-1 px-1 sm:px-2 py-0.5 sm:py-1 bg-black/50 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%]">
             {{ otherPhotos[1].description }}
@@ -74,6 +82,7 @@
           <div v-for="(photo, index) in extraPhotos" :key="index" class="flex flex-col relative">
             <img
               :src="`${API_BASE_URL}/storage/${photo.file_name}`"
+              @click="openPhotoModal(index)"
               class="rounded-md object-cover h-24 sm:h-32 w-full shadow-sm hover:scale-105 transition"
               alt="User photo"
             />
@@ -89,6 +98,12 @@
 </div>
 
     </div>
+      <PhotoModal
+        v-if="isPhotoModalOpen"
+        :images="currentAttachments"
+        :startIndex="currentImageIndex"
+        @close="isPhotoModalOpen = false"
+      />
   </div>
 </template>
 
@@ -98,13 +113,19 @@
 import axiosClient from '../../axios';
 import { ref, computed, onMounted } from 'vue';
 import { API_BASE_URL } from '@/utils/constants';
-
+import PhotoModal from '../modals/PhotoModal.vue';
 
 
 
 const data = ref(null)
 const loading = ref(true)
 const error = ref(null)
+
+// PhotoModal state
+const isPhotoModalOpen = ref(false)
+const currentAttachments = ref([])  // Array of photo objects { file_name, description }
+const currentImageIndex = ref(0)
+
 
 onMounted(() => {
     axiosClient.get('/api/profile')
@@ -127,7 +148,19 @@ const otherPhotos = computed(() => {
     return data.value?.photos.filter(photo => !photo.is_main) || []
 })
 const extraPhotos = computed(() => otherPhotos.value.slice(2)) // všetky fotky po prvej a druhej
+// 
+// all photos from 
+const allPhotos = computed(() => {return data.value?.photos || []})
 
+/**
+ * Open photo modal from allPhotos array
+ * @param {Arrayr} clickedPhotos - All photos which can be listed
+ */
+const openPhotoModal = (clickedPhoto) => {  
+  currentAttachments.value = allPhotos.value
+  currentImageIndex.value = allPhotos.value.indexOf(clickedPhoto)
+  isPhotoModalOpen.value = true
+}
 
 
 const birthDate = computed(() => data.value?.profile?.birth_date || null);

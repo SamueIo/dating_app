@@ -19,7 +19,9 @@
       :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`}">
         <!-- MAIN PHOTO -->
         <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg  mb-4">
-          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover z-60" />
+          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" 
+            class="w-full object-cover z-60" 
+            @click="openPhotoModal(mainPhoto)"/>
           <div class="absolute inset-0 pointer-events-none">
             <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
           </div>
@@ -49,8 +51,13 @@
           <!-- SECOND PHOTO + INFO -->
           <div v-if="otherPhotos[0]" class="space-y-4 mb-6">
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-              <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" class="w-full object-cover" />
-              <p v-if="otherPhotos[0].description"
+              <img 
+                :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" 
+                @click="openPhotoModal(otherPhotos[0])"
+                class="w-full object-cover" 
+              />
+
+                <p v-if="otherPhotos[0].description"
                  class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
                 {{ otherPhotos[0].description }}
               </p>
@@ -67,7 +74,9 @@
           <!-- THIRD PHOTO + MORE INFO -->
           <div v-if="otherPhotos[1]" class="space-y-4 mb-6">
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-              <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" class="w-full object-cover" />
+              <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" 
+              class="w-full object-cover" 
+              @click="openPhotoModal(otherPhotos[1])"/>
               <p v-if="otherPhotos[1].description"
                  class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
                 {{ otherPhotos[1].description }}
@@ -86,7 +95,12 @@
           <div v-if="extraPhotos.length" class="pt-6 pb-12">
             <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-100 drop-shadow-md">📸 More Photos</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div v-for="(photo, index) in extraPhotos" :key="index" class="relative flex flex-col rounded-md overflow-hidden shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-105 border border-purple-600">
+              <div v-for="(photo, index) in extraPhotos" 
+                :key="index" 
+                @click="openPhotoModal(index)"
+                class="relative flex flex-col rounded-md overflow-hidden 
+                shadow-md hover:shadow-xl transition-transform duration-300 
+                hover:scale-105 border border-purple-600">
                 <img
                   :src="`${API_BASE_URL}/storage/${photo.file_name}`"
                   class="object-cover h-24 sm:h-32 w-full"
@@ -107,6 +121,12 @@
 
       </div>
     </div>
+    <PhotoModal
+      v-if="isPhotoModalOpen"
+      :images="currentAttachments"
+      :startIndex="currentImageIndex"
+      @close="isPhotoModalOpen = false"
+    />
   </div>
 </template>
 
@@ -121,6 +141,7 @@ import Spinner from '../../ui/Spinner.vue';
 import { useRoute } from 'vue-router';
 import { API_BASE_URL } from '@/utils/constants';
 import { useBottomNavStore } from '@/store/showBottomNavStore';
+import PhotoModal from './PhotoModal.vue';
 
 const props = defineProps({
     userId: Number,
@@ -133,6 +154,27 @@ const userData = ref(null);
 const loading = ref(true);
 const route = useRoute();
 
+// PhotoModal state
+const isPhotoModalOpen = ref(false)
+const currentAttachments = ref([])  // Array of photo objects { file_name, description }
+const currentImageIndex = ref(0)
+
+
+
+/**
+ * Open photo modal from allPhotos array
+ * @param {Arrayr} clickedPhotos - All photos which can be listed
+ */
+const openPhotoModal = (clickedPhoto) => {  
+  currentAttachments.value = allPhotos.value
+  currentImageIndex.value = allPhotos.value.indexOf(clickedPhoto)
+  isPhotoModalOpen.value = true
+}
+
+// 
+// all photos from 
+const allPhotos = computed(() => {return userData.value?.photos || []})
+
 const bottomNavStore = useBottomNavStore()
 
 watch(
@@ -143,6 +185,7 @@ watch(
     try {
       const response = await axiosClient.get(`/api/users/${newId}`);
       userData.value = response.data;
+      
     } catch (err) {
       console.error('Failed to load user ', err);
     } finally {

@@ -137,9 +137,9 @@
     <ChatInput :conversationId="props.conversationData.id" @send="onSubmit" />
   </div>
     <PhotoModal v-if="isPhotoModalOpen"
-    :images="currentAttachments"
-    :startIndex="currentImageIndex"
-    @close="isPhotoModalOpen = false"/>
+      :images="currentAttachments"
+      :startIndex="currentImageIndex"
+      @close="isPhotoModalOpen = false"/>
 </template>
 
 
