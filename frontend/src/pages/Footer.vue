@@ -10,10 +10,8 @@
 
       <!-- Footer Links -->
       <div class="flex flex-col sm:flex-row gap-6 justify-center md:justify-end text-sm">
-        <router-link to="/" class="hover:text-white transition">Linkedin</router-link>
-        <router-link to="/about" class="hover:text-white transition">Cv</router-link>
-        <router-link to="/contact" class="hover:text-white transition">Contact</router-link>
-        <router-link to="/privacy" class="hover:text-white transition">Porfolio</router-link>
+        <a href="https://teal-liger-8f621d.netlify.app/" class="hover:text-white transition">Porfolio</a>
+        <a href="https://www.linkedin.com/in/samo-j-277809337/" class="hover:text-white transition">LinkedIn</a>
       </div>
     </div>
 

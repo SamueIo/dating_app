@@ -6,8 +6,8 @@
       </label>
 
       <!-- RADIO -->
-      <div v-if="field.type === 'radio'" class="flex gap-4">
-        <label v-for="option in field.options" :key="option.value" class="flex items-center gap-1 text-white">
+      <div v-if="field.type === 'radio'" class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+        <label v-for="option in field.options" :key="option.value" class="flex items-center gap-2 text-white py-1 sm:py-0">
           <input
             type="radio"
             :name="field.name"
@@ -49,7 +49,7 @@
     </div>
     <button
       type="submit"
-      class="mt-4 w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+      class="mt-4 mb-4 w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <transition name="fade" mode="out-in">
         <span :key="buttonPlaceholder">{{ buttonPlaceholder }} {{ submitEmote }}</span>
@@ -87,8 +87,17 @@ const fields = [
   },
   { name: 'location', label: 'Location', type: 'text', placeholder: 'Your location' },
   { name: 'interested_in', label: 'Interested In', type: 'text', placeholder: 'Who you are interested in' },
-  { name: 'relationship_type', label: 'Relationship Type', type: 'text', placeholder: 'Type of relationship' },
-  { name: 'height', label: 'Height', type: 'number', placeholder: 'Your height in cm' },
+  {
+    name: 'relationship_type',
+    label: 'Relationship Type',
+    type: 'radio',
+    options: [
+      { label: 'Single', value: 'single' },
+      { label: 'In a relationship', value: 'in_relationship' },
+      { label: "Don't want to tell", value: 'dont_want_to_tell' },
+      { label: "It's complicated", value: 'complicated' },
+    ],
+  },  { name: 'height', label: 'Height', type: 'number', placeholder: 'Your height in cm' },
   { name: 'education', label: 'Education', type: 'text', placeholder: 'Your education' },
   { name: 'job_title', label: 'Job Title', type: 'text', placeholder: 'Your job title' },
   {
