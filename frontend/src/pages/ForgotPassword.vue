@@ -1,7 +1,8 @@
 <template>
         <!-- <GuestLayout> -->
-        <h2 class=" text-center text-2xl/9 font-bold tracking-tight text-white">Log in to your account</h2>
+        <h2 class=" text-center text-2xl/9 font-bold tracking-tight text-white">Type recovery email</h2>
         <div v-if="errorMessage" class="py-2 px-3 rounded text-white bg-red-500">{{ errorMessage }}</div>
+        <div v-if="submitMessage" class="py-2 px-3 rounded text-white bg-green-500">{{ submitMessage }}</div>
  
         <form @submit.prevent="submit" class="space-y-5 mt-6 w-full">
         <div>
@@ -16,17 +17,6 @@
             class="w-full mb-4 rounded-md bg-white/20 text-white placeholder-fuchsia-100 px-4 py-2
               focus:outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white/30 transition duration-300"
           />
-          <label for="password" class="block text-left text-sm font-medium text-fuchsia-200 mb-2">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            autocomplete="current-password"
-            required
-            v-model="data.password"
-            class="w-full mb-4 rounded-md bg-white/20 text-white placeholder-fuchsia-100 px-4 py-2
-              focus:outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white/30 transition duration-300"
-          />
           <div class="relative flex flex-row justify-between">
             <button
               type="submit"
@@ -34,7 +24,7 @@
                      border border-white/30 shadow-md hover:bg-white/30 hover:shadow-lg
                      transition duration-200 flex-nowrap" 
             >
-              Log in
+              Submit
             </button>
               <div v-if="loading"
                     class="absolute right-0 -top-4  ">
@@ -50,16 +40,7 @@
               Sign up here
             </router-link>
           </p>
-          
         </div>
-        <p class=" text-left ">
-        <router-link
-          :to="{ name: 'ForgotPassword' }"
-          class="font-semibold  text-xs text-pink-300 hover:text-white transition-colors duration-200"
-        >
-          Forgot password
-        </router-link>
-      </p>
       </form>
 
         <!-- </GuestLayout> -->
@@ -68,7 +49,6 @@
 <script setup>
 import axiosClient from '../axios';
 import { ref } from 'vue';
-import router from '../router';
 import Spinner from '../ui/Spinner.vue';
 import { resetAllStores } from '@/utils/resetStore';
 
@@ -76,22 +56,22 @@ const loading = ref(false)
 
 const data= ref({
   email: '',
-  password:'',
 })
 
 const errorMessage = ref('')
+const submitMessage = ref('')
 
 async function submit() {  
   loading.value = true;
   errorMessage.value = '';
+  submitMessage.value = '';
   resetAllStores();
   axiosClient.get('/sanctum/csrf-cookie')
     .then(response => {
-      const loginUrl = axiosClient.defaults.baseURL + '/login';
 
-      return axiosClient.post('/login', data.value)
+      return axiosClient.post('/forgot-password', data.value)
         .then(response => {
-          router.push({ name: 'Explore' });
+          submitMessage.value = 'Link sent to email'
         })
         .catch(error => {
           loading.value = false;
@@ -101,6 +81,8 @@ async function submit() {
           } else {
             errorMessage.value = 'Error on server side';
           }
+        }).finally(() => {
+            loading.value = false;
         });
     });
 }

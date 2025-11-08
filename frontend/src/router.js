@@ -2,20 +2,25 @@ import { createRouter, createWebHistory } from "vue-router";
 import DefaultLayout from "./components/layouts/DefaultLayout.vue";
 import GuestLayout from "./components/layouts/GuestLayout.vue";
 import PhotoUpload from "./components/photos/PhotoUpload.vue";
-// import UsersPhotos from "./components/photos/UsersPhotos.vue";
-import PublicProfileSettings from "./components/profile/PublicProfileSettings.vue";
 
 import Home from "./pages/Home.vue";
-import Explore from "./pages/Explore.vue";
+
 import Login from "./pages/Login.vue";
 import SignUp from "./pages/SignUp.vue";
-import NotFound from "./pages/NotFound.vue";
+import ForgotPassword from "./pages/ForgotPassword.vue";
+import PasswordReset from "./pages/PasswordReset.vue";
+
+import Explore from "./pages/Explore.vue";
 import Swipes from "./pages/Swipes.vue"
 import Messages from "./pages/Messages.vue";
-import Profile from "./pages/Profile.vue";
 import Matches from "./pages/Matches.vue";
+import Profile from "./pages/Profile.vue";
+
 import UserProfile from "./components/profile/UserProfile.vue";
+import PublicProfileSettings from "./components/profile/PublicProfileSettings.vue";
 import BlockedUsers from "./components/profile/BlockedUsers.vue";
+
+import NotFound from "./pages/NotFound.vue";
 
 import useUserStore from "./store/user";
 
@@ -45,6 +50,16 @@ export const routes = [
         path: 'signUp',
         name: 'SignUp',
         component: SignUp
+      },
+      {
+        path: 'forgotPassword',
+        name: 'ForgotPassword',
+        component: ForgotPassword
+      },
+      {
+        path: 'password-reset/:token',
+        name: 'PasswordReset',
+        component: PasswordReset
       },
     ]
   },
