@@ -230,8 +230,9 @@ const submit = async () => {
     description.value = "";
     is_main.value = false;
   } catch (err) {
+    
     console.error(err);
-    toast.error("Problem with photo uploading. Preview is kept.");
+    toast.error("Problem with photo uploading. Preview is kept.",err);
   } finally {
     submitValue.value = "Submit";
   }
