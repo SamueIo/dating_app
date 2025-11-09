@@ -39,6 +39,9 @@ class PhotoController extends Controller
     \Log::error('💥 Laravel error test!');
     error_log('🔥 Direct PHP error_log test');
 
+    foreach ($_FILES['photos']['error'] ?? [] as $i => $error) {
+    \Log::info("photos.$i upload error code: $error");
+}
     try {
         $request->validate([
             'photos.*' => 'required|image|max:51200', // 50MB max
