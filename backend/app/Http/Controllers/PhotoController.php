@@ -34,99 +34,61 @@ class PhotoController extends Controller
     }
 
     public function store(Request $request)
-{
-    \Log::info('✅ Laravel logging test works!');
-    \Log::error('💥 Laravel error test!');
-    error_log('🔥 Direct PHP error_log test');
-
-    foreach ($_FILES['photos']['error'] ?? [] as $i => $error) {
-    \Log::info("photos.$i upload error code: $error");
-}
-    try {
+    {
         $request->validate([
-            'photos.*' => 'required|image|max:51200', // 50MB max
-            'description' => 'nullable|string|max:255',
-            'is_main' => 'nullable|boolean',
+        'photos.*' => 'required|image|max:3072', // 3MB max
+        'description' => 'nullable|string|max:255',
+        'is_main' => 'nullable|boolean',
         ]);
-        \Log::info('✅ validation passed');
-    } catch (\Throwable $e) {
-        // Laravel validácia zlyhala – zachytíme a vypíšeme presne prečo
-        \Log::error('🚫 Validation failed', [
-            'message' => $e->getMessage(),
-            'errors' => method_exists($e, 'errors') ? $e->errors() : null,
-        ]);
-        error_log('🚫 Validation failed: ' . $e->getMessage());
-        return response()->json(['message' => $e->getMessage()], 422);
-    }
 
-    // ak validácia prejde
-    \Log::info('📩 Incoming files:', [
-        'hasFile' => $request->hasFile('photos'),
-        'all' => $request->all(),
-        'files' => $request->files->all(),
-    ]);
-    error_log('📩 hasFile=' . ($request->hasFile('photos') ? 'yes' : 'no'));
+        $user = Auth::user();
+
+        $currentMain = $request->is_main;
+        if ($request->is_main == 0 && !$user->photos()->exists()) {
+            $currentMain = 1;
+        }
+
+        if ($currentMain == 1) {
+            $user->photos()->update(['is_main' => 0]);
+        }
+
+        $manager = new ImageManager(new Driver());
+
+        $photos = [];
+
+        foreach ($request->file('photos') as $photoFile) {
+            // image load
+
+            $image = $manager->read($photoFile);
+
+            $width = 1200;
+            $height = intval($image->height() * ($width / $image->width()));
+
+            $image->resize($width, $height);
+
+            // compresion and webp
+            $encoded = $image->encodeByExtension('webp', quality: 70);
+
+            // name and storage
+            $fileName = uniqid('photo_') . '.webp';
+            $path = 'photos/' . $fileName;
+            Storage::disk('public')->put($path, (string) $encoded);
+
+            // db write
+            $photoRecord = $user->photos()->create([
+                'file_name' => $path,
+                'description' => $request->description,
+                'is_main' => $currentMain,
+            ]);
+
+            $photos[] = $photoRecord;
+        }
+
+        return response()->json([
+            'message' => 'Photos uploaded successfully',
+            'photos' => $photos,
+        ], 201);
 }
-
-//     public function store(Request $request)
-//     {
-//         \Log::info('✅ Laravel logging test works!');
-//         \Log::error('💥 Laravel error test!');
-//         error_log('🔥 Direct PHP error_log test');
-//         $request->validate([
-//         'photos.*' => 'required|image|max:51200', // 5MB max
-//         'description' => 'nullable|string|max:255',
-//         'is_main' => 'nullable|boolean',
-//         ]);
-//         \Log::info('📩 Incoming files:', [
-//             'hasFile' => $request->hasFile('photos'),
-//             'all' => $request->all(),
-//             'files' => $request->files->all(),
-//         ]);
-
-//         $user = Auth::user();
-
-//         $currentMain = $request->is_main;
-//         if ($request->is_main == 0 && !$user->photos()->exists()) {
-//             $currentMain = 1;
-//         }
-
-//         if ($currentMain == 1) {
-//             $user->photos()->update(['is_main' => 0]);
-//         }
-
-//         $manager = new ImageManager(new Driver());
-
-//         $photos = [];
-
-// if (!$request->hasFile('photos')) {
-//     \Log::error('⚠️ No files detected in request', [
-//         'request_all' => $request->all(),
-//         'request_files' => $request->files->all(),
-//     ]);
-//     return response()->json(['message' => 'No photos detected in upload.'], 422);
-// }
-
-// foreach ($request->file('photos') as $index => $photoFile) {
-//     if (!$photoFile->isValid()) {
-//         \Log::error("❌ Upload error for photo #$index", [
-//             'error_code' => $photoFile->getError(),
-//             'error_message' => $photoFile->getErrorMessage(),
-//             'original_name' => $photoFile->getClientOriginalName(),
-//             'size' => $photoFile->getSize(),
-//             'mime' => $photoFile->getMimeType(),
-//         ]);
-
-//         return response()->json([
-//             'message' => $photoFile->getErrorMessage(),
-//             'code' => $photoFile->getError(),
-//         ], 422);
-//     }
-// }
-
-
-
-// }
     public function setMain($id)
     {
         $user = auth()->user();
