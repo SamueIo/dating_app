@@ -1,9 +1,11 @@
 <template>
   <div class="min-h-screen">
 
+    <div v-if="message">{{ message }}</div>
     <!-- Message when no photos exist -->
     <div v-if="photos.length === 0" class="text-white">No photos yet</div>
 
+    
     <!-- Grid of photos -->
     <div v-else class="grid grid-cols-3 grid-auto-rows-[200px] gap-4 grid-flow-dense">
 
@@ -230,9 +232,10 @@ const submit = async () => {
     description.value = "";
     is_main.value = false;
   } catch (err) {
-    
+    message.value = err.message
     console.error(err);
-    toast.error(err);
+
+    toast.error(err.message);
   } finally {
     submitValue.value = "Submit";
   }
