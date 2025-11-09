@@ -35,6 +35,9 @@ class PhotoController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('✅ Laravel logging test works!');
+        \Log::error('💥 Laravel error test!');
+        error_log('🔥 Direct PHP error_log test');
         $request->validate([
         'photos.*' => 'required|image|max:51200', // 5MB max
         'description' => 'nullable|string|max:255',
