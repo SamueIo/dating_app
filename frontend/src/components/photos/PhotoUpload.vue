@@ -232,7 +232,7 @@ const submit = async () => {
     description.value = "";
     is_main.value = false;
   } catch (err) {
-    message.value = err.message
+    message.value = err.response.data
     console.error(err);
 
     toast.error(err.message);
