@@ -36,7 +36,7 @@ class PhotoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-        'photos.*' => 'required|image|max:5120', // 5MB max
+        'photos.*' => 'required|image|max:51200', // 5MB max
         'description' => 'nullable|string|max:255',
         'is_main' => 'nullable|boolean',
         ]);
