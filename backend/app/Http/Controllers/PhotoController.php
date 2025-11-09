@@ -43,6 +43,11 @@ class PhotoController extends Controller
         'description' => 'nullable|string|max:255',
         'is_main' => 'nullable|boolean',
         ]);
+        \Log::info('📩 Incoming files:', [
+            'hasFile' => $request->hasFile('photos'),
+            'all' => $request->all(),
+            'files' => $request->files->all(),
+        ]);
 
         $user = Auth::user();
 
