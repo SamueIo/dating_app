@@ -232,7 +232,7 @@ const submit = async () => {
   } catch (err) {
     
     console.error(err);
-    toast.error("Problem with photo uploading. Preview is kept.",err);
+    toast.error(err);
   } finally {
     submitValue.value = "Submit";
   }
