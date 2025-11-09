@@ -56,38 +56,33 @@ class PhotoController extends Controller
 
         $photos = [];
 
-        foreach ($request->file('photos') as $photoFile) {
-            // image load
+if (!$request->hasFile('photos')) {
+    \Log::error('⚠️ No files detected in request', [
+        'request_all' => $request->all(),
+        'request_files' => $request->files->all(),
+    ]);
+    return response()->json(['message' => 'No photos detected in upload.'], 422);
+}
 
-            $image = $manager->read($photoFile);
-
-            $width = 1200;
-            $height = intval($image->height() * ($width / $image->width()));
-
-            $image->resize($width, $height);
-
-            // compresion and webp
-            $encoded = $image->encodeByExtension('webp', quality: 70);
-
-            // name and storage
-            $fileName = uniqid('photo_') . '.webp';
-            $path = 'photos/' . $fileName;
-            Storage::disk('public')->put($path, (string) $encoded);
-
-            // db write
-            $photoRecord = $user->photos()->create([
-                'file_name' => $path,
-                'description' => $request->description,
-                'is_main' => $currentMain,
-            ]);
-
-            $photos[] = $photoRecord;
-        }
+foreach ($request->file('photos') as $index => $photoFile) {
+    if (!$photoFile->isValid()) {
+        \Log::error("❌ Upload error for photo #$index", [
+            'error_code' => $photoFile->getError(),
+            'error_message' => $photoFile->getErrorMessage(),
+            'original_name' => $photoFile->getClientOriginalName(),
+            'size' => $photoFile->getSize(),
+            'mime' => $photoFile->getMimeType(),
+        ]);
 
         return response()->json([
-            'message' => 'Photos uploaded successfully',
-            'photos' => $photos,
-        ], 201);
+            'message' => $photoFile->getErrorMessage(),
+            'code' => $photoFile->getError(),
+        ], 422);
+    }
+}
+
+
+
 }
     public function setMain($id)
     {
