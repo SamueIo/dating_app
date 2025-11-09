@@ -237,6 +237,7 @@ const onTouchMove = (event) => {
   touchEndX.value = event.touches[0].clientX
 }
 
+
 // Handle touch end event
 const onTouchEnd = () => {
   const swipeThreshold = 50

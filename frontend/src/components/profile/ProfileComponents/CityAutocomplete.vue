@@ -1,9 +1,10 @@
 <template>
-  <div class="relative w-full" 
-       @keydown.down.prevent="onArrowDown" 
-       @keydown.up.prevent="onArrowUp" 
-       @keydown.enter.prevent="onEnter">
-
+  <div 
+    class="relative w-full" 
+    @keydown.down.prevent="onArrowDown" 
+    @keydown.up.prevent="onArrowUp" 
+    @keydown.enter.prevent="onEnter"
+  >
     <!-- Input field -->
     <input
       type="text"
@@ -34,95 +35,95 @@
   </div>
 </template>
 
-
 <script setup>
-import { ref, watch } from 'vue'
-import debounce from 'lodash.debounce'
+import { ref, watch } from 'vue';
+import debounce from 'lodash.debounce';
 
+// --- Props ---
 const props = defineProps({
   modelValue: String,
-})
+});
 
-const emit = defineEmits(['update:modelValue', 'selectedLocationCoords'])
+// --- Emits ---
+const emit = defineEmits(['update:modelValue', 'selectedLocationCoords']);
 
-const search = ref(props.modelValue || '')
-const suggestions = ref([])
-const highlightedIndex = ref(-1)
-const inputEl = ref(null)
+// --- Reactive state ---
+const search = ref(props.modelValue || '');
+const suggestions = ref([]);
+const highlightedIndex = ref(-1);
+const inputEl = ref(null);
 
+// --- Watch prop changes ---
 watch(() => props.modelValue, (val) => {
-  if (val !== search.value) {
-    search.value = val
-  }
-})
+  if (val !== search.value) search.value = val;
+});
 
-const API_KEY = '911c2fcfded94b25997737732df531c0' 
+// --- API key ---
+const API_KEY = '911c2fcfded94b25997737732df531c0';
 
+// --- Fetch suggestions (debounced) ---
 const fetchSuggestions = debounce(async () => {
   if (search.value.length < 2) {
-    suggestions.value = []
-    highlightedIndex.value = -1
-    return
+    suggestions.value = [];
+    highlightedIndex.value = -1;
+    return;
   }
 
   const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(
     search.value
-  )}&type=city&lang=sk&limit=5&apiKey=${API_KEY}`
+  )}&type=city&lang=sk&limit=5&apiKey=${API_KEY}`;
 
   try {
-    const res = await fetch(url)
-    const data = await res.json()
-    suggestions.value = data.features || []
-    highlightedIndex.value = -1
+    const res = await fetch(url);
+    const data = await res.json();
+    suggestions.value = data.features || [];
+    highlightedIndex.value = -1;
   } catch (error) {
-    console.error('Geoapify API error:', error)
-    suggestions.value = []
+    console.error('Geoapify API error:', error);
+    suggestions.value = [];
   }
-}, 300)
+}, 300);
 
+// --- Input handler ---
 function onInput() {
-  fetchSuggestions()
-  emit('update:modelValue', search.value)
+  fetchSuggestions();
+  emit('update:modelValue', search.value);
 }
 
+// --- Select a city from suggestions ---
 function selectCity(city) {
+  const name = city.properties.city || city.properties.formatted;
+  const lat = city.properties.lat;
+  const lon = city.properties.lon;
 
-  const name = city.properties.city || city.properties.formatted
-  const lat = city.properties.lat
-  const lon = city.properties.lon
+  search.value = name;
+  emit('update:modelValue', name);
+  emit('selectedLocationCoords', { lat, lon });
 
-  search.value = name
-  emit('update:modelValue', name)
-  emit('selectedLocationCoords', { lat, lon })
-
-  suggestions.value = []
-  highlightedIndex.value = -1
+  suggestions.value = [];
+  highlightedIndex.value = -1;
 }
 
-
+// --- Keyboard navigation ---
 function onArrowDown() {
-  if (suggestions.value.length === 0) return
-  if (highlightedIndex.value < suggestions.value.length - 1) {
-    highlightedIndex.value++
-  } else {
-    highlightedIndex.value = 0
-  }
+  if (suggestions.value.length === 0) return;
+  highlightedIndex.value =
+    highlightedIndex.value < suggestions.value.length - 1
+      ? highlightedIndex.value + 1
+      : 0;
 }
-
 
 function onArrowUp() {
-  if (suggestions.value.length === 0) return
-  if (highlightedIndex.value > 0) {
-    highlightedIndex.value--
-  } else {
-    highlightedIndex.value = suggestions.value.length - 1
-  }
+  if (suggestions.value.length === 0) return;
+  highlightedIndex.value =
+    highlightedIndex.value > 0
+      ? highlightedIndex.value - 1
+      : suggestions.value.length - 1;
 }
 
 function onEnter() {
   if (highlightedIndex.value >= 0 && suggestions.value[highlightedIndex.value]) {
-    selectCity(suggestions.value[highlightedIndex.value])
+    selectCity(suggestions.value[highlightedIndex.value]);
   }
 }
 </script>
-

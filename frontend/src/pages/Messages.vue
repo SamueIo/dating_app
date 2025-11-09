@@ -3,7 +3,7 @@
     <Chat :conversationData="selectedConversation" @close="handleCloseChat" />
   </div>
   <div v-else>
-    <!-- Prepínač medzi Matches a Messages -->
+    <!-- toggler Matches Messages -->
     <div class="flex justify-center gap-4 my-4">
       <button
         :class="[

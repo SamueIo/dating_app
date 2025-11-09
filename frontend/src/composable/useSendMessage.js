@@ -1,6 +1,9 @@
-// src/composables/useSendMessage.js
 import { ref } from 'vue';
 
+/**
+ * useSendMessage
+ * Handles sending messages with optimistic updates.
+ */
 export function useSendMessage(MessagesStore, conversationStore, axiosClient, loggedUserId, scrollToBottom) {
   const sendLoading = ref(false);
   const error = ref(null);
@@ -10,10 +13,9 @@ export function useSendMessage(MessagesStore, conversationStore, axiosClient, lo
     error.value = null;
 
     try {
-      // Optimistic update, temp ID
+      // Optimistic update with temp ID
       const content = formData.get('body');
       const tempId = 'temp-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-
       formData.append('temp_id', tempId);
 
       const optimisticMessage = {
@@ -22,24 +24,22 @@ export function useSendMessage(MessagesStore, conversationStore, axiosClient, lo
         body: content,
         created_at: new Date().toISOString(),
         seen: false,
-
       };
 
       if (!MessagesStore.messagesByConversation[conversationId]) {
         MessagesStore.messagesByConversation[conversationId] = [];
       }
 
-      MessagesStore.messagesByConversation[conversationId].push(optimisticMessage);      
+      MessagesStore.messagesByConversation[conversationId].push(optimisticMessage);
       scrollToBottom();
 
-      // Sedding message to server
+      // Send message to server
       await axiosClient.post(`/api/conversation/${conversationId}/messages`, formData);
-
 
     } catch (e) {
       error.value = e;
       console.error('Failed to send message', e);
-      // Tu môžeš riešiť rollback alebo notifikácie
+      // Optional: handle rollback or notifications here
     } finally {
       sendLoading.value = false;
     }
@@ -51,4 +51,3 @@ export function useSendMessage(MessagesStore, conversationStore, axiosClient, lo
     handleSendMessage
   };
 }
-

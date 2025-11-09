@@ -13,7 +13,22 @@
     <div v-if="loading" class="fixed inset-0 flex justify-center items-center">
       <Spinner />
     </div>
-    
+    <div v-else-if="users.length === 0 " class="flex items-center justify-center"
+          :style="{height: `calc(100vh - ${bottomNavStore.height}px)` }"
+          >
+        <div 
+          class="max-w-md p-8 rounded-xl bg-pink-400 shadow-lg text-center select-none"
+          style="background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #f472b6 100%)"
+        >
+          <h1 class="text-4xl font-extrabold text-pink-800 mb-4 flex justify-center items-center space-x-3">
+            <span>No-one in this area</span> 
+            <span class="text-5xl">😢</span>
+          </h1>
+          <p class="text-lg text-pink-700">
+            Changing your filters might help you find more people!
+          </p>
+        </div>
+      </div>
     <!-- User grid -->
     <div v-else>
       <div class="grid gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 hide-scrollbar">

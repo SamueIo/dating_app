@@ -1,3 +1,4 @@
+<!-- No need to explain :) -->
 <template>
         Page not found :(
 </template>

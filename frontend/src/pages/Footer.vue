@@ -22,9 +22,7 @@
   </footer>
 </template>
 
-<script setup>
-// Footer is static, no logic needed for now
-</script>
+
 
 <style scoped>
 footer a {

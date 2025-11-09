@@ -23,7 +23,7 @@
           <div class="absolute inset-0 pointer-events-none">
             <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
           </div>
-          <!-- Meno, vek a pohlavie – v strede dole -->
+          <!-- Other unformations -->
           <div class="absolute inset-x-0 bottom-12 flex flex-col items-center px-4 select-none">
             <h1 class="text-2xl sm:text-3xl font-extrabold bg-white bg-clip-text text-transparent drop-shadow-2xl text-center">
               {{ props.userData.name }}, <span class="text-white text-base sm:text-xl drop-shadow-2xl">{{ calculateAge(birthDate) }}</span>
@@ -31,7 +31,7 @@
             <div class="text-white text-sm sm:text-base drop-shadow-2xl">{{ props.userData.profile.location }}</div>
           </div>
         
-          <!-- Popisok (description) – stále dole, ale v strede alebo vľavo podľa preferencie -->
+          <!-- Photo description -->
           <p 
             v-if="mainPhoto.description" 
             class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent"

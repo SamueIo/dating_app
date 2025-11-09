@@ -1,54 +1,65 @@
 <template>
-  <div 
+  <!-- Profile Modal Container -->
+  <div
     class="relative p-2 max-w-2xl mx-auto bg-black/70 backdrop-blur-lg rounded-xl text-white shadow-xl border border-purple-600 overflow-hidden"
     :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`, width: '100%' }"
   >
 
+    <!-- Custom Action Slot -->
     <div class="z-60">
       <slot name="actions"></slot>
     </div>
- 
-      <div 
-        class="p-0 pb-14 h-full overflow-y-auto hide-scrollbar"
-      >
 
+    <!-- Scrollable Content -->
+    <div class="p-0 pb-14 h-full overflow-y-auto hide-scrollbar">
+
+      <!-- Loading Spinner -->
       <div v-if="loading" class="flex justify-center items-center py-6">
         <Spinner/>
       </div>
-      <div v-else
-      :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`}">
+
+      <!-- Profile Content -->
+      <div v-else :style="{ maxHeight: `calc(100vh - ${bottomNavStore.height}px)`}">
+
         <!-- MAIN PHOTO -->
-        <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg  mb-4">
-          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" 
-            class="w-full object-cover z-60" 
-            @click="openPhotoModal(mainPhoto)"/>
+        <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg mb-4">
+          <img
+            :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`"
+            class="w-full object-cover z-60"
+            @click="openPhotoModal(mainPhoto)"
+          />
+
+          <!-- Gradient overlay at bottom of photo -->
           <div class="absolute inset-0 pointer-events-none">
             <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
           </div>
-          <!-- Meno, vek a pohlavie – v strede dole -->
+
+          <!-- Name, Age, Location -->
           <div class="absolute inset-x-0 bottom-12 flex flex-col items-center px-4 select-none">
             <h1 class="text-2xl sm:text-3xl font-extrabold bg-white bg-clip-text text-transparent drop-shadow-2xl text-center">
-              {{ userData.name }}, <span class="text-white text-base sm:text-xl drop-shadow-2xl">{{ calculateAge(birthDate) }}</span>
+              {{ userData.name }}, 
+              <span class="text-white text-base sm:text-xl drop-shadow-2xl">{{ calculateAge(birthDate) }}</span>
             </h1>
             <div class="text-white text-sm sm:text-base drop-shadow-2xl">{{ userData.profile.location }}</div>
           </div>
-        
-          <!-- Popisok (description) – stále dole, ale v strede alebo vľavo podľa preferencie -->
+
+          <!-- Photo Description -->
           <p 
             v-if="mainPhoto.description" 
-            class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent"
+            class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none"
           >
             {{ mainPhoto.description }}
           </p>
         </div>
 
-        <div class="relative  p-4">
+        <!-- About Section -->
+        <div class="relative p-4">
           <h2 class="ml-2 pb-1">About:</h2>
-          <div class="bg-black/50  rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb-2" >
+          <div class="bg-black/50 rounded-md p-4 text-gray-300 italic text-center text-sm sm:text-base mb-2">
             {{ userData.profile.bio || "This user hasn't added a bio yet." }}
           </div>
 
-          <!-- SECOND PHOTO + INFO -->
+          <!-- SECOND PHOTO -->
           <div v-if="otherPhotos[0]" class="space-y-4 mb-6">
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
               <img 
@@ -56,34 +67,39 @@
                 @click="openPhotoModal(otherPhotos[0])"
                 class="w-full object-cover" 
               />
-
-                <p v-if="otherPhotos[0].description"
-                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
+              <p v-if="otherPhotos[0].description"
+                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none"
+              >
                 {{ otherPhotos[0].description }}
               </p>
             </div>
           </div>
 
+          <!-- Basic Info Grid -->
           <div class="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-200 mb-6">
-            <div>📏 <strong>Gender:</strong> {{  userData.profile.gender  }} cm</div>
+            <div>⚧ <strong>Gender:</strong> {{  userData.profile.gender }}</div>
             <div>📏 <strong>Height:</strong> {{ userData.profile.height }} cm</div>
             <div>💼 <strong>Job:</strong> {{ userData.profile.job_title }}</div>
             <div>🎓 <strong>Education:</strong> {{ userData.profile.education }}</div>
           </div>
 
-          <!-- THIRD PHOTO + MORE INFO -->
+          <!-- THIRD PHOTO -->
           <div v-if="otherPhotos[1]" class="space-y-4 mb-6">
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-              <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" 
-              class="w-full object-cover" 
-              @click="openPhotoModal(otherPhotos[1])"/>
+              <img 
+                :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" 
+                class="w-full object-cover" 
+                @click="openPhotoModal(otherPhotos[1])"
+              />
               <p v-if="otherPhotos[1].description"
-                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
+                 class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none"
+              >
                 {{ otherPhotos[1].description }}
               </p>
             </div>
           </div>
 
+          <!-- Additional Info Grid -->
           <div class="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-gray-200 mb-8">
             <div>🚬 <strong>Smoking:</strong> {{ userData.profile.smoking }}</div>
             <div>🍷 <strong>Drinking:</strong> {{ userData.profile.drinking }}</div>
@@ -95,12 +111,12 @@
           <div v-if="extraPhotos.length" class="pt-6 pb-12">
             <h3 class="text-base sm:text-lg font-semibold mb-3 text-gray-100 drop-shadow-md">📸 More Photos</h3>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div v-for="(photo, index) in extraPhotos" 
+              <div 
+                v-for="(photo, index) in extraPhotos" 
                 :key="index" 
-                @click="openPhotoModal(index)"
-                class="relative flex flex-col rounded-md overflow-hidden 
-                shadow-md hover:shadow-xl transition-transform duration-300 
-                hover:scale-105 border border-purple-600">
+                @click="openPhotoModal(photo)"
+                class="relative flex flex-col rounded-md overflow-hidden shadow-md hover:shadow-xl transition-transform duration-300 hover:scale-105 border border-purple-600"
+              >
                 <img
                   :src="`${API_BASE_URL}/storage/${photo.file_name}`"
                   class="object-cover h-24 sm:h-32 w-full"
@@ -108,7 +124,7 @@
                 />
                 <p
                   v-if="photo.description"
-                  class="absolute left-2 bottom-2 text-xs text-gray-300 truncate select-none .accent"
+                  class="absolute left-2 bottom-2 text-xs text-gray-300 truncate select-none"
                   :title="photo.description"
                 >
                   {{ photo.description }}
@@ -117,10 +133,11 @@
             </div>
           </div>
         </div>
-        
 
       </div>
     </div>
+
+    <!-- Photo Modal -->
     <PhotoModal
       v-if="isPhotoModalOpen"
       :images="currentAttachments"
@@ -130,15 +147,28 @@
   </div>
 </template>
 
-
-
 <script setup>
+/**
+ * UserProfileModal Component
+ * 
+ * Props:
+ * - userId: Number - the user ID to load
+ * - visible: Boolean - whether modal is visible
+ * 
+ * Emits:
+ * - close: emitted when user closes modal
+ * 
+ * Features:
+ * - Loads user profile via API
+ * - Shows main photo, secondary photos, extra photos
+ * - Opens photo modal for each photo
+ * - Displays user info and bio
+ */
 
 import axiosClient from '../../axios';
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { calculateAge } from '../../utils/age';
 import Spinner from '../../ui/Spinner.vue';
-import { useRoute } from 'vue-router';
 import { API_BASE_URL } from '@/utils/constants';
 import { useBottomNavStore } from '@/store/showBottomNavStore';
 import PhotoModal from './PhotoModal.vue';
@@ -152,31 +182,24 @@ const emit = defineEmits(['close']);
 
 const userData = ref(null);
 const loading = ref(true);
-const route = useRoute();
 
 // PhotoModal state
-const isPhotoModalOpen = ref(false)
-const currentAttachments = ref([])  // Array of photo objects { file_name, description }
-const currentImageIndex = ref(0)
+const isPhotoModalOpen = ref(false);
+const currentAttachments = ref([]);
+const currentImageIndex = ref(0);
 
+// Bottom nav store
+const bottomNavStore = useBottomNavStore();
 
+// Computed for main and other photos
+const allPhotos = computed(() => userData.value?.photos || []);
+const mainPhoto = computed(() => allPhotos.value.find(p => p.is_main) || null);
+const otherPhotos = computed(() => allPhotos.value.filter(p => !p.is_main) || []);
+const extraPhotos = computed(() => otherPhotos.value.slice(2));
 
-/**
- * Open photo modal from allPhotos array
- * @param {Arrayr} clickedPhotos - All photos which can be listed
- */
-const openPhotoModal = (clickedPhoto) => {  
-  currentAttachments.value = allPhotos.value
-  currentImageIndex.value = allPhotos.value.indexOf(clickedPhoto)
-  isPhotoModalOpen.value = true
-}
+const birthDate = computed(() => userData.value?.profile?.birth_date || null);
 
-// 
-// all photos from 
-const allPhotos = computed(() => {return userData.value?.photos || []})
-
-const bottomNavStore = useBottomNavStore()
-
+// Load user data when userId changes
 watch(
   () => props.userId,
   async (newId) => {
@@ -185,9 +208,8 @@ watch(
     try {
       const response = await axiosClient.get(`/api/users/${newId}`);
       userData.value = response.data;
-      
     } catch (err) {
-      console.error('Failed to load user ', err);
+      console.error('Failed to load user', err);
     } finally {
       loading.value = false;
     }
@@ -195,23 +217,13 @@ watch(
   { immediate: true }
 );
 
-
-const mainPhoto = computed(() => {
-    return userData.value?.photos.find(photo => photo.is_main) || null
-})
-const otherPhotos = computed(() => {
-    return userData.value?.photos.filter(photo => !photo.is_main) || []
-})
-const extraPhotos = computed(() => otherPhotos.value.slice(2)) // všetky fotky po prvej a druhej
-
-
-
-const birthDate = computed(() => userData.value?.profile?.birth_date || null);
-// calculateAge(birthDate)
+// Open photo modal
+function openPhotoModal(clickedPhoto) {
+  currentAttachments.value = allPhotos.value;
+  currentImageIndex.value = allPhotos.value.indexOf(clickedPhoto);
+  isPhotoModalOpen.value = true;
+}
 
 const close = () => emit('close');
 
 </script>
-
-
-

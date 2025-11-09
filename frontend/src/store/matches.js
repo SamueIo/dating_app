@@ -1,34 +1,64 @@
-
 import { defineStore } from "pinia";
 import axiosClient from "../axios";
 import { useToast } from "vue-toastification";
 import router from "../router";
 
+/**
+ * Matches Store
+ * 
+ * This store manages user matches in the dating app.
+ * Features include:
+ * - fetching matches from the server
+ * - storing matches in state
+ * - listening for new matches in real-time using Laravel Echo
+ */
 export const useMatchesStore = defineStore('matches', {
+
+    /**
+     * State of the matches store
+     */
     state: () => ({
+        /** Array of match objects */
         matches: [],
+
+        /** Loading state for API requests */
         loading: false,
-        loaded: false
+
+        /** Flag indicating whether matches have been loaded from the server */
+        loaded: false,
     }),
 
+    /**
+     * Actions for managing matches
+     */
     actions: {
+
+        /**
+         * Fetch matches from the API.
+         * If matches are already loaded, this function will return immediately.
+         */
         async fetchMatches() {
-            if(this.loaded) return
+            if (this.loaded) return;
 
-            this.loading = true
-            try{
-                const response = await axiosClient.get('/api/matches')
-                this.matches = response.data
-                this.loaded = true
-
-            }catch (err){
-                console.error('Failed to fetch matches', err)
-            }finally{
-                this.loading = false
+            this.loading = true;
+            try {
+                const response = await axiosClient.get('/api/matches');
+                this.matches = response.data;
+                this.loaded = true;
+            } catch (err) {
+                console.error('Failed to fetch matches', err);
+            } finally {
+                this.loading = false;
             }
         },
 
-        listenFroNewMatches(userId){
+        /**
+         * Listen for new matches in real-time via Laravel Reverb.
+         * When a new match occurs, show a toast notification and add it to the matches array.
+         * 
+         * @param {number|string} userId - The current user's ID
+         */
+        listenFroNewMatches(userId) {
             const messages = [
                 "It's a match! You both liked each other 💖",
                 "Mutual attraction! 💘 Check your matches!",
@@ -36,21 +66,26 @@ export const useMatchesStore = defineStore('matches', {
                 "🔥 Sparks flew! You have a mutual match!",
                 "💖 Someone likes you back! It's a match!"
             ];
+
             const toast = useToast();
+
             window.Echo.private(`userMatch${userId}`)
-            .listen('.newMatch', (e) => {
-            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                
-            toast.success(randomMessage, { timeout: 5000,
-                        pauseOnHover: true,  
+                .listen('.newMatch', (e) => {
+                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+                    toast.success(randomMessage, {
+                        timeout: 5000,
+                        pauseOnHover: true,
                         toastClassName: 'custom-toast',
                         onClick: () => {
-                        router.push({ path: 'Matches', query: { highlightMatch: true } });
-        }
-             });
-                this.matches.push(e.match)
-            });
+                            router.push({ path: 'Matches', query: { highlightMatch: true } });
+                        }
+                    });
+
+                    // Add new match to state
+                    this.matches.push(e.match);
+                });
         }
     }
 
-})
+});
