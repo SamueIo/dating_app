@@ -231,15 +231,28 @@ const submit = async () => {
     photosPreview.value = [];
     description.value = "";
     is_main.value = false;
-  } catch (err) {
-    message.value = err.response.data
-    console.error(err);
+     } catch (err) {
+      console.error(err);
 
-    toast.error(err.message);
-  } finally {
-    submitValue.value = "Submit";
-  }
-};
+      // Laravel validation errors
+      if (err.response && err.response.status === 422) {
+        const errors = err.response.data.errors;
+
+        // Skús zobraziť konkrétne chyby pre fotky
+        if (errors && errors["photos.0"]) {
+          toast.error("Maximum size of single photo is 3MB");
+        } else {
+          // Všeobecná chyba
+          toast.error(err.response.data.message || "Validation failed");
+        }
+      } else {
+        // Iné chyby
+        toast.error(err.message || "Something went wrong");
+      }
+    } finally {
+      submitValue.value = "Submit";
+    }
+}
 
 // Computed main and other photos
 const mainPhoto = computed(() => Array.isArray(photos.value) ? photos.value.find(p => p.is_main) : null);
