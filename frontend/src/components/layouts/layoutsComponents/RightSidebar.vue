@@ -44,7 +44,7 @@
             :showEveryChat="false"
             :showCloseButton="true"
             @select="handleStartConversation"
-            class="flex flex-col items-end pt-18"
+            class="flex flex-col items-end pt-10"
           />
         </div>
     </aside>
@@ -61,7 +61,6 @@ import useUserStore from '../../../store/user';
 import { useConversationStore } from '../../../store/conversationsAndLastMessage';
 import { useActiveConversationStore } from '../../../store/useActiveConversationStore';
 import UserAvatarMenu from '../../profile/ProfileComponents/UserAvatarMenu.vue';
-// import { useChatUIStore } from '../../../store/chatUIStore';
 
 const route = useRoute();
 const chatUIStore = useChatUIStore();

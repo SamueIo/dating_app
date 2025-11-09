@@ -10,11 +10,14 @@
     }"
   >
     <!-- Close button -->
-    <button @click="handleCloseChat" class="absolute top-1 right-4 text-gray-600 hover:text-red-500 z-10 text-xl">
+    <button
+      @click="handleCloseChat"
+      class="absolute top-1 right-4 text-gray-600 hover:text-red-500 z-10 text-xl"
+    >
       ✕
     </button>
 
-    <!-- Header -->
+    <!-- Chat header showing the other user's name -->
     <div
       class="px-4 text-2xl font-extrabold text-transparent bg-clip-text
              bg-gradient-to-r from-pink-400 via-purple-500 to-pink-600
@@ -24,26 +27,25 @@
       {{ props.conversationData.other_user.name }}
     </div>
 
-    <!-- Messages list-->
+    <!-- Messages container -->
     <div
       ref="messagesContainer"
       class="flex-1 overflow-y-auto break-words border border-white/20 p-1 
-             flex flex-col space-y-1 mb-2  rounded hide-scrollbar"
+             flex flex-col space-y-1 mb-2 rounded hide-scrollbar"
     >
       <template v-for="(item, index) in groupedMessages" :key="index">
-        <!-- Date separator -->
+        <!-- Date separator between messages -->
         <div v-if="item.type === 'date'" class="flex justify-center my-2">
           <span class="px-3 py-1 text-xs text-white/80 bg-white/10 rounded-full shadow">
             {{ formatDate(item.date) }}
           </span>
         </div>
 
-        <!-- Message -->
+        <!-- Individual message -->
         <div
           v-else-if="item.type === 'message'"
           :class="[
-            'px-3 py-1 text-sm max-w-[75%] break-words',
-            'rounded-lg shadow-sm',
+            'px-3 py-1 text-sm max-w-[75%] break-words rounded-lg shadow-sm',
             item.data.user_id === loggedUserId
               ? 'bg-blue-600 text-white self-end rounded-br-none'
               : 'bg-purple-200 text-gray-900 self-start rounded-bl-none'
@@ -52,6 +54,7 @@
         >
           {{ item.data.body }}
 
+          <!-- Timestamp and seen status -->
           <div :class="['flex text-xs items-center', item.data.user_id == loggedUserId ? 'justify-end' : 'justify-start']">
             <div v-if="item.data.seen && item.data.user_id === loggedUserId" class="flex items-center">
               <CheckIcon class="w-4 h-4 text-black" title="Seen" />
@@ -61,7 +64,7 @@
             </div>
           </div>
 
-          <!-- Attachments -->
+          <!-- Attachments: only images and downloadable files -->
           <div v-if="item.data.attachments && item.data.attachments.length" class="mt-2">
             <template v-for="(attachment, index) in item.data.attachments" :key="index">
               <img
@@ -71,20 +74,6 @@
                 class="rounded cursor-pointer hover:opacity-80 h-40 w-40 object-cover"
                 @click="openImageViewer(item.data.attachments, index)"
               />
-              <video
-                v-else-if="`${API_BASE_URL}attachment.type === 'video'`"
-                controls
-                class="max-w-full rounded"
-              >
-                <source :src="`${API_BASE_URL}/storage/${attachment.url}`" :type="attachment.mime_type" />
-              </video>
-              <audio
-                v-else-if="attachment.type === 'audio'"
-                controls
-                class="w-full"
-              >
-                <source :src="`${API_BASE_URL}/storage/${attachment.url}`" :type="attachment.mime_type" />
-              </audio>
               <a
                 v-else
                 :href="`/storage/${attachment.url}`"
@@ -99,154 +88,118 @@
       </template>
     </div>
 
-    <!-- Input -->
-     
-    <ChatInput :conversationId="props.conversationData.id" 
-      @send="onSubmit" 
+    <!-- Chat input component -->
+    <ChatInput
+      :conversationId="props.conversationData.id"
+      @send="onSubmit"
       class="w-full"
-      style="padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);"  />
+      style="padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);"
+    />
   </div>
 
-  <!-- Photos preview modal -->
-  <PhotoModal v-if="isPhotoModalOpen"
+  <!-- Photo preview modal -->
+  <PhotoModal
+    v-if="isPhotoModalOpen"
     :images="currentAttachments"
     :startIndex="currentImageIndex"
-    @close="isPhotoModalOpen = false"/>
-
+    @close="isPhotoModalOpen = false"
+  />
 </template>
 
-
 <script setup>
+/**
+ * ChatPanel.vue
+ * 
+ * This component renders a chat panel for a conversation, including:
+ * - A header with the other user's name
+ * - Scrollable messages grouped by date
+ * - Image attachments with preview modal
+ * - Chat input for sending messages
+ */
+
 import ChatInput from './ChatInput.vue';
 import { useMessagesStore } from '../../store/messages';
 import { useConversationStore } from '../../store/conversationsAndLastMessage';
 import useUserStore from '../../store/user';
-import { useChatMessages } from '../../composable/useChatMessages';
 import axiosClient from '../../axios';
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import { CheckIcon } from '@heroicons/vue/24/solid'
-import { useSendMessage } from '../../composable/useSendMessage';
+import { ref, computed } from 'vue';
+import { CheckIcon } from '@heroicons/vue/24/solid';
 import { API_BASE_URL } from '@/utils/constants';
+
 import PhotoModal from '../modals/PhotoModal.vue';
 
+import { useSendMessage } from '../../composable/useSendMessage';
+import { useChatMessages } from '../../composable/useChatMessages';
+import { useViewport } from '@/composable/useViewport';
+import { groupMessagesByDate } from '@/composable/useMessagesGrouping';
+import { usePhotoViewer } from '@/composable/usePhotoViewer';
 
-// Stores
+import { formatDate } from '@/utils/date';
+
+/** Stores */
 const MessagesStore = useMessagesStore();
 const conversationStore = useConversationStore();
 const userStore = useUserStore();
 const loggedUserId = ref(userStore.user.id);
 
-// Photo modal
-const currentAttachments= ref([])
-const isPhotoModalOpen= ref(false)
-const currentImageIndex= ref(0)
-
-const groupedMessages = computed(() => groupMessagesByDate(messages.value));
-
-const viewportHeight = ref(window.visualViewport?.height || window.innerHeight);
-
-const updateViewportHeight = () => {
-  viewportHeight.value = window.visualViewport?.height || window.innerHeight
-};
-// Echo
-const windowEcho = window.Echo;
-
-
+/** Props */
 const props = defineProps({
-  conversationData: {
-    type: Object,
-    required: true
-  }
+  conversationData: { type: Object, required: true }
 });
 
-// Composable
+/** Emits */
+const emits = defineEmits(['close']);
+
+/** Reactive state for grouped messages */
 const { messages, messagesContainer, scrollToBottom, loading } = useChatMessages(
   props,
   MessagesStore,
   conversationStore,
   userStore,
   axiosClient,
-  windowEcho
+  window.Echo
 );
-const emits = defineEmits(['close']);
+const groupedMessages = computed(() => groupMessagesByDate(messages.value));
 
+/** Photo viewer composable */
+const { currentAttachments, isPhotoModalOpen, currentImageIndex, openImageViewer } = usePhotoViewer(
+  computed(() => groupMessagesByDate(messages.value))
+);
 
-function formatDate(dateString) {
-  const date = new Date(dateString)
-  return date.toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
+/** Viewport tracking for responsive layout */
+const { viewportHeight, windowWidth } = useViewport();
 
-const { sendLoading, error, handleSendMessage } = useSendMessage(MessagesStore, conversationStore, axiosClient, loggedUserId, scrollToBottom);
+/** Send message composable */
+const { sendLoading, error, handleSendMessage } = useSendMessage(
+  MessagesStore,
+  conversationStore,
+  axiosClient,
+  loggedUserId,
+  scrollToBottom
+);
+
+/**
+ * Sends a new message
+ * @param {Object} formData - The message form data
+ */
 function onSubmit(formData) {
   handleSendMessage(formData, props.conversationData.id);
-  
 }
 
-
+/**
+ * Closes the chat panel
+ */
 function handleCloseChat() {
   emits('close');
 }
 
+/**
+ * Formats a date string to HH:MM
+ * @param {string} dateString 
+ * @returns {string} formatted time
+ */
 function formatTime(dateString) {
-  const date = new Date(dateString)
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const date = new Date(dateString);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
-
-function groupMessagesByDate(messages) {
-  const grouped = [];
-  let lastDate = null;
-
-  messages.forEach(msg => {
-    const msgDate = new Date(msg.created_at).toDateString();
-
-    if (msgDate !== lastDate) {
-      grouped.push({ type: 'date', date: msgDate });
-      lastDate = msgDate;
-    }
-
-    grouped.push({ type: 'message', data: msg });
-  });
-
-  return grouped;
-}
-
-const allImages = computed(() => {
-  return groupedMessages.value
-    .filter(item => item.type === 'message' && item.data.attachments?.length)
-    .flatMap(item => item.data.attachments.filter(a => a.type === 'image'));
-})
-
-function openImageViewer(attachments, index){
-
-  const img = attachments[index];
-  const globalIndex = allImages.value.findIndex(a => a.url === img.url);
-
-  currentAttachments.value = allImages.value;
-  currentImageIndex.value = globalIndex;
-  isPhotoModalOpen.value = true;
-}
-
-// Right size for mini portable chat 
-function handleResize() {
-  windowWidth.value = window.innerWidth;
-}
-const windowWidth = ref(window.innerWidth);
-onMounted(() => {
-  window.visualViewport?.addEventListener('resize', updateViewportHeight);
-  window.addEventListener('resize', handleResize, { passive: true });
-
-});
-
-onBeforeUnmount(() => {
-  window.visualViewport.removeEventListener('resize', updateViewportHeight);
-  window.removeEventListener('resize', handleResize);
-});
 </script>
-
-
-

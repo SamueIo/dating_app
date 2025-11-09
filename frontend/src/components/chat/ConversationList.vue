@@ -43,8 +43,6 @@
           
             <!-- Typ správy: image/video/audio -->
             <p v-else-if="item.last_message?.attachments?.[0]?.type === 'image'" class="text-gray-500 italic">📷 image</p>
-            <p v-else-if="item.last_message?.attachments?.[0]?.type === 'video'" class="text-gray-500 italic">🎥 video</p>
-            <p v-else-if="item.last_message?.attachments?.[0]?.type === 'audio'" class="text-gray-500 italic">🎵 audio</p>
           
             <!-- Default message -->
             <p v-else class="text-gray-400 italic">Write your first message</p>
@@ -112,14 +110,8 @@
           >
             {{ item.last_message.body }}
           </p>
-          <p v-else-if="item.last_message?.attachments?.[0]?.type === 'image'" class="text-sm text-black/60 max-w-[70%]">
+          <p v-else-if="item.last_message?.attachments?.[0]?.type === 'image'" class="text-sm text-black/60 max-w-[70%] text-left">
             image
-          </p>
-          <p v-else-if="item.last_message?.attachments?.[0]?.type === 'video'" class="text-sm text-black/60 max-w-[70%]">
-            video
-          </p>
-          <p v-else-if="item.last_message?.attachments?.[0]?.type === 'audio'" class="text-sm text-black/60 max-w-[70%]">
-            audio
           </p>
           <p v-else class="text-white/40 italic text-left max-w-[70%]">
             Write your first message
@@ -219,7 +211,7 @@ import { useConversationStore } from '../../store/conversationsAndLastMessage';
 import { useChatUIStore } from '@/store/chatUIStore';
 import axiosClient from '../../axios';
 import { API_BASE_URL } from '@/utils/constants';
-
+import { useRouter } from 'vue-router';
 
 
 
@@ -242,6 +234,7 @@ const emit = defineEmits(['select','dragStart']);
 const hoveredChat = ref(null);
 const activeChatOptions = ref(null);
 
+const router = useRouter()
 const conversationStore = useConversationStore();
 const chatUIStore = useChatUIStore();
 
@@ -283,6 +276,10 @@ function showChatOptions(chatId) {
 function openChatElsewhere(chatId) {
     chatUIStore.openChat(chatId);
     activeChatOptions.value = null
+    if(window.innerWidth> 767){
+      router.push({ name: 'Swipes' })
+
+  }
 }
 async function blockUser(id) {
   // Closing option menu 
