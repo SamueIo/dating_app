@@ -1,12 +1,13 @@
 <template>
-  <div class="min-h-screen">
+  <div
+   class="min-h-screen">
 
     <!-- Message when no photos exist -->
     <div v-if="photos.length === 0" class="text-white">No photos yet</div>
 
     
     <!-- Grid of photos -->
-    <div v-else class="grid grid-cols-3 grid-auto-rows-[200px] gap-4 grid-flow-dense">
+    <div  v-else-if="photosPreview.length === 0" class="grid grid-cols-3 grid-auto-rows-[200px] gap-4 grid-flow-dense">
 
       <!-- Main photo (larger, dynamic) -->
       <div v-if="mainPhoto" class="col-span-2 row-span-2 group relative">
@@ -16,7 +17,7 @@
           <button @click="toggleOptions(mainPhoto.id)" class="text-black font-bold cursor-pointer">...</button>
 
           <!-- Dropdown menu for main photo -->
-          <div v-if="showOptions" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg u-10">
+          <div v-if="showOptions[mainPhoto.id]" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg u-10">
             <ul>
               <li @click="toggleEditDescription(mainPhoto)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Edit description</li>
               <li @click="deletePhoto(mainPhoto.id)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Delete</li>
@@ -52,7 +53,7 @@
           <button @click="toggleOptions(photo.id)" class="text-black font-bold cursor-pointer">...</button>
 
           <!-- Dropdown menu -->
-          <div v-if="showOptions" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg z-10">
+          <div v-if="showOptions[photo.id]" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg z-10">
             <ul>
               <li @click="makeMain(photo.id)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Make main</li>
               <li @click="toggleEditDescription(photo)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Edit description</li>
@@ -81,16 +82,17 @@
         </p>
       </div>
 
+      
       <!-- Photo upload section -->
       <div class="col-span-1 group relative">
-        <div class="bg-gray-400 w-auto h-auto rounded-lg">
+        <div  class="bg-gray-400 w-auto h-auto rounded-lg">
           <form @submit.prevent="submit" enctype="multipart/form-data" class="w-full h-full flex flex-col justify-center items-center">
             
             <!-- Hidden file input -->
             <input id="photo-upload" type="file" multiple accept="image/*" class="hidden" @change="onFileChange" />
 
             <!-- Plus icon to add photo -->
-            <label v-if="!photosPreview.length" for="photo-upload" class="cursor-pointer flex flex-col items-center justify-center">
+            <label for="photo-upload" class="cursor-pointer flex flex-col items-center justify-center">
               <svg 
                 class="w-12 h-12 text-gray-700 hover:text-gray-900 transition-all duration-300" 
                 fill="none" 
@@ -102,45 +104,66 @@
               <p class="mt-2 text-sm text-gray-700">Add photo</p>
             </label>
 
-            <!-- Preview and input fields when photos are selected -->
-            <div v-if="photo && photo.length > 0" class="w-full p-2">
-
-              <!-- Description input -->
-              <input
-                type="text"
-                v-model="description"
-                placeholder="Add description (optional)"
-                class="w-full mb-2 p-1 rounded text-sm bg-gray-200 text-black"
-              />
-
-              <!-- Checkbox to mark as main photo -->
-              <div class="flex items-center gap-2 mb-2">
-                <input type="checkbox" v-model="is_main" id="is_main" />
-                <label for="is_main" class="text-sm text-black">Main photo</label>
-              </div>
-
-              <!-- Local preview of selected photos -->
-              <div v-if="photosPreview.length" v-for="photo in photosPreview" :key="photo.id" class="w-full col-span-1 group relative opacity-70">
-                <img :src="photo.url" alt="Preview photo" class="w-full rounded-lg h-full object-cover mb-2" />
-                <p v-if="photo.description" class="text-white mt-2 absolute bottom-2 left-2 max-w-[90%] overflow-hidden line-clamp-2">
-                  {{ photo.description }}
-                </p>
-                <span class="absolute top-2 left-2 bg-black text-white text-xs px-1 rounded">Preview</span>
-              </div>
-
-              <!-- Submit button -->
-              <button
-                @click.prevent="submit"
-                class="bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold  py-1 px-2 rounded w-full"
-              >
-                {{ submitValue }}
-              </button>
-            </div>
           </form>
         </div>
       </div>
-
     </div>
+<!-- Preview and input fields when photos are selected -->
+<div v-if="photo && photo.length > 0" class="w-full p-2 bg-white/45">
+
+  <!-- Description input -->
+  <input
+    type="text"
+    v-model="description"
+    placeholder="Add description (optional)"
+    class="w-full mb-2 p-1 rounded text-sm bg-gray-200 text-black"
+  />
+
+  <!-- Checkbox to mark as main photo -->
+  <div class="flex items-center gap-2 mb-2">
+    <input type="checkbox" v-model="is_main" id="is_main" />
+    <label for="is_main" class="text-sm text-black">Main photo</label>
+  </div>
+
+  <!-- LOCAL PREVIEW – RESPONSÍVNE -->
+  <div class="flex flex-wrap gap-2 justify-center sm:justify-start -mx-1">
+    <div
+      v-for="photo in photosPreview"
+      :key="photo.id"
+      class="relative group opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
+      :class="previewItemClass"
+    >
+      <img
+        :src="photo.url"
+        alt="Preview photo"
+        class="w-full h-full object-cover rounded-lg shadow-sm"
+      />
+      <p
+        v-if="photo.description"
+        class="absolute bottom-1 left-1 right-1 text-white text-xs bg-black bg-opacity-70 px-1 py-0.5 rounded line-clamp-2"
+      >
+        {{ photo.description }}
+      </p>
+      <span class="absolute top-1 left-1 bg-black text-white text-xs px-1 rounded">Preview</span>
+
+      <!-- Odstrániť preview (voliteľné) -->
+      <button
+        @click="removePreview(photo.id)"
+        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+
+  <!-- Submit button -->
+  <button
+    @click.prevent="submit"
+    class="mt-3 bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold py-1 px-2 rounded w-full"
+  >
+    {{ submitValue }}
+  </button>
+</div>
   </div>
 </template>
 
@@ -159,7 +182,7 @@ const description = ref(''); // Photo description
 const submitValue = ref('Submit'); // Button text
 
 // Photo options (edit/delete)
-const showOptions = ref(null); 
+const showOptions = ref({})
 const showEditDescription = ref(null);
 const newDescription = ref(''); // Description being edited
 
@@ -169,6 +192,25 @@ const is_main = ref(false); // Checkbox for main photo
 // Array of photos fetched from server
 const photos = ref([]);
 
+const previewItemClass = computed(() => {
+  const count = photosPreview.value.length;
+
+  if (count === 1) {
+    return 'w-full max-w-md'; // 1 fotka → celá šírka
+  }
+
+  // Mobil: min 2, max 3
+  // Desktop: max 3
+  return 'w-[calc(50%-0.5rem)] sm:w-[calc(33.333%-0.5rem)] max-w-xs';
+});
+
+function removePreview(id){
+  const index = photosPreview.value.findIndex(p => p.id === id);
+  if(index !== -1){
+    photosPreview.value.splice(index,1);
+    photo.value.splice(index, 1);
+  }
+}
 // Fetch photos from server
 const fetchPhotos = async () => {
   try {
@@ -268,12 +310,22 @@ const makeMain = async (id) => {
 
 // Toggle options dropdown
 function toggleOptions(photoId) {
-  if (showOptions.value === photoId) {
-    showOptions.value = null;
-  } else {
-    showOptions.value = photoId;
+  const isOpen = showOptions.value[photoId];
+
+  // close all toggleoptions 
+  showOptions.value = {};
+
+  if (!isOpen) {
+    showOptions.value[photoId] = true;
   }
+
   showEditDescription.value = null;
+}
+
+function closeAllOptions(e){
+  if(e.target.textContent = '...') return
+  showOptions.value = {}
+  showEditDescription.value = null
 }
 
 // Toggle edit description input
