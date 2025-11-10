@@ -116,7 +116,7 @@
   <!-- LOCAL PREVIEW – RESPONSÍVNE -->
   <div class="flex flex-wrap gap-2 justify-center sm:justify-start -mx-1">
     <div
-      v-for="photo in photosPreview"
+      v-for="(photo, index) in photosPreview"
       :key="photo.id"
       class="relative group opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
       :class="previewItemClass"
@@ -131,10 +131,15 @@
       />
 
       <!-- Checkbox to mark as main photo -->
-      <div class="flex items-center gap-2 mb-2">
-        <input type="checkbox" v-model="isMainPerPhoto[photo.id]" id="is_main" />
-        <label for="is_main" class="text-sm text-black">Main photo</label>
-      </div>
+<div class="flex items-center gap-2 mb-2">
+  <input 
+    type="checkbox" 
+    :checked="photo.is_main" 
+    @change="onlyOneMainPhoto(index)" 
+    :id="'is_main_' + photo.id" 
+  />
+  <label :for="'is_main_' + photo.id" class="text-sm text-black">Main photo</label>
+</div>
       <img
         :src="photo.url"
         alt="Preview photo"
@@ -320,6 +325,20 @@ const makeMain = async (id) => {
   }
 };
 
+// to make only one photo main at a time
+const onlyOneMainPhoto = (selectedIndex) => {
+  photosPreview.value = photosPreview.value.map((photo, index) => ({
+    ...photo,
+    is_main: index === selectedIndex
+  }));
+
+  // aktualizovať isMainPerPhoto tiež
+  const newIsMain = {};
+  photosPreview.value.forEach((photo, index) => {
+    newIsMain[index] = index === selectedIndex;
+  });
+  isMainPerPhoto.value = newIsMain;
+};
 // Toggle options dropdown
 function toggleOptions(photoId) {
   const isOpen = showOptions.value[photoId];
