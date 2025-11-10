@@ -164,8 +164,7 @@ const showEditDescription = ref(null);
 const newDescription = ref(''); // Description being edited
 
 const is_main = ref(false); // Checkbox for main photo
-const message = ref('');
-const error = ref('');
+
 
 // Array of photos fetched from server
 const photos = ref([]);
@@ -232,7 +231,6 @@ const submit = async () => {
     is_main.value = false;
      } catch (err) {
       console.error(err);
-
       // Laravel validation errors
       if (err.response && err.response.status === 422) {
         const errors = err.response.data.errors;
@@ -249,6 +247,7 @@ const submit = async () => {
         toast.error(err.message || "Something went wrong");
       }
     } finally {
+      photo.value = [];
       submitValue.value = "Submit";
     }
 }
