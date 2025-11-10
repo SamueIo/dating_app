@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen">
 
-    <div v-if="message">{{ message }}</div>
     <!-- Message when no photos exist -->
     <div v-if="photos.length === 0" class="text-white">No photos yet</div>
 
