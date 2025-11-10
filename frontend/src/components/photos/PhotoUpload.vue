@@ -1,5 +1,5 @@
 <template>
-  <div
+  <div @click.close="closeAllOptions"
    class="min-h-screen">
 
     <!-- Message when no photos exist -->
@@ -13,18 +13,18 @@
       <div v-if="mainPhoto" class="col-span-2 row-span-2 group relative">
         
         <!-- Options button (Edit/Delete) -->
-        <div class="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-white bg-opacity-80 rounded w-6 h-6 flex items-center justify-center shadow-md">
+        <div class="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-white/30 bg-opacity-80 rounded w-6 h-6 flex items-center justify-center shadow-md">
           <button @click="toggleOptions(mainPhoto.id)" class="text-black font-bold cursor-pointer">...</button>
 
           <!-- Dropdown menu for main photo -->
-          <div v-if="showOptions[mainPhoto.id]" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg u-10">
-            <ul>
-              <li @click="toggleEditDescription(mainPhoto)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Edit description</li>
+          <div v-if="showOptions[mainPhoto.id]" class="absolute min-w-[100px] right-0 top-6 w-35 bg-white/30 text-black rounded shadow-lg u-10">
+            <ul v-if="!showEditDescription">
+              <li @click.stop="toggleEditDescription(mainPhoto)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Edit description</li>
               <li @click="deletePhoto(mainPhoto.id)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Delete</li>
             </ul>
 
             <!-- Edit description input -->
-            <div v-if="showEditDescription === mainPhoto.id" class="px-2 py-1">
+            <div @click.stop v-if="showEditDescription === mainPhoto.id" class="px-2 py-1">
               <textarea
                 v-model="newDescription"
                 rows="2"
@@ -56,12 +56,12 @@
           <div v-if="showOptions[photo.id]" class="absolute right-0 top-6 w-35 bg-white text-black rounded shadow-lg z-10">
             <ul>
               <li @click="makeMain(photo.id)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Make main</li>
-              <li @click="toggleEditDescription(photo)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Edit description</li>
+              <li @click.stop="toggleEditDescription(photo)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Edit description</li>
               <li @click="deletePhoto(photo.id)" class="px-2 py-1 hover:bg-gray-100 cursor-pointer">Delete</li>
             </ul>
 
             <!-- Edit description input -->
-            <div v-if="showEditDescription === photo.id" class="px-2 py-1">
+            <div @click.stop v-if="showEditDescription === photo.id" class="px-2 py-1">
               <textarea
                 v-model="newDescription"
                 rows="2"
@@ -111,19 +111,7 @@
 <!-- Preview and input fields when photos are selected -->
 <div v-if="photo && photo.length > 0" class="w-full p-2 bg-white/45">
 
-  <!-- Description input -->
-  <input
-    type="text"
-    v-model="description"
-    placeholder="Add description (optional)"
-    class="w-full mb-2 p-1 rounded text-sm bg-gray-200 text-black"
-  />
 
-  <!-- Checkbox to mark as main photo -->
-  <div class="flex items-center gap-2 mb-2">
-    <input type="checkbox" v-model="is_main" id="is_main" />
-    <label for="is_main" class="text-sm text-black">Main photo</label>
-  </div>
 
   <!-- LOCAL PREVIEW – RESPONSÍVNE -->
   <div class="flex flex-wrap gap-2 justify-center sm:justify-start -mx-1">
@@ -133,6 +121,20 @@
       class="relative group opacity-70 hover:opacity-100 transition-opacity flex-shrink-0"
       :class="previewItemClass"
     >
+    <div class="border border-red-50">
+            <!-- Description input -->
+      <input
+        type="text"
+        v-model="descriptions[photo.id]"
+        placeholder="Add description (optional)"
+        class="w-full mb-2 p-1 rounded text-sm bg-gray-200 text-black"
+      />
+
+      <!-- Checkbox to mark as main photo -->
+      <div class="flex items-center gap-2 mb-2">
+        <input type="checkbox" v-model="isMainPerPhoto[photo.id]" id="is_main" />
+        <label for="is_main" class="text-sm text-black">Main photo</label>
+      </div>
       <img
         :src="photo.url"
         alt="Preview photo"
@@ -144,7 +146,7 @@
       >
         {{ photo.description }}
       </p>
-      <span class="absolute top-1 left-1 bg-black text-white text-xs px-1 rounded">Preview</span>
+      <span class="absolute bottom-1 left-1 bg-black text-white text-xs px-1 rounded">Preview</span>
 
       <!-- Odstrániť preview (voliteľné) -->
       <button
@@ -153,6 +155,8 @@
       >
         ×
       </button>
+    </div>
+
     </div>
   </div>
 
@@ -178,7 +182,7 @@ const toast = useToast();
 // Reactive references for photos
 const photo = ref([]); // Selected files
 const photosPreview = ref([]); // Local preview of photos
-const description = ref(''); // Photo description
+const descriptions = ref({}); // Photo description
 const submitValue = ref('Submit'); // Button text
 
 // Photo options (edit/delete)
@@ -186,7 +190,7 @@ const showOptions = ref({})
 const showEditDescription = ref(null);
 const newDescription = ref(''); // Description being edited
 
-const is_main = ref(false); // Checkbox for main photo
+const isMainPerPhoto = ref({}) // Checkbox for main photo
 
 
 // Array of photos fetched from server
@@ -225,12 +229,14 @@ onMounted(fetchPhotos);
 // Handle file input change
 const onFileChange = (e) => {
   photo.value = Array.from(e.target.files);
-  photosPreview.value = photo.value.map(file => ({
-    id: `tmp-${file.name}-${Date.now()}`,
-    url: URL.createObjectURL(file),
-    description: description.value,
-    is_main: is_main.value,
-    temp: true
+
+  photosPreview.value = photo.value.map((file, index) => ({
+      id: index, // index namiesto "tmp-${file.name}-${Date.now()}"
+      url: URL.createObjectURL(file),
+      description: descriptions.value[index] || '',
+      is_main: isMainPerPhoto.value[index] || false,
+      temp: true
+
   }));
 };
 
@@ -247,15 +253,21 @@ const submit = async () => {
   photosPreview.value = photo.value.map(file => ({
     id: `tmp-${file.name}-${Date.now()}`,
     url: URL.createObjectURL(file),
-    description: description.value,
-    is_main: is_main.value,
+    description: descriptions.value[file.id],
+    is_main: isMainPerPhoto.value[file.id],
     temp: true
   }));
 
   const formData = new FormData();
-  photo.value.forEach(file => formData.append("photos[]", file));
-  formData.append("description", description.value);
-  formData.append("is_main", is_main.value ? 1 : 0);
+
+
+  photo.value.forEach((file, index) => {
+      formData.append("photos[]", file);
+      formData.append(`description[${index}]`, descriptions.value[index] || '');
+      formData.append(`is_main[${index}]`, isMainPerPhoto.value[index] ? 1 : 0);
+  });
+
+  
 
   try {
     await axiosClient.post("/api/photos", formData, {
@@ -269,8 +281,8 @@ const submit = async () => {
     // Clear local input
     photo.value = [];
     photosPreview.value = [];
-    description.value = "";
-    is_main.value = false;
+    descriptions.value = {};
+    isMainPerPhoto.value = {};
      } catch (err) {
       console.error(err);
       // Laravel validation errors
@@ -319,17 +331,17 @@ function toggleOptions(photoId) {
     showOptions.value[photoId] = true;
   }
 
-  showEditDescription.value = null;
 }
 
 function closeAllOptions(e){
-  if(e.target.textContent = '...') return
+  if(e.target.textContent === '...') return
   showOptions.value = {}
   showEditDescription.value = null
 }
 
 // Toggle edit description input
 function toggleEditDescription(photo) {
+  
   showEditDescription.value = showEditDescription.value === photo.id ? null : photo.id;
   newDescription.value = photo.description || '';
 }
