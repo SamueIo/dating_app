@@ -29,7 +29,7 @@ class PasswordResetLinkController extends Controller
         $token = Password::createToken($user);
 
         // Render Blade šablónu do HTML
-        $htmlContent = View::make('emails.email', [
+       $htmlContent = view('vendor.notifications.email', [
             'token' => $token,
             'user' => $user
         ])->render();
