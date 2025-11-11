@@ -7,7 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
-use App\Notifications\BrevoResetPassword;
+use App\Services\BrevoMailService;
+use Illuminate\Support\Facades\View;
 
 class PasswordResetLinkController extends Controller
 {
@@ -27,13 +28,20 @@ class PasswordResetLinkController extends Controller
 
         $token = Password::createToken($user);
 
-        try {
-            $notification = new BrevoResetPassword($token);
-            $notification->sendToBrevo($user); // vola API priamo
-        } catch (\Exception $e) {
+        // Render Blade šablónu do HTML
+        $htmlContent = View::make('emails.email', [
+            'token' => $token,
+            'user' => $user
+        ])->render();
+
+        // Pošli cez BrevoMailService
+        $brevo = new BrevoMailService();
+        $sent = $brevo->sendMail($user->email, 'Reset your password', $htmlContent);
+
+        if (!$sent) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage()
+                'message' => 'Email could not be sent'
             ], 500);
         }
 
