@@ -2,35 +2,43 @@
 
 namespace App\Services;
 
-use Brevo\Client\Api\TransactionalEmailsApi;
-use Brevo\Client\Configuration;
-use Brevo\Client\Model\SendSmtpEmail;
-use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 
 class BrevoMailService
 {
-    protected $api;
+    protected string $apiKey;
 
     public function __construct()
     {
-        $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', env('BREVO_API_KEY'));
-        $this->api = new TransactionalEmailsApi(new Client(), $config);
+        $this->apiKey = env('BREVO_API_KEY');
     }
 
-    public function sendEmail(string $toEmail, string $toName, string $subject, string $htmlContent)
+    public function sendMail(string $to, string $subject, string $htmlBody, string $from = null, string $fromName = null): bool
     {
-        $sendSmtpEmail = new SendSmtpEmail([
+
+        $from = $from ?? env('MAIL_FROM_ADDRESS');
+        $fromName = $fromName ?? env('MAIL_FROM_NAME');
+
+        $response = Http::withHeaders([
+            'api-key' => $this->apiKey,
+            'Accept' => 'application/json',
+        ])->post('https://api.brevo.com/v3/smtp/email', [
             'sender' => [
-                'name' => env('MAIL_FROM_NAME'),
-                'email' => env('MAIL_FROM_ADDRESS')
+                'name' => $fromName,
+                'email' => $from,
             ],
             'to' => [
-                ['email' => $toEmail, 'name' => $toName]
+                [
+                    'email' => $to,
+                ]
             ],
             'subject' => $subject,
-            'htmlContent' => $htmlContent
+            'htmlContent' => $htmlBody,
         ]);
+        if (!$response->successful()) {
+        \Log::error('Brevo mail failed', ['response' => $response->body()]);
+}
 
-        return $this->api->sendTransacEmail($sendSmtpEmail);
+        return $response->successful();
     }
 }
