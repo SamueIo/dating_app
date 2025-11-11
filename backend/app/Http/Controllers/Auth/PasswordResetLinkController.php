@@ -12,39 +12,40 @@ use Illuminate\Support\Facades\View;
 
 class PasswordResetLinkController extends Controller
 {
-    public function store(Request $request): JsonResponse
-    {
-        $request->validate([
-            'email' => ['required', 'email']
+public function store(Request $request): JsonResponse
+{
+    $request->validate([
+        'email' => ['required','email'],
+    ]);
+
+    $user = \App\Models\User::where('email', $request->email)->first();
+    if (!$user) {
+        throw ValidationException::withMessages([
+            'email' => ['User not found.']
         ]);
-
-        $user = \App\Models\User::where('email', $request->email)->first();
-
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'email' => ['User not found.']
-            ]);
-        }
-
-        $token = Password::createToken($user);
-
-        // Render Blade šablónu do HTML
-       $htmlContent = view('vendor.notifications.email', [
-            'token' => $token,
-            'user' => $user
-        ])->render();
-
-        // Pošli cez BrevoMailService
-        $brevo = new BrevoMailService();
-        $sent = $brevo->sendMail($user->email, 'Reset your password', $htmlContent);
-
-        if (!$sent) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Email could not be sent'
-            ], 500);
-        }
-
-        return response()->json(['status' => 'Reset link sent.']);
     }
+
+    $token = Password::createToken($user);
+
+$htmlContent = view('vendor.notifications.email', [
+    'token' => $token,
+    'user' => $user,
+])->render();
+
+    $brevo = new BrevoMailService();
+    $sent = $brevo->sendMail(
+        $user->email,
+        'Reset your password',
+        $htmlContent
+    );
+
+    if (! $sent) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Email could not be sent'
+        ], 500);
+    }
+
+    return response()->json(['status' => 'Reset link sent.']);
+}
 }
