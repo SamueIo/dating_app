@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
          if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+        $this->loadViewsFrom(resource_path('views/vendor/notifications'), 'mail');
+
         ini_set('upload_max_filesize', '10M');
         ini_set('post_max_size', '60M');
     }

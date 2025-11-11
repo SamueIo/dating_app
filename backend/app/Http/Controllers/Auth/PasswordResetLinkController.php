@@ -27,10 +27,11 @@ public function store(Request $request): JsonResponse
 
     $token = Password::createToken($user);
 
-$htmlContent = view('vendor.notifications.email', [
-    'token' => $token,
-    'user' => $user,
-])->render();
+    $htmlContent = view('vendor.notifications.email', [
+        'user' => $user,
+        'actionUrl' => url('/reset-password/'.$token),
+    ])->render();
+
 
     $brevo = new BrevoMailService();
     $sent = $brevo->sendMail(

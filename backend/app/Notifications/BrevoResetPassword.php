@@ -19,24 +19,16 @@ class BrevoResetPassword extends Notification
         return ['mail']; // Tento kód sa vôbec nepoužíva na kanály Mail
     }
 
-    // public function sendToBrevo($user)
-    // {
-    //     $service = new BrevoMailService();
-    //     $service->sendMail(
-    //         $user->email,
-    //         'Reset your password',
-    //         "<p>Click <a href='" . url('/reset-password/'.$this->token) . "'>here</a> to reset your password.</p>"
-    //     );
-    // }
-
-
-    public function toMail($notifiable): MailMessage
+    public function sendToBrevo($user)
     {
-        return (new MailMessage)
-            ->subject('Reset your password')
-            ->markdown('vendor.notifications.email', [
-                'token' => $this->token,
-                'user' => $notifiable,
-            ]);
+        $service = new BrevoMailService();
+        $service->sendMail(
+            $user->email,
+            'Reset your password',
+            "<p>Click <a href='" . url('/reset-password/'.$this->token) . "'>here</a> to reset your password.</p>"
+        );
     }
+
+
+
 }
