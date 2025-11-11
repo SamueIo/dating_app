@@ -71,6 +71,11 @@ class PhotoController extends Controller
                 $isMain = true;
             }
 
+            // If there is old isMain photo
+            if ($isMain){
+                $user->photos()->where('is_main', 1)->update(['is_main' => 0]);
+            }
+
             // Description
             $description = $request->input("description.$index", null);
 
