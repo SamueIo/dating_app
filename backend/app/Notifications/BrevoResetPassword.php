@@ -27,7 +27,7 @@ class BrevoResetPassword extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['brevo'];
+        return ['mail'];
     }
 
     /**
