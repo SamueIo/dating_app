@@ -3,30 +3,29 @@
 namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
+use App\Services\BrevoMailService;
 
 class BrevoResetPassword extends Notification
 {
-    public $token;
+    protected $token;
 
     public function __construct($token)
     {
         $this->token = $token;
     }
 
-    // Kanály notifikácie
     public function via($notifiable)
     {
-        return ['mail']; // alebo ['smtp'], ak explicitne
+        return ['brevo']; // Tento kód sa vôbec nepoužíva na kanály Mail
     }
 
-    // Táto metóda MUSÍ existovať pre mail kanál
-    public function toMail($notifiable)
+    public function sendToBrevo($user)
     {
-        return (new MailMessage)
-            ->subject('Reset your password')
-            ->line('You requested a password reset link.')
-            ->action('Reset Password', url('/reset-password/'.$this->token))
-            ->line('If you did not request this, no further action is required.');
+        $service = new BrevoMailService();
+        $service->sendMail(
+            $user->email,
+            'Reset your password',
+            "<p>Click <a href='" . url('/reset-password/'.$this->token) . "'>here</a> to reset your password.</p>"
+        );
     }
 }
