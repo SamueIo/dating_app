@@ -11,14 +11,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\UserFilterService;
 
+
+//  Handles user swipes (like/dislike) and fetching swipable users.
 class SwipeController extends Controller
 {
+    /*
+        Fetch a list of users available for swiping.
+
+        @param Request $request
+        @return JsonResponse
+     */
     public function index(Request $request)
     {
+    // Fetch filtered users for swiping (third parameter 'true' indicate swipable users)
     $users = UserFilterService::filter($request, $request->user(), true);
     return response()->json(['data' => $users]);
     }
 
+    /*
+        Handle a swipe action (like or dislike) from the authenticated user.
+
+        @param Request $request
+        @return JsonResponse
+     */
     public function swipe(Request $request)
     {
         $request->validate([

@@ -10,9 +10,21 @@ use Illuminate\Support\Facades\Storage;
 use Mockery\Undefined;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
-use Illuminate\Support\Facades\Log;
+
+/*
+    Handles user photo management including upload, deletion, setting main photo,
+    and editing descriptions.
+
+*/
 class PhotoController extends Controller
 {
+
+    /*
+        List all photos of the authenticated user.
+
+        Adds full URL to each photo and ensures HTTPS protocol.
+        @return Response JSON
+    */
     public function index()
     {
         $photos = Auth::user()->photos;
@@ -33,6 +45,16 @@ class PhotoController extends Controller
         return response()->json($photos);
     }
 
+    /*
+        Upload one or multiple photos for the authenticated user.
+
+        - Resizes images to max width of 1200px, converts to WebP with 70% quality.
+        - Handles `is_main` logic for main photo selection.
+        - Stores photo description if provided.
+
+        @param Request $request
+        @return Response JSON
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -52,7 +74,6 @@ class PhotoController extends Controller
         $firstPhoto = true;
 
         foreach ($request->file('photos') as $index => $photoFile) {
-            // Spracovanie obrázka
             $image = $manager->read($photoFile);
             $width = 1200;
             $height = intval($image->height() * ($width / $image->width()));
@@ -63,23 +84,19 @@ class PhotoController extends Controller
             $path = 'photos/' . $fileName;
             Storage::disk('public')->put($path, (string) $encoded);
 
-            // === LOGIKA is_main ===
+            // ===is_main ===
             $isMain = filter_var($request->input("is_main.$index", false), FILTER_VALIDATE_BOOLEAN);
 
-            // Ak používateľ neoznačil žiadnu fotku → prvá fotka bude hlavná
             if (!$anyMainSelected && $firstPhoto) {
                 $isMain = true;
             }
 
-            // If there is old isMain photo
             if ($isMain){
                 $user->photos()->where('is_main', 1)->update(['is_main' => 0]);
             }
 
-            // Description
             $description = $request->input("description.$index", null);
 
-            // Uloženie fotky do DB
             $photoRecord = $user->photos()->create([
                 'file_name' => $path,
                 'description' => $description,
@@ -96,6 +113,13 @@ class PhotoController extends Controller
             'photos' => $photos,
         ], 201);
     }
+
+    /*
+        Set a photo as the main photo for the authenticated user.
+
+        @param int $id
+        @return JSON
+    */
     public function setMain($id)
     {
         $user = auth()->user();
@@ -107,6 +131,15 @@ class PhotoController extends Controller
         return response()->json(['message' => 'Photo set as main']);
     }
 
+
+    /*
+        Delete a photo for the authenticated user.
+
+        If the deleted photo was main, selects a new main photo randomly.
+
+        @param int $id
+        @return JSON response
+     */
     public function destroy($id)
     {
         $user = auth()->user();
@@ -131,6 +164,14 @@ class PhotoController extends Controller
         return response()->json(['message' => 'Photo deletes']) ;
 
     }
+
+    /*
+        Edit description of a user's photo.
+
+        @param Request $request
+        @param int $id
+        @return JsonResponse
+    */
     public function editDescription( Request $request, $id )
     {
         $request->validate([

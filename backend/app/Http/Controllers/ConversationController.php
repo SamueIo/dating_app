@@ -15,9 +15,21 @@ use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Log;
 
+/*
+    Handles all conversation-related actions including listing, creating conversations,
+    sending messages, retrieving messages, marking messages as seen, and managing attachments.
 
+*/
 class ConversationController extends Controller
 {
+    /*
+        Get all conversation for authenticated user
+
+        Exclude conversations with blocked users or users who blocked authenticated user
+
+        @param Request $request
+        @return JSON response
+    */
     public function showConversations(Request $request){
         $user = Auth::user();
 
@@ -57,6 +69,13 @@ class ConversationController extends Controller
         return response()->json($formatted);
     }
 
+    /*
+        Get specific conversation by ID
+
+        @param int $id The id of specific conversation
+
+        @return JSON response
+    */
     public function showConversationById($id) {
     $user = Auth::user();
 
@@ -81,7 +100,14 @@ class ConversationController extends Controller
         'last_message' => $conversation->lastMessage,
     ]);
     }
+    /*
+        Create a conversation with another user
 
+        If a conversation between the two users already exists, returns the existing conversation.
+
+        @param Request $request
+        @return JSON response
+    */
     public function createConversation(Request $request)
     {
         $user = Auth::user();
@@ -102,6 +128,14 @@ class ConversationController extends Controller
         return response()->json($conversation);
     }
 
+    /*
+        Store a new message in a conversation.
+
+        Supports image attachments, compresses them to WebP format, and broadcasts the message.
+
+        @param Request $request
+        @return JSON response
+    */
     public function storeMessages(Request $request)
     {
         $tempId = $request->input('temp_id');
@@ -166,39 +200,50 @@ class ConversationController extends Controller
     }
 
 
-public function getMessages(Request $request, $conversationId)
-{
-    $limit = $request->input('limit', 20);
-    $offset = $request->input('offset', 0);
+    /*
+        Retrieve messages for a conversation with optional pagination
 
-    // Načítaj správy spolu s prílohami
-    $messages = Message::with('attachments')
-        ->where('conversation_id', $conversationId)
-        ->orderBy('created_at', 'desc')
-        ->skip($offset)
-        ->take($limit)
-        ->get();
+        @param Request $request
+        @param int $conversationId
+        @return JSON response
+    */
+    public function getMessages(Request $request, $conversationId)
+    {
+        $limit = $request->input('limit', 20);
+        $offset = $request->input('offset', 0);
 
-    // Pridáme dynamické vlastnosti k správam a naformátujeme čas
-    $messages->transform(function ($message) {
-        // Pridáme flag, či správa obsahuje prílohy
-        $message->isAttachment = $message->attachments->isNotEmpty();
+        $messages = Message::with('attachments')
+            ->where('conversation_id', $conversationId)
+            ->orderBy('created_at', 'desc')
+            ->skip($offset)
+            ->take($limit)
+            ->get();
 
-        // Typ prílohy (voliteľné)
-        $message->attachmentType = $message->attachments->isNotEmpty()
-            ? $message->attachments->first()->type
-            : null;
+        $messages->transform(function ($message) {
+            $message->isAttachment = $message->attachments->isNotEmpty();
 
-        // Naformátujeme created_at do ISO 8601
-        $message->created_at = $message->created_at->toIso8601String();
+            $message->attachmentType = $message->attachments->isNotEmpty()
+                ? $message->attachments->first()->type
+                : null;
 
-        return $message;
-    });
-    $messages = $messages->reverse()->values();
+            $message->created_at = $message->created_at->toIso8601String();
 
-    return response()->json($messages);
-}
+            return $message;
+        });
+        $messages = $messages->reverse()->values();
 
+        return response()->json($messages);
+    }
+
+
+    /*
+        Mark recent messages in a conversation as seen for the authenticated user.
+
+        Broadcasts the event to other participants.
+
+        @param int $conversationId
+        @return JSON response
+    */
     public function markAsSeen( $conversationId){
         $userId = auth()->id();
 
@@ -222,9 +267,6 @@ public function getMessages(Request $request, $conversationId)
         return response()->json(['message' => 'Messages marked as seen']);
     }
 
-    public function blockUser( $id ){
-
-    }
 
 
 }

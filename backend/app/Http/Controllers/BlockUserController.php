@@ -6,8 +6,17 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
+
+// Handles blocking and unblocking users as well as retrieving the blocked users list.
 class BlockUserController extends Controller
 {
+
+    /*
+        Add specific user to authentificated user's blocked list
+
+        @param int $id The id of user to block
+        @return JSON with message
+    */
     public function blockUser($id)
     {
         $userId = Auth::id();
@@ -24,6 +33,12 @@ class BlockUserController extends Controller
         return response()->json(['message' => 'User blocked'], 200);
     }
 
+    /*
+        Unblock specific user from authenticated user's blocked list
+
+        @param int $id ID of user to unblock
+        @return JSON with message
+    */
     public function unblock($id)
     {
         $userId = Auth::id();
@@ -40,19 +55,26 @@ class BlockUserController extends Controller
 
     }
 
-public function blockedList()
-{
-    $userId = Auth::id();
+    /*
+        Get the list of blocked users
 
-    $blockedUsers = BlockedUser::with('blocked.mainPhoto')
-        ->where('blocker_id', $userId)
-        ->get()
-        ->map(function ($blockedUser) {
-            return $blockedUser->blocked;
-        });
+        Return blocked list of authenticated user
 
-    return response()->json($blockedUsers);
-}
+        @return JSON with array if blocked users
+    */
+    public function blockedList()
+    {
+        $userId = Auth::id();
+
+        $blockedUsers = BlockedUser::with('blocked.mainPhoto')
+            ->where('blocker_id', $userId)
+            ->get()
+            ->map(function ($blockedUser) {
+                return $blockedUser->blocked;
+            });
+
+        return response()->json($blockedUsers);
+    }
 
 
 }

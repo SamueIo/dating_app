@@ -6,17 +6,29 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\UserMatch;
 use App\Models\BlockedUser;
 
+
+/*
+    Handles retrieval of user matches while respecting block rules.
+*/
 class MatchesController extends Controller
 {
+
+    /*
+        Get a list of matched users for the authenticated user.
+
+        Filters out users who are blocked by or have blocked the authenticated user.
+
+        @return JSON response containing an array of matched users with their basic info.
+
+    */
     public function index()
     {
         $user = Auth::user();
 
-        // Získaj ID všetkých používateľov, ktorí sú buď tebou bloknutí, alebo ťa blokli
+        // Get IDs of users who are blocked or blocked the authenticated user
         $blockedUserIds = BlockedUser::where('blocker_id', $user->id)->pluck('blocked_id')->toArray();
         $blockedByOthersIds = BlockedUser::where('blocked_id', $user->id)->pluck('blocker_id')->toArray();
 
-        // Spoj a odstráň duplikáty
         $allBlockedIds = array_unique(array_merge($blockedUserIds, $blockedByOthersIds));
 
         $matches = UserMatch::where(function ($query) use ($user) {
@@ -31,12 +43,11 @@ class MatchesController extends Controller
                     ? $match->user_two_id
                     : $match->user_one_id;
 
-                // Odstrániť zápasy, kde je druhý používateľ blokovaný alebo ťa blokuje
+                    // Exclude blocked users
                 return !in_array($otherUserId, $allBlockedIds);
             })
-            ->values(); // Resetne indexy (dôležité pre správny JSON výstup)
+            ->values();
 
-        // Naformátuj výstup
         $matchedUsers = $matches->map(function ($match) use ($user) {
             $otherUser = $match->user_one_id === $user->id
                 ? $match->userTwo

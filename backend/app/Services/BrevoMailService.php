@@ -14,7 +14,7 @@ class BrevoMailService
     }
 
     /**
-     * Pošle email cez Brevo API
+     * Mail from bravo api
      */
     public function sendMail(string $to, string $subject, string $htmlBody, string $from = null, string $fromName = null): bool
     {

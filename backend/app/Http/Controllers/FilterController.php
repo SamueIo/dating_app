@@ -5,8 +5,34 @@ use Illuminate\Support\Facades\Log;
 use App\Models\UserFilter;
 use Illuminate\Http\Request;
 
+
+/*
+    Handles CRUD operations for user search filters.
+*/
 class FilterController extends Controller
 {
+
+    /*
+        Store or update the authenticated user's search filter settings
+
+        Validates incoming filter parameters and saves them in the database.
+
+        @param Request $request The HTTP request containing filter data.
+        @return \Illuminate\Http\JsonResponse JSON response containing a success message and the saved filter data.
+
+        @bodyParam gender string|null "Gender filter" Example: "male"
+        @bodyParam ageFrom int|null "Minimum age" Example: 18
+        @bodyParam ageTo int|null "Maximum age" Example: 35
+        @bodyParam location string|null "Location name" Example: "New York"
+        @bodyParam heightFrom int|null "Minimum height in cm" Example: 160
+        @bodyParam heightTo int|null "Maximum height in cm" Example: 190
+        @bodyParam onlyOnline boolean "Filter for online users only" Example: true
+        @bodyParam withPhoto boolean "Filter users with profile photo" Example: true
+        @bodyParam latitude float|null "Latitude for distance filter" Example: 40.7128
+        @bodyParam longitude float|null "Longitude for distance filter" Example: -74.0060
+        @bodyParam distance int|null "Distance in km" Example: 10
+        @bodyParam radiusKm int|null "Radius in km for geolocation filter" Example: 5
+    */
     public function store(Request $request)
     {
         $user = $request->user();
@@ -48,6 +74,13 @@ class FilterController extends Controller
         return response()->json(['message' => 'Filter saved', 'data' => $filter]);
     }
 
+
+    /*
+        Retrieve the authenticated user's search filter settings.
+
+        @param Request $request The HTTP request.
+        @return JSON response containing the filter data.
+    */
     public function show(Request $request)
     {
         $user = $request->user();

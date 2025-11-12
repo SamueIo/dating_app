@@ -5,8 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+
+//  Handles fetching and updating user profile data.
+
 class ProfileController extends Controller
 {
+    /*
+        Get the authenticated user's profile along with photos.
+
+        @return JSON response
+    */
     public function getProfile()
     {
         $user = Auth::user();
@@ -28,6 +36,15 @@ class ProfileController extends Controller
         return response()->json($data);
     }
 
+
+    /*
+        Update the authenticated user's profile.
+
+        If the user does not have a profile, a new profile is created.
+
+        @param Request $request
+        @return JSON response
+     */
     public function updateProfile(Request $request)
     {
         $profile = Auth::user()->profile;

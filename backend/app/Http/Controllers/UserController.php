@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    /*
+        Display the specified user's profile along with photos.
+
+        param int $id
+        return JsonResponse
+     */
     public function show ($id)
     {
         $user = User::with('profile', 'photos')->findOrFail($id);
