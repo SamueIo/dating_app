@@ -43,6 +43,7 @@
                             <p style="margin-top:16px; font-size:14px; color:#171717; word-break:break-word; line-height:20px;">
                                 If you're having trouble clicking the "Reset Password" button, copy and paste the URL below into your web browser:
                                 <br>
+                                <br>
                                 <a href="{{ $actionUrl }}" style="color:#eaeaea; text-decoration:underline; font-size:14px;">{{ $actionUrl }}</a>
                             </p>
 
