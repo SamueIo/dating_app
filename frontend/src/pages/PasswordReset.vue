@@ -2,7 +2,7 @@
   <!-- Main container -->
   <!-- <GuestLayout> --> <!-- Uncomment if using a layout wrapper -->
     <h2 class="text-center text-2xl/9 font-bold tracking-tight text-white">
-      Create new account
+      Create new password
     </h2>
     
     <!-- Display error or success messages -->
