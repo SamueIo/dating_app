@@ -148,7 +148,7 @@ async function submit() {
 
 /* Set token and email from route params/query on mount */
 onMounted(() => {
-  data.value.token = route.params.token || '';
+  data.value.token = route.query.token || '';
   data.value.email = route.query.email || '';
 });
 </script>

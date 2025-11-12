@@ -57,7 +57,7 @@ export const routes = [
         component: ForgotPassword
       },
       {
-        path: 'password-reset/:token',
+        path: 'password-reset',
         name: 'PasswordReset',
         component: PasswordReset
       },
