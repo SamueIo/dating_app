@@ -26,7 +26,7 @@ public function store(Request $request): JsonResponse
     }
 
     $token = Password::createToken($user);
-    $frontendUrl = config('app.frontend_url') . '/PasswordReset';
+    $frontendUrl = rtrim(config('app.frontend_url'), '/') . '/password-reset';
     $actionUrl = $frontendUrl . '?token=' . $token . '&email=' . urlencode($user->email);
 
     $htmlContent = view('vendor.notifications.email', [
