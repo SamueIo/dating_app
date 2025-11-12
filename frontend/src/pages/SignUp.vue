@@ -116,6 +116,7 @@
 import axiosClient from '../axios'; // Axios instance
 import Spinner from '../ui/Spinner.vue'; // Loading spinner
 import router from '../router'; // Vue Router
+import { ref } from 'vue';
 
 /* Reactive state */
 const errorMessage = ref(''); // Holds general error messages
