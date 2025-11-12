@@ -22,10 +22,14 @@ class BrevoResetPassword extends Notification
     public function sendToBrevo($user)
     {
         $service = new BrevoMailService();
+
+        $frontendUrl = config('app.frontend_url') ?? 'https://matchlove.projectbrand.cloud';
+        $resetLink = "{$frontendUrl}/password-reset/{$this->token}?email=" . urlencode($user->email);
+
         $service->sendMail(
             $user->email,
             'Reset your password',
-            "<p>Click <a href='" . url('/reset-password/'.$this->token) . "'>here</a> to reset your password.</p>"
+            "<p>Click <a href='{$resetLink}'>here</a> to reset your password.</p>"
         );
     }
 

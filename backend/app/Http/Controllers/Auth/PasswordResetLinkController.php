@@ -41,6 +41,7 @@ public function store(Request $request): JsonResponse
         'Reset your password',
         $htmlContent
     );
+    dd($brevo->render());
 
     if (! $sent) {
         return response()->json([
