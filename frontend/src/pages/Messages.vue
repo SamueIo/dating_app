@@ -106,7 +106,6 @@ function handleCloseChat() {
 onBeforeRouteLeave((to, from, next) => {
   if (isChatOpen.value) {
     handleCloseChat();
-    console.log('debug');
 
     BottomNavStore.showBottomNavFn();
     next(false);

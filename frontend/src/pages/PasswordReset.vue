@@ -1,6 +1,5 @@
 <template>
   <!-- Main container -->
-  <!-- <GuestLayout> --> <!-- Uncomment if using a layout wrapper -->
     <h2 class="text-center text-2xl/9 font-bold tracking-tight text-white">
       Create new password
     </h2>
@@ -107,9 +106,9 @@ const route = useRoute();
 /* Form data */
 const data = ref({
   token: '',                   // Token from password reset email link
-  email: '',                   // User email
-  password: '',                // New password
-  password_confirmation: ''    // Password confirmation
+  email: '',                   
+  password: '',               
+  password_confirmation: ''    
 });
 
 /* Validation errors */

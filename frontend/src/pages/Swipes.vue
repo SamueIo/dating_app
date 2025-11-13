@@ -38,7 +38,9 @@
             :class="['swipe-card', swipeState === 'like' ? 'swipe-like' : '', swipeState === 'dislike' ? 'swipe-dislike' : '']"
             :style="{ maxWidth: '700px', maxHeight: `calc(100vh - ${bottomNavStore.height}px)` }"
           >
-            <UserModalSwipe :userData="currentUser" :visible="true" />
+            <UserModalSwipe :userData="currentUser" 
+                            :visible="true"
+                            @photoModalStatus="handlePhotoModalStatus" />
           </div>
         
         <!-- Fixed buttons for swipes -->
@@ -84,26 +86,27 @@ import { useToast } from "vue-toastification";
 import router from '../router'
 import { useBottomNavStore } from '../store/showBottomNavStore'
 
-
-const currentIndex = ref(0)
 const offset = ref(0)
 const loading = ref(true)
 const users = ref([])
+const isPhotoModalOpen = ref(false);
+const isPhotoModalOpenSHot = ref(false);
 const isSwiping = ref(false)
 const noMoreUsers = ref(false);
 const filterStore = useFilterStore();
-
 const limit = 2;
-
 const bottomNavStore = useBottomNavStore()
 
-
-// Swipe animation 
 const cardRef = ref(null);
 const swipeState = ref('');
 let touchStartX = ref(0)
 let touchEndX = ref(0)
 
+/**
+ * Load users with filter criteria
+ * @async
+ * @return {Promise<void>}
+ */
 const loadUsers = async () => {
   if (noMoreUsers.value) return;
   loading.value = true;
@@ -120,11 +123,10 @@ const loadUsers = async () => {
       noMoreUsers.value = true;
     }
 
-    // Odstránime duplikáty na základe ID používateľov
+
     if (offset.value === 0) {
       users.value = newUsers;
     } else {
-      // Pridáme iba používateľov, ktorí ešte nie sú v zozname
       users.value.push(...newUsers.filter(user => !users.value.some(existingUser => existingUser.id === user.id)));
     }
 
@@ -137,7 +139,6 @@ const loadUsers = async () => {
   }
 }
 
-
 onMounted(async () => {
   try{
     if(filterStore.filtersLoaded){
@@ -146,17 +147,10 @@ onMounted(async () => {
       await filterStore.fetchFilters();
       loadUsers()
     }
-    
   }catch (err){
     console.error('Failed to fetch filters in onMounted:', err);
   }
-
-
-  
 })
-
-
-// firstrun block first loading when filters are not loaded yet 
 
 let firstRun = true;
 watch(
@@ -174,25 +168,26 @@ watch(
   { deep: true }
 );
 
-
+/**
+ * Swipe actions
+ * @param {'like' | 'dislike'} direction - Direction of swipe
+ * @async
+ * @return {Promise<void>}
+ */
 async function swipe(direction) {
   if (isSwiping.value || !currentUser.value) return;
 
   isSwiping.value = true;
-  // spusti animáciu len pre odchádzajúcu kartu
   swipeState.value = direction;
 
-  // počkaj 300ms kým sa animácia dokončí
   setTimeout(async () => {
     try {
-      // pošleme swipe na server
       const response = await axiosClient.post('/api/swipes', {
         to_user_id: currentUser.value.id,
         direction: direction
       });
-      // remove swiped user
+
       users.value.shift();
-      
 
       if (response.data.match) {
         const toast = useToast();
@@ -207,8 +202,6 @@ async function swipe(direction) {
       }
 
       swipeState.value = '';
-
-
       nextUser()
     } catch (err) {
       console.error("Error in swipe", err);
@@ -218,43 +211,69 @@ async function swipe(direction) {
   }, 100 );
 }
 
-
-
-
+/**
+ * Goes to next user
+ * @return {void}
+ */
 function nextUser() {
   if (users.value.length === 0) {
     // loadUsers();
   }
 }
 
-// Handle touch start event
+/**
+ * Handle touch start event
+ * @param {TouchEvent} event
+ * @return {void}
+ */
 const onTouchStart = (event) => {
   touchStartX.value = event.touches[0].clientX
 }
 
-// Handle touch move event
+/**
+ * Handle touch move event
+ * @param {TouchEvent} event
+ * @return {void}
+ */
 const onTouchMove = (event) => {
   touchEndX.value = event.touches[0].clientX
 }
 
-
-// Handle touch end event
+/**
+ * Handle touch end event and handle swipe
+ * @return {void}
+ */
 const onTouchEnd = () => {
-  const swipeThreshold = 50
+  
+  if(isPhotoModalOpenSHot.value) return 
+  if (touchEndX.value === 0) {
+    touchEndX.value = touchStartX.value
+  };
+
   const swipeDirection = touchEndX.value - touchStartX.value
+  const swipeThreshold = 50
 
   if (Math.abs(swipeDirection) > swipeThreshold) {
-    if (swipeDirection > 0) {
-      swipe('like')
-    } else {
-      swipe('dislike')
-    }
+    if (swipeDirection > 0) swipe('like')
+    else swipe('dislike')
   }
+  touchEndX.value= 0
 }
 
-
+/** Current swipe user*/
 const currentUser = computed(() => users.value[0] || null);
-// const currentUser = computed(() => users.value[currentIndex.value] || null)
+
+/* 
+  Handle photo modal status.
+  @param {boolean} status - Whether the photo modal is open or closed.
+  @return {void}
+*/
+function  handlePhotoModalStatus(status){
+  isPhotoModalOpen.value = status
+}
+watch(isPhotoModalOpen, (newVal) => {
+  isPhotoModalOpenSHot.value = newVal
+});
 </script>
 
 <style scoped>

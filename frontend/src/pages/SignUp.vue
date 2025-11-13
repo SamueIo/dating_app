@@ -124,10 +124,10 @@ const loading = ref(false);   // Loading state for form submission
 
 /* Form data */
 const data = ref({
-  name: '',                     // User nickname
-  email: '',                    // User email
-  password: '',                 // User password
-  password_confirmation: '',    // Password confirmation
+  name: '',                 
+  email: '',                  
+  password: '',             
+  password_confirmation: '',   
 })
 
 /* Validation errors */
@@ -174,5 +174,5 @@ function submit() {
 </script>
 
 <style lang="scss" scoped>
-/* Add any custom styles here */
+
 </style>

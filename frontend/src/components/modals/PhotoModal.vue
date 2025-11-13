@@ -96,14 +96,14 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['close']);
+const emit = defineEmits(['close']);
 
 // Current visible image index
 const currentIndex = ref(props.startIndex || 0);
 
 // Close the lightbox
 function close() {
-  emits('close');
+  emit('close');
 }
 
 // Show next image
@@ -148,7 +148,7 @@ function onTouchEnd() {
 /* Fade transition for image change */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.25s ease;
+  transition: opacity 0.20s ease;
 }
 .fade-enter-from,
 .fade-leave-to {

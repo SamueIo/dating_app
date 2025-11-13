@@ -19,7 +19,9 @@
       <div v-else>
         <!-- MAIN PHOTO -->
         <div v-if="mainPhoto" class="relative rounded-lg overflow-hidden shadow-lg mb-4">
-          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" class="w-full object-cover z-60" />
+          <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" 
+              class="w-full object-cover z-60" 
+              @click="openPhotoModal(mainPhoto)"/>
           <div class="absolute inset-0 pointer-events-none">
             <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
           </div>
@@ -49,7 +51,9 @@
           <!-- SECOND PHOTO + INFO -->
           <div v-if="otherPhotos[0]" class="space-y-4 mb-6">
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-              <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" class="w-full object-cover" />
+              <img :src="`${API_BASE_URL}/storage/${otherPhotos[0].file_name}`" 
+                  class="w-full object-cover" 
+                  @click="openPhotoModal(otherPhotos[0])"/>
               <p v-if="otherPhotos[0].description"
                  class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
                 {{ otherPhotos[0].description }}
@@ -67,7 +71,9 @@
           <!-- THIRD PHOTO + MORE INFO -->
           <div v-if="otherPhotos[1]" class="space-y-4 mb-6">
             <div class="relative rounded-md overflow-hidden shadow-md border border-purple-500">
-              <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" class="w-full object-cover" />
+              <img :src="`${API_BASE_URL}/storage/${otherPhotos[1].file_name}`" 
+                    class="w-full object-cover" 
+                    @click="openPhotoModal(otherPhotos[1])"/>
               <p v-if="otherPhotos[1].description"
                  class="absolute bottom-1 left-1 px-2 py-1 bg-black/60 backdrop-blur-sm text-white text-xs sm:text-sm rounded max-w-[90%] select-none .accent">
                 {{ otherPhotos[1].description }}
@@ -91,6 +97,7 @@
                   :src="`${API_BASE_URL}/storage/${photo.file_name}`"
                   class="object-cover h-24 sm:h-32 w-full"
                   alt="User photo"
+                  @click="openPhotoModal(photo)"
                 />
                 <p
                   v-if="photo.description"
@@ -107,44 +114,63 @@
 
       </div>
     </div>
+    <!-- Photo Modal -->
+    <PhotoModal
+      v-if="isPhotoModalOpen"
+      :images="currentAttachments"
+      :startIndex="currentImageIndex"
+      @close="handlePhotoClose"
+    />
   </div>
 </template>
 
 
 
 <script setup>
-
-import axiosClient from '../../axios';
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { calculateAge } from '../../utils/age';
 import Spinner from '../../ui/Spinner.vue';
-import { useRoute } from 'vue-router';
 import { API_BASE_URL } from '@/utils/constants';
 import { useBottomNavStore } from '@/store/showBottomNavStore';
+import PhotoModal from './PhotoModal.vue';
 
 const props = defineProps({
     userData: Object,
     visible: Boolean
 })
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close','photoModalStatus']);
+
+// PhotoModal state
+const isPhotoModalOpen = ref(false);
+const currentAttachments = ref([]);
+const currentImageIndex = ref(0);
 
 const loading = ref(false);
-const route = useRoute();
 
 const bottomNavStore = useBottomNavStore()
 
 
+// Open photo modal
+function openPhotoModal(clickedPhoto) {
+  currentAttachments.value = allPhotos.value;
+  currentImageIndex.value = allPhotos.value.indexOf(clickedPhoto);
+  isPhotoModalOpen.value = true;
+  emit('photoModalStatus', true)
+}
 
+// Computed for main and other photos
+const allPhotos = computed(() => props.userData?.photos || []);
 const mainPhoto = computed(() => props.userData?.photos.find(photo => photo.is_main) || null)
 const otherPhotos = computed(() => props.userData?.photos.filter(photo => !photo.is_main) || [])
 const extraPhotos = computed(() => otherPhotos.value.slice(2))
 const birthDate = computed(() => props.userData?.profile?.birth_date || null)
 
 // calculateAge(birthDate)
-
-const close = () => emit('close');
-
+function handlePhotoClose(){
+  isPhotoModalOpen.value = false
+  emit('photoModalStatus', false)
+}
 </script>
 
 

@@ -119,7 +119,7 @@
 
 <script setup>
 /**
- * Animated landing page with left hero box and right chat visuals.
+ * Animated landing page with left box and right chat visuals.
  * Handles responsive layout, mobile animation delays, and state transitions.
  */
 
@@ -127,13 +127,13 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import CirclesDesign from '@/ui/CirclesDesign.vue';
 import Footer from './Footer.vue';
 
-// State for hero box position: 'center' or 'top'
+// State for  box position: 'center' or 'top'
 const boxState = ref('center');
 
 // Detect mobile viewport
 const isMobile = ref(false);
 
-// Handle window resize (desktop auto moves hero box to top)
+// Handle window resize (desktop auto moves box to top)
 const handleResize = () => {
   if (window.innerWidth >= 768) {
     boxState.value = 'top';

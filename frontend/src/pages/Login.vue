@@ -86,8 +86,6 @@
 
 <script setup>
 /**
- * LoginForm.vue
- * ---------------
  * Simple login form using Vue 3 + Composition API.
  * - Handles email/password input with v-model.
  * - Shows loading spinner during API call.
@@ -115,7 +113,6 @@ async function submit() {
   loading.value = true;
   errorMessage.value = '';
 
-  // Reset all stores (optional, based on app logic)
   resetAllStores();
 
   // Get CSRF cookie for Laravel Sanctum

@@ -167,7 +167,7 @@ const loading = ref(false)
 // --- COMPUTED VALUES ---
 const userId = computed(() => userStore.user?.id)
 const navNameValue = computed(() =>
-  route.path.startsWith('/explore')
+  route.path.startsWith('/explore') || route.path.startsWith('/swipes')
     ? '🔍 Filter'
     : '⚙️ Profile navigation'
 )

@@ -63,8 +63,6 @@
 
 <script setup>
 /**
- * ForgotPassword.vue
- * -----------------
  * Component for submitting a password recovery email.
  * Handles form input, displays loading state, success and error messages.
  */
@@ -112,7 +110,7 @@ async function submit() {
           }
         })
         .finally(() => {
-          loading.value = false; // Hide spinner
+          loading.value = false;
         });
     });
 }
