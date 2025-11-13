@@ -50,7 +50,8 @@
 
     <!-- Main Content -->
     <main
-      class="flex-1 min-h-0 overflow-y-auto"
+      class="flex-1 min-h-0 overflow-y-auto border-l border-r border-l-[#953ea0] border-r-[#953ea0]
+              shadow-2xl ring-1 ring-white/20 shadow-pink-500/30"
       :class="bottomNavStore.showBottomNav ? 'pb-4' : ''"
     >
       <RouterView />

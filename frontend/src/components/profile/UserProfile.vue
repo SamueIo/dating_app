@@ -1,5 +1,6 @@
 <template>
-  <div class="relative p-0 sm:p-4 bg-gray-900 rounded-xl text-white max-w-2xl mx-auto shadow-lg space-y-6">
+  <div class="relative  bg-gray-900 rounded-xl text-white max-w-2xl mx-auto shadow-lg 
+            space-y-6 overflow-hidden">
     <!-- Error / Loading -->
     <div v-if="error" class="text-sm text-center text-gray-400">
       <h1>No profile yet</h1>
@@ -9,9 +10,10 @@
     </div>
 
     <!-- Actual content -->
-    <div v-else>
+    <div v-else 
+        >
       <!-- MAIN PHOTO -->
-      <div v-if="mainPhoto" class="relative">
+      <div v-if="mainPhoto" class="relative hide-scrollbar">
         <img :src="`${API_BASE_URL}/storage/${mainPhoto.file_name}`" 
         class="w-full rounded-lg mb-2 shadow-md" 
         @click="openPhotoModal(mainPhoto)"/>
@@ -114,8 +116,9 @@ import axiosClient from '../../axios';
 import { ref, computed, onMounted } from 'vue';
 import { API_BASE_URL } from '@/utils/constants';
 import PhotoModal from '../modals/PhotoModal.vue';
+import { useBottomNavStore } from '@/store/showBottomNavStore';
 
-
+const bottomNavStore = useBottomNavStore()
 
 const data = ref(null)
 const loading = ref(true)

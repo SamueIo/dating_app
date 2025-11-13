@@ -5,7 +5,7 @@ export const useThemeStore = defineStore('theme', {
     currentTheme: 'dark',
     themes: {
         light: { bg: null, text: '#ffffff' }, // purple-500
-        dark: { bg: '#5b21b6', text: '#ffffff' }   // purple-900
+        dark: { bg: '#6a2e97', text: '#ffffff' }   // purple-900
     }
   }),
   actions: {

@@ -47,8 +47,8 @@
           :class="[
             'px-3 py-1 text-sm max-w-[75%] break-words rounded-lg shadow-sm',
             item.data.user_id === loggedUserId
-              ? 'bg-blue-600 text-white self-end rounded-br-none'
-              : 'bg-purple-200 text-gray-900 self-start rounded-bl-none'
+              ? 'bg-purple-500 text-white self-end rounded-br-none'
+              : 'bg-purple-100 text-gray-900 self-start rounded-bl-none'
           ]"
           style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
         >

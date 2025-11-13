@@ -5,11 +5,13 @@
     <div 
       v-for="conv in conversationsToRender" 
       :key="conv.id" 
-      class="absolute cursor-grab z-50"
+      class="absolute cursor-grab z-50 select-none pointer-events-auto"
       :style="{ transform: `translate(${positions[conv.id]?.x}px, ${positions[conv.id]?.y}px)` }"
+      @contextmenu.prevent
       @mousedown="onDragStart(conv.id, $event)"
       @touchstart.passive="onDragStart(conv.id, $event)"
       :ref="el => bubbleRefs[conv.id] = el"
+      draggable="false"
     >
       <!-- Chat head component -->
       <ChatHeadBubble
