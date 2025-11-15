@@ -1,123 +1,123 @@
 Dating App
-
-<!-- Backend -->
-
-A dating application built with Laravel API and Vue.js. The app provides a swipe-based interface and real-time messaging.
+A full-stack dating application built with Laravel API and Vue.js, featuring swipe-based profile browsing, real-time messaging, matching, and user profile management.
 
 Features
 
-Explore Accounts: Browse other user profiles with filters.
 
-Swipe Interface: Like or pass on profiles in a familiar swipe-style UI.
+Explore Accounts – Browse user profiles with filters
 
-Real-Time Messaging: Chat instantly with your matches.
 
-Matches: See mutual likes and connect with compatible users.
+Swipe Interface – Like or pass using a swipe-style UI
 
-Settings: Update your profile, see blocked users.
+
+Real-Time Messaging – Instant chat using Pusher / Laravel Reverb
+
+
+Matches – See mutual likes and connect with compatible users
+
+
+Settings – Update your profile, manage blocked users
+
+
 
 Tech Stack
+Backend
 
-Backend: Laravel (REST API), Authentication with Sanctum
 
-Frontend: Vue.js
+Laravel (REST API)
 
-Database: MySQL
 
-Real-Time: Pusher / Laravel Reverb (for real-time messaging)
+Sanctum authentication
 
-Installation
-Requirements
 
-PHP 8.2 (CLI)
+MySQL
 
-Composer
 
-Required PHP extensions:
+Laravel Reverb / Pusher
 
-pdo, pdo_mysql
 
-mbstring
+Frontend
 
-zip
 
-exif
+Vue.js
 
-pcntl
 
-gd (with FreeType, JPEG, WebP support)
+TailwindCSS
 
-System packages (for GD and general functionality):
 
-git, curl, zip, unzip
+Toastificator
 
-libpng-dev, libjpeg-dev, libfreetype6-dev, libwebp-dev
 
-libonig-dev, libxml2-dev, libzip-dev
 
-procps
+Backend Setup (Docker)
+The backend runs entirely inside Docker using PHP 8.2 CLI with GD (WebP support) and a custom docker-entrypoint.sh script.
 
-Clone and Build
+Clone Repository
 git clone https://github.com/SamueIo/dating_app.git
-cd dating-app
-docker build -t dating_app2 ./backend
-docker run -p 3000:3000 dating-app-backend
-
-Inside the container
-
-Install PHP dependencies via Composer:
-
-composer install --no-dev --optimize-autoloader
+cd dating_app/backend
 
 
-Set up environment and database:
+Build Docker Image
+docker build -t dating_app_backend .
 
+
+Environment Setup
 cp .env.example .env
-php artisan key:generate
-php artisan migrate
 
-PHP Configuration (Optional)
+Edit .env and configure your database connection.
 
-The Dockerfile sets the following recommended PHP limits:
+Run Backend Container
+docker run -p 3000:3000 --env-file .env dating_app_backend
 
+Backend will be available at:
+http://localhost:3000
+
+What docker-entrypoint.sh Does
+
+
+Installs Composer dependencies if missing
+
+
+Generates APP_KEY if missing
+
+
+Runs database migrations
+
+
+Starts the Laravel server on port 3000
+
+
+
+PHP Configuration (inside Dockerfile)
 upload_max_filesize = 10M
-
 post_max_size = 60M
-
 max_file_uploads = 20
-
 max_execution_time = 300
-
 max_input_time = 300
 
-<!-- Frontend -->
-Frontend Setup
 
-The frontend is built with Vue.js, styled using TailwindCSS, and uses Toastificator for notifications.
+Frontend Setup (Vue.js)
+Navigate to Frontend
+cd ../frontend
 
-Requirements
-
-Node.js (v16+ recommended)
-
-npm or yarn
-
-Installation
-
-Navigate to the frontend folder:
-
-cd frontend
-
-
-Install dependencies:
-
+Install Dependencies
 npm install
 
-
-Start the development server:
-
+Start Development Server
 npm run dev
 
-
-Open the app in your browser:
-
+Frontend runs at:
 http://localhost:5173
+
+Done
+
+
+Backend runs in Docker
+
+
+Frontend runs with Vite
+
+
+Full stack ready for development or deployment
+
+
