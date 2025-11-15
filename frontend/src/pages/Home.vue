@@ -135,8 +135,10 @@ const isMobile = ref(false);
 
 // Handle window resize (desktop auto moves box to top)
 const handleResize = () => {
-  if (window.innerWidth >= 768) {
-    boxState.value = 'top';
+  if (window.innerWidth <= 768) {
+    boxState.value = 'top';    
+  }else{
+    boxState.value = 'center'
   }
 };
 
