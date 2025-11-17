@@ -1,123 +1,128 @@
-Dating App
-A full-stack dating application built with Laravel API and Vue.js, featuring swipe-based profile browsing, real-time messaging, matching, and user profile management.
+# MatchLove
 
-Features
+A dating application built with **Laravel** (backend) and **Vue.js** (frontend), fully containerized with **Docker**.  
+It allows users to connect, chat, and interact in real-time.
 
+---
 
-Explore Accounts – Browse user profiles with filters
+## Table of Contents
 
-
-Swipe Interface – Like or pass using a swipe-style UI
-
-
-Real-Time Messaging – Instant chat using Pusher / Laravel Reverb
-
-
-Matches – See mutual likes and connect with compatible users
+1. [Description](#description)
+2. [Tech Stack](#tech-stack)
+3. [Setup / Installation](#setup--installation)
+4. [Usage](#usage)
+5. [Environment Variables](#environment-variables)
 
 
-Settings – Update your profile, manage blocked users
+---
 
+## Description
 
+MatchLove is a dating platform designed to help users find and connect with potential matches.  
+The platform offers features including user authentication, profile management, messaging, and real-time interactions, powered by a Laravel backend and a Vue.js frontend.
 
-Tech Stack
-Backend
+Users can swipe through potential matches, explore profiles with customizable filters, and personalize their own profiles. Messaging is enhanced with interactive chat bubbles, creating a dynamic environment for connections.
 
+---
 
-Laravel (REST API)
+## Tech Stack
 
+- **Backend:** Laravel 12, PHP 8+
+- **Frontend:** Vue.js 3, Vite
+- **State Management:** Pinia
+- **Styling:** Tailwind CSS
+- **Notifications:** Vue Toastification
+- **Authentication & Security:** Laravel Sanctum
+- **Database:** MySQL
+- **Containerization:** Docker, Docker Compose
+- **Realtime Communication:** Reverb (Laravel-based WebSocket server)
 
-Sanctum authentication
+---
 
+## Setup / Installation
 
-MySQL
+Uncomment everything in docker-compose.yml
+### Backend
 
-
-Laravel Reverb / Pusher
-
-
-Frontend
-
-
-Vue.js
-
-
-TailwindCSS
-
-
-Toastificator
-
-
-
-Backend Setup (Docker)
-The backend runs entirely inside Docker using PHP 8.2 CLI with GD (WebP support) and a custom docker-entrypoint.sh script.
-
-Clone Repository
-git clone https://github.com/SamueIo/dating_app.git
-cd dating_app/backend
-
-
-Build Docker Image
-docker build -t dating_app_backend .
-
-
-Environment Setup
+```bash
+cd backend
 cp .env.example .env
+docker compose run --rm --entrypoint bash backend
+composer install
+php artisan key:generate
+exit
+```
 
-Edit .env and configure your database connection.
+### Frontend Setup
 
-Run Backend Container
-docker run -p 3000:3000 --env-file .env dating_app_backend
+1. Navigate to the frontend folder and rename the Docker example file:
 
-Backend will be available at:
-http://localhost:3000
+```bash
+cd frontend
+mv docker.example docker
+```
 
-What docker-entrypoint.sh Does
+2. Update ports in .env if needed:
 
+VITE_REVERB_PORT=8081
+VITE_REVERB_WS_PORT=8081
 
-Installs Composer dependencies if missing
+3. Build the frontend image
 
-
-Generates APP_KEY if missing
-
-
-Runs database migrations
-
-
-Starts the Laravel server on port 3000
-
-
-
-PHP Configuration (inside Dockerfile)
-upload_max_filesize = 10M
-post_max_size = 60M
-max_file_uploads = 20
-max_execution_time = 300
-max_input_time = 300
+```bash
+docker compose build frontend
+```
 
 
-Frontend Setup (Vue.js)
-Navigate to Frontend
-cd ../frontend
+Start All Services
 
-Install Dependencies
-npm install
+```bash
+docker compose up
+```
 
-Start Development Server
-npm run dev
-
-Frontend runs at:
+Access the frontend in your browser:
 http://localhost:5173
 
-Done
+
+### Usage
+
+<!-- markdown -->
+## Usage
+
+Once all services are running, you can use the application as follows:
+
+- Run database migrations:
+
+```bash
+docker compose exec backend php artisan migrate
+```
+
+# Start reverb
+
+```bash
+docker exec -it dating_app-backend-1 sh
+nohup php artisan reverb:start --host=0.0.0.0 --port=3001 > reverb.log 2>&1 &
+```
+
+Access the phpMyAdmin in your browser:
+http://localhost:8080
 
 
-Backend runs in Docker
+### Environment Variables
 
+<!-- markdown -->
+## Environment Variables
 
-Frontend runs with Vite
+# Backend (.env)
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=backend
+DB_USERNAME=user
+DB_PASSWORD=password
 
-
-Full stack ready for development or deployment
+# Frontend (.env)
+VITE_REVERB_PORT=8081
+VITE_REVERB_WS_PORT=8081
 
 

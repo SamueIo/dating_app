@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits } from 'vue';
+import { computed } from 'vue';
 import UserAvatarMenu from '../profile/ProfileComponents/UserAvatarMenu.vue';
 import { useToggleMobileMenuStore } from '@/store/ToggleMobileMenuStore';
 

@@ -173,7 +173,7 @@
  * - Listening for real-time message updates via Laravel Reverb.
  */
 
-import { defineProps, defineEmits, ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useChatMessages } from '../../composable/useChatMessages'
 import { useMessagesStore } from '../../store/messages'
 import { useConversationStore } from '../../store/conversationsAndLastMessage'

@@ -55,7 +55,7 @@
  */
 
 import Spinner from '../../ui/Spinner.vue';
-import { onMounted, defineEmits } from 'vue';
+import { onMounted } from 'vue';
 import { useMatchesStore } from '../../store/matches';
 import axiosClient from '../../axios';
 import { API_BASE_URL } from '@/utils/constants';
