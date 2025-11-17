@@ -86,8 +86,7 @@ http://localhost:5173
 
 ### Usage
 
-<!-- markdown -->
-## Usage
+
 
 Once all services are running, you can use the application as follows:
 
@@ -97,7 +96,7 @@ Once all services are running, you can use the application as follows:
 docker compose exec backend php artisan migrate
 ```
 
-# Start reverb
+### Start reverb
 
 ```bash
 docker exec -it dating_app-backend-1 sh
@@ -108,12 +107,10 @@ Access the phpMyAdmin in your browser:
 http://localhost:8080
 
 
-### Environment Variables
-
-<!-- markdown -->
 ## Environment Variables
 
-# Backend (.env)
+
+### Backend (.env)
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
@@ -121,7 +118,7 @@ DB_DATABASE=backend
 DB_USERNAME=user
 DB_PASSWORD=password
 
-# Frontend (.env)
+### Frontend (.env)
 VITE_REVERB_PORT=8081
 VITE_REVERB_WS_PORT=8081
 
